@@ -5,12 +5,8 @@ public abstract class Device {
 	// device information
 	// common to all device types
 	
-	protected String name;
-	protected int deviceNumber;
-	
-	// private default constructor to disable
-	// "empty" abstract devices
-	private Device() {}
+	protected final String name;
+	protected final int deviceNumber;
 	
 	/**
 	 * Constructs a new device with the given name and id.
@@ -18,7 +14,6 @@ public abstract class Device {
 	 * @param deviceNumber
 	 */
 	public Device(String name, int deviceNumber) {
-		this();
 		this.name = name;
 		this.deviceNumber = deviceNumber;
 	}
