@@ -7,3 +7,11 @@ public class Shade extends Device {
 	}
 
 }
+
+/**
+ * Enumeration of Shade states.
+ */
+enum ShadeState {
+	UP,
+	DOWN
+}

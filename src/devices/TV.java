@@ -7,3 +7,11 @@ public class TV extends Device {
 	}
 
 }
+
+/**
+ * Enumeration of TV states.
+ */
+enum TVState {
+	OFF,
+	ON
+}
