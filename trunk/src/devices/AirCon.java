@@ -6,3 +6,11 @@ public class AirCon extends Device {
 		super(name, deviceNumber);
 	}
 }
+
+/**
+ * Enumeration of AirCon states.
+ */
+enum AirConState {
+	OFF,
+	ON
+}

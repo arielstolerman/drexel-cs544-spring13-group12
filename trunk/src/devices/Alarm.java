@@ -7,3 +7,12 @@ public class Alarm extends Device {
 	}
 
 }
+
+/**
+ * Enumeration of Alarm states.
+ */
+enum AlarmState {
+	OFF,
+	ON,
+	ARMED
+}
