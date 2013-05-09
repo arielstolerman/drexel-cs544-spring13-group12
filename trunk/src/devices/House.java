@@ -57,6 +57,9 @@ public class House {
 		alarms.add(a);
 		return a;
 	}
+	
+	// TODO
+	// - add getters
 }
 
 
