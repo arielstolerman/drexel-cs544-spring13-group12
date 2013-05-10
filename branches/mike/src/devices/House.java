@@ -26,6 +26,7 @@ public class House {
 	
 	public Device addDevice(Device d) {
 		List<Device> l = devices.get(d.deviceType());
+		d.setDeviceNumber(l.size());
 		l.add(d);
 		return d;
 	}

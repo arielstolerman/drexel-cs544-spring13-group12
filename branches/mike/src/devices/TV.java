@@ -2,8 +2,8 @@ package devices;
 
 public class TV extends Device {
 
-	public TV(String name, int deviceNumber) {
-		super(name, deviceNumber);
+	public TV(String name) {
+		super(name);
 	}
 	
 	public byte deviceType() {

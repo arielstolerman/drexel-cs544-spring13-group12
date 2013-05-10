@@ -3,7 +3,7 @@ package devices;
 public class Shade extends Device {
 
 	public Shade(String name, int deviceNumber) {
-		super(name, deviceNumber);
+		super(name);
 	}
 	
 	public byte deviceType() {
