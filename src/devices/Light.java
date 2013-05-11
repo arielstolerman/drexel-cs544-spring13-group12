@@ -7,8 +7,16 @@ public class Light extends Device {
 	private LightState state;
 	private byte dimLevel;
 	
-	public Light(String name, int deviceNumber) {
-		super(name, deviceNumber);
+	public Light(String name) {
+		super(name);
+	}
+	
+	public byte deviceType() {
+		return 1;
+	}
+
+	public boolean doAction(Action A) {
+		return false;
 	}
 	
 	// methods

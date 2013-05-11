@@ -6,19 +6,21 @@ public abstract class Device {
 	// common to all device types
 	
 	protected final String name;
-	protected final int deviceNumber;
+	private int deviceNumber;
 	
 	/**
 	 * Constructs a new device with the given name and id.
 	 * @param name
 	 * @param deviceNumber
 	 */
-	public Device(String name, int deviceNumber) {
+	public Device(String name) {
 		this.name = name;
-		this.deviceNumber = deviceNumber;
 	}
 	
 	// methods
+	
+	abstract public byte deviceType();
+	abstract public boolean doAction(Action A);
 	
 	/**
 	 * @return the device name.
@@ -32,6 +34,10 @@ public abstract class Device {
 	 */
 	public int deviceNumber() {
 		return deviceNumber;
+	}
+	
+	protected void setDeviceNumber(int deviceNumber) {
+		this.deviceNumber = deviceNumber;
 	}
 }
 
