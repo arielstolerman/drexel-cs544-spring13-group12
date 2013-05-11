@@ -1,7 +1,15 @@
 package protocol;
 
 public class DFA {
-
+	private ProtocolState state = ProtocolState.IDLE;
+	
+	public DFA() {
+		
+	}
+	
+	public Message process(Message message) {
+		return Message.ERROR;
+	}
 }
 
 enum ProtocolState {
