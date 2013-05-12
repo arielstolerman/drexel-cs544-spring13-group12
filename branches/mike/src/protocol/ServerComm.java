@@ -9,13 +9,16 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import devices.House;
+
 public class ServerComm implements Runnable {
 	private boolean shutdown = false;
 	private Socket socket;
-	private DFA dfa = new DFA();
+	private DFA dfa;
 
-	public ServerComm(Socket s) {
+	public ServerComm(Socket s, DFA dfa) {
 		this.socket = s;
+		this.dfa = dfa;
 	}
 	
 	public void run() {

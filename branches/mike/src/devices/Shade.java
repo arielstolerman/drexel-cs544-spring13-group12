@@ -7,7 +7,7 @@ public class Shade extends Device {
 	}
 	
 	public byte deviceType() {
-		return 2;
+		return 1;
 	}
 	
 	public boolean doAction(Action A) {

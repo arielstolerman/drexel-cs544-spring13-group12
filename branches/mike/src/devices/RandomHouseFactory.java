@@ -15,10 +15,10 @@ public class RandomHouseFactory implements HouseFactory {
 	
 	public House createHouse() {
 		House H = new House();
-		int numLights = R.nextInt(5);
+		int numLights = 1 + R.nextInt(4);
 		for (int i = 0; i < numLights; i++) {
-			Device d = new Light("light_" + i);
-			H.addDevice(d);
+			LightState ls = (R.nextInt(2) == 0 ? LightState.OFF : LightState.ON);
+			H.addDevice(new Light("light_" + i, ls));
 		}
 		
 		return H;
