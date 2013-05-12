@@ -7,7 +7,7 @@ public class Alarm extends Device {
 	}
 
 	public byte deviceType() {
-		return 5;
+		return 4;
 	}
 	
 	public boolean doAction(Action A) {

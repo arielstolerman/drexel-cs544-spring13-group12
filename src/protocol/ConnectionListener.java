@@ -4,8 +4,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import devices.House;
+
 public class ConnectionListener implements Runnable {
 	private boolean shutdown = false;
+	private House house;
+	
+	public ConnectionListener(House house) {
+		this.house = house;
+	}
 	
 	public void run() {
 		try {
@@ -23,7 +30,7 @@ public class ConnectionListener implements Runnable {
 						}
 					}
 				}
-				Thread T = new Thread(new ServerComm(commSocket));
+				Thread T = new Thread(new ServerComm(commSocket, new DFA(house)));
 				T.start();
 			}
 		} catch (Exception e) {

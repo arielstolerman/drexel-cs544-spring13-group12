@@ -7,7 +7,7 @@ public class AirCon extends Device {
 	}
 	
 	public byte deviceType() {
-		return 3;
+		return 2;
 	}
 	
 	public boolean doAction(Action A) {

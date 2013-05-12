@@ -11,8 +11,13 @@ public class Light extends Device {
 		super(name);
 	}
 	
+	public Light(String name, LightState state) {
+		super(name);
+		this.state = state;
+	}
+	
 	public byte deviceType() {
-		return 1;
+		return 0;
 	}
 
 	public boolean doAction(Action A) {
@@ -53,6 +58,10 @@ public class Light extends Device {
 			return false;
 		this.dimLevel = dimLevel;
 		return true;
+	}
+	
+	public String toString() {
+		return Util.bufferLeft(' ', 16, name) + state.ordinal();
 	}
 }
 

@@ -34,6 +34,17 @@ public class House {
 	public boolean doAction(Action A) {
 		return devices.get(A.getDeviceType()).get(A.getDeviceNumber()).doAction(A);
 	}
+	
+	public String getINIT() {
+		StringBuffer sb = new StringBuffer(1000);
+		for (List<Device> L : devices) {
+			sb.append(L.size());
+			for (Device D : L) {
+				sb.append(D.toString());
+			}
+		}
+		return sb.toString();
+	}
 }
 
 

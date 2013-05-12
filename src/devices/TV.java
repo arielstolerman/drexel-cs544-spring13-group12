@@ -7,7 +7,7 @@ public class TV extends Device {
 	}
 	
 	public byte deviceType() {
-		return 4;
+		return 3;
 	}
 
 	public boolean doAction(Action A) {
