@@ -1,65 +1,50 @@
 package devices;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class House {
 	
 	// fields
 	// list of devices available in the house
 	
-	private List<Light> lights;
-	private List<Shade> shades;
-	private List<AirCon> airCons;
-	private List<TV> tvs;
-	private List<Alarm> alarms;
-	
+	private List<List<Device>> devices = new ArrayList<List<Device>>();
+		
 	// constructors
 	
 	/**
 	 * constructs a new house with no devices.
 	 */
 	public House() {
-		lights = new ArrayList<>();
-		shades = new ArrayList<>();
-		airCons = new ArrayList<>();
-		tvs = new ArrayList<>();
-		alarms = new ArrayList<>();
+		devices = new ArrayList<List<Device>>();
+		devices.add(new ArrayList<Device>());
+		devices.add(new ArrayList<Device>());
+		devices.add(new ArrayList<Device>());
+		devices.add(new ArrayList<Device>());
+		devices.add(new ArrayList<Device>());
 	}
 	
-	// methods
-	
-	public Light addLight(String name) {
-		Light l = new Light(name, lights.size());
-		lights.add(l);
-		return l;
+	public Device addDevice(Device d) {
+		List<Device> l = devices.get(d.deviceType());
+		d.setDeviceNumber(l.size());
+		l.add(d);
+		return d;
 	}
 	
-	public Shade addShade(String name) {
-		Shade s = new Shade(name, shades.size());
-		shades.add(s);
-		return s;
+	public boolean doAction(Action A) {
+		return devices.get(A.getDeviceType()).get(A.getDeviceNumber()).doAction(A);
 	}
 	
-	public AirCon addAirCon(String name) {
-		AirCon a = new AirCon(name, airCons.size());
-		airCons.add(a);
-		return a;
+	public String getINIT() {
+		StringBuffer sb = new StringBuffer(1000);
+		for (List<Device> L : devices) {
+			sb.append(L.size());
+			for (Device D : L) {
+				sb.append(D.toString());
+			}
+		}
+		return sb.toString();
 	}
-	
-	public TV addTV(String name) {
-		TV t = new TV(name, tvs.size());
-		tvs.add(t);
-		return t;
-	}
-	
-	public Alarm addAlarm(String name) {
-		Alarm a = new Alarm(name, alarms.size());
-		alarms.add(a);
-		return a;
-	}
-	
-	// TODO
-	// - add getters
 }
 
 
