@@ -2,17 +2,22 @@ package devices;
 
 public class Light extends Device {
 	
+	// legal opcodes
+	private static final byte TURN_ON = 0;
+	private static final byte TURN_OFF = 1;
+	private static final byte DIM = 2;
+	
 	// fields
 	
 	private LightState state;
 	private byte dimLevel;
 	
-	public Light(String name) {
-		super(name);
+	public Light(String name, int deviceNumber) {
+		super(name, deviceNumber);
 	}
 	
-	public Light(String name, LightState state) {
-		super(name);
+	public Light(String name, int deviceNumber, LightState state) {
+		super(name, deviceNumber);
 		this.state = state;
 	}
 	
@@ -20,8 +25,31 @@ public class Light extends Device {
 		return 0;
 	}
 
-	public boolean doAction(Action A) {
-		return false;
+	@Override
+	public void doAction(Action action) throws Exception {
+		byte opcode = action.opcode();
+		// turn on
+		if (opcode == TURN_ON) {
+			if (action.numParams() != 0) throw new Exception("Turn on Light " +
+					"expected 0 parameters, given: " + action.numParams());
+			turnOn();
+		}
+		// turn off
+		else if (opcode == TURN_OFF) {
+			if (action.numParams() != 0) throw new Exception("Turn off Light " +
+					"expected 0 parameters, given: " + action.numParams());
+			turnOff();
+		}
+		// dim
+		else if (opcode == DIM) {
+			if (action.numParams() != 1) throw new Exception("Dim Light " +
+					"expected 1 parameters, given: " + action.numParams());
+			dim(action.getParam(0));
+		}
+		// error
+		else {
+			throw new Exception("Illegal opcode for Light: " + opcode);
+		}
 	}
 	
 	// methods
@@ -30,22 +58,22 @@ public class Light extends Device {
 	 * TODO
 	 * @return
 	 */
-	public boolean turnOn() {
+	private void turnOn() throws Exception {
 		if (state == LightState.ON)
-			return false;
+			throw new Exception("Cannot turn on Light " +
+					deviceNumber + " (" + name + ") when already on");
 		state = LightState.ON;
-		return true;
 	}
 	
 	/**
 	 * TODO
 	 * @return
 	 */
-	public boolean turnOff() {
+	private void turnOff() throws Exception {
 		if (state == LightState.OFF)
-			return false;
+			throw new Exception("Cannot turn off Light " +
+					deviceNumber + " (" + name + ") when already off");
 		state = LightState.OFF;
-		return true;
 	}
 	
 	/**
@@ -53,11 +81,11 @@ public class Light extends Device {
 	 * @param dimLevel
 	 * @return
 	 */
-	public boolean dim(byte dimLevel) {
+	private void dim(byte dimLevel) throws Exception {
 		if (state == LightState.OFF)
-			return false;
+			throw new Exception("Cannot dim Light " +
+					deviceNumber + " (" + name + ") when off");
 		this.dimLevel = dimLevel;
-		return true;
 	}
 	
 	public String toString() {
