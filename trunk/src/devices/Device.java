@@ -6,21 +6,32 @@ public abstract class Device {
 	// common to all device types
 	
 	protected final String name;
-	private int deviceNumber;
+	protected int deviceNumber;
 	
 	/**
-	 * Constructs a new device with the given name and id.
+	 * Constructs a new device with the given name and device number.
 	 * @param name
 	 * @param deviceNumber
 	 */
-	public Device(String name) {
+	public Device(String name, int deviceNumber) {
 		this.name = name;
+		this.deviceNumber = deviceNumber;
 	}
 	
 	// methods
 	
+	/**
+	 * @return the byte code of this device type.
+	 */
 	abstract public byte deviceType();
-	abstract public boolean doAction(Action A);
+	
+	/**
+	 * Applies the given action on this device.
+	 * @param action the action to perform.
+	 * @throws Exception if this action is illegal or invalid for this device
+	 * type or state.
+	 */
+	abstract public void doAction(Action action) throws Exception;
 	
 	/**
 	 * @return the device name.
@@ -40,14 +51,3 @@ public abstract class Device {
 		this.deviceNumber = deviceNumber;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-

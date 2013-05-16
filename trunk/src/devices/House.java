@@ -31,8 +31,13 @@ public class House {
 		return d;
 	}
 	
-	public boolean doAction(Action A) {
-		return devices.get(A.getDeviceType()).get(A.getDeviceNumber()).doAction(A);
+	/**
+	 * Applies the given action on the respective device.
+	 * @param action
+	 */
+	public void doAction(Action action) throws Exception {
+		devices.get(action.deviceType()).get(action.deviceNumber())
+				.doAction(action);
 	}
 	
 	public String getINIT() {
