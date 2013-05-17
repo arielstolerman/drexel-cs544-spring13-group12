@@ -20,10 +20,12 @@ public abstract class Device {
 	
 	// methods
 	
+	// abstract
+	
 	/**
 	 * @return the byte code of this device type.
 	 */
-	abstract public byte deviceType();
+	public abstract byte deviceType();
 	
 	/**
 	 * Applies the given action on this device.
@@ -31,7 +33,9 @@ public abstract class Device {
 	 * @throws Exception if this action is illegal or invalid for this device
 	 * type or state.
 	 */
-	abstract public void doAction(Action action) throws Exception;
+	public abstract void doAction(Action action) throws Exception;
+	
+	// common
 	
 	/**
 	 * @return the device name.
@@ -49,5 +53,26 @@ public abstract class Device {
 	
 	protected void setDeviceNumber(int deviceNumber) {
 		this.deviceNumber = deviceNumber;
+	}
+}
+
+/**
+ * Enumerator for known device types.
+ */
+enum DeviceType {
+	LIGHT((byte) 0),
+	SHADE((byte) 1),
+	AIRCON((byte) 2),
+	TV((byte) 3),
+	ALARM((byte) 4);
+	
+	private DeviceType(byte type) {
+		this.type = type;
+	}
+	
+	private byte type;
+	
+	public byte type() {
+		return type;
 	}
 }

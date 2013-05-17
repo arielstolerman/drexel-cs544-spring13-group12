@@ -8,9 +8,10 @@ public class Light extends Device {
 	private static final byte DIM = 2;
 	
 	// fields
-	
 	private LightState state;
 	private byte dimLevel;
+	
+	// constructors
 	
 	public Light(String name, int deviceNumber) {
 		super(name, deviceNumber);
@@ -21,8 +22,10 @@ public class Light extends Device {
 		this.state = state;
 	}
 	
+	// methods
+	
 	public byte deviceType() {
-		return 0;
+		return DeviceType.LIGHT.type();
 	}
 
 	@Override
@@ -52,13 +55,13 @@ public class Light extends Device {
 		}
 	}
 	
-	// methods
+	// local setters
 	
 	/**
-	 * TODO
-	 * @return
+	 * Turns on the light.
+	 * @throws Exception if the light is already on.
 	 */
-	private void turnOn() throws Exception {
+	protected void turnOn() throws Exception {
 		if (state == LightState.ON)
 			throw new Exception("Cannot turn on Light " +
 					deviceNumber + " (" + name + ") when already on");
@@ -66,10 +69,10 @@ public class Light extends Device {
 	}
 	
 	/**
-	 * TODO
-	 * @return
+	 * Turns off the light.
+	 * @throws Exception if the light is already off.
 	 */
-	private void turnOff() throws Exception {
+	protected void turnOff() throws Exception {
 		if (state == LightState.OFF)
 			throw new Exception("Cannot turn off Light " +
 					deviceNumber + " (" + name + ") when already off");
@@ -77,11 +80,11 @@ public class Light extends Device {
 	}
 	
 	/**
-	 * TODO
-	 * @param dimLevel
-	 * @return
+	 * Sets the dim level of the light.
+	 * @param dimLevel the dim level to set.
+	 * @throws Exception if the light is off.
 	 */
-	private void dim(byte dimLevel) throws Exception {
+	protected void dim(byte dimLevel) throws Exception {
 		if (state == LightState.OFF)
 			throw new Exception("Cannot dim Light " +
 					deviceNumber + " (" + name + ") when off");
@@ -90,6 +93,16 @@ public class Light extends Device {
 	
 	public String toString() {
 		return Util.bufferLeft(' ', 16, name) + state.ordinal();
+	}
+	
+	// getters
+	
+	public LightState state() {
+		return state;
+	}
+	
+	public byte dimLevel() {
+		return dimLevel;
 	}
 }
 
