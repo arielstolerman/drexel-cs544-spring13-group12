@@ -3,26 +3,39 @@ package devices;
 import java.util.Random;
 
 public class RandomHouseFactory implements HouseFactory {
-	private final Random R;
 	
-	public RandomHouseFactory(int seed) {
-		this.R = new Random(seed);
+	private static final int MAX_DEVICES_PER_TYPE = 5;
+	
+	private final Random rand;
+	
+	public RandomHouseFactory(long seed) {
+		this.rand = new Random(seed);
 	}
 	
 	public RandomHouseFactory() {
-		this.R = new Random(System.currentTimeMillis());
+		this.rand = new Random(System.currentTimeMillis());
 	}
 	
 	public House createHouse() {
-		House H = new House();
-		int numLights = 1 + R.nextInt(4);
+		House house = new House();
+		// add lights
+		int numLights = 1 + rand.nextInt(MAX_DEVICES_PER_TYPE);
 		for (int i = 0; i < numLights; i++) {
-			LightState ls = (R.nextInt(2) == 0 ? LightState.OFF : LightState.ON);
-			H.addDevice(new Light("light_" + i, ls));
+			LightState s = (rand.nextInt(2) == 0 ? LightState.OFF : LightState.ON);
+			Light l = new Light("light_" + i, i, s);
+			try {
+				l.dim((byte) rand.nextInt(256));
+			} catch (Exception e) {}
+			house.addDevice(l);
 		}
+		// add shades
 		
-		return H;
+		// add AirCons
+		
+		// add TVs
+		
+		// add alarms
+		
+		return house;
 	}
-	
-	
 }
