@@ -61,7 +61,7 @@ public class AirCon extends Device {
 	 * Turns on the AirCon.
 	 * @throws Exception if the AirCon is already on.
 	 */
-	private void turnOn() throws Exception {
+	protected void turnOn() throws Exception {
 		if (state == AirConState.ON)
 			throw new Exception("Cannot turn on AirCon " +
 					deviceNumber + " (" + name + ") when already on");
@@ -72,7 +72,7 @@ public class AirCon extends Device {
 	 * Turns off the AirCon.
 	 * @throws Exception if the AirCon is already off.
 	 */
-	private void turnOff() throws Exception {
+	protected void turnOff() throws Exception {
 		if (state == AirConState.OFF)
 			throw new Exception("Cannot turn off AirCon " +
 					deviceNumber + " (" + name + ") when already off");
@@ -84,7 +84,7 @@ public class AirCon extends Device {
 	 * @param temp temperature to set.
 	 * @throws Exception if the AirCon is off.
 	 */
-	private void setTemp(byte temp) throws Exception {
+	protected void setTemp(byte temp) throws Exception {
 		if (state == AirConState.OFF)
 			throw new Exception("Cannot set temp for AirCon " +
 					deviceNumber + " (" + name + ") when off");

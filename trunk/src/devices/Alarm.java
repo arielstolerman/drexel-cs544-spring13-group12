@@ -60,7 +60,7 @@ public class Alarm extends Device {
 	 * Turns on the alarm.
 	 * @throws Exception if the alarm is already on.
 	 */
-	private void turnOn() throws Exception {
+	protected void turnOn() throws Exception {
 		if (state == AlarmState.ON)
 			throw new Exception("Cannot turn on Alarm " +
 					deviceNumber + " (" + name + ") when already on");
@@ -71,7 +71,7 @@ public class Alarm extends Device {
 	 * Turns off the alarm.
 	 * @throws Exception if the alarm is already off.
 	 */
-	private void turnOff() throws Exception {
+	protected void turnOff() throws Exception {
 		if (state == AlarmState.OFF)
 			throw new Exception("Cannot turn off Alarm " +
 					deviceNumber + " (" + name + ") when already off");
@@ -82,7 +82,7 @@ public class Alarm extends Device {
 	 * Arms the alarm.
 	 * @throws Exception if the alarm is already armed.
 	 */
-	private void arm() throws Exception {
+	protected void arm() throws Exception {
 		if (state == AlarmState.ARMED)
 			throw new Exception("Cannot arm Alarm " +
 					deviceNumber + " (" + name + ") when already armed");

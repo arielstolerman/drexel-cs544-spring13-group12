@@ -61,7 +61,7 @@ public class Shade extends Device {
 	 * Puts down the shade.
 	 * @throws Exception if the shade is already down.
 	 */
-	private void putDown() throws Exception {
+	protected void putDown() throws Exception {
 		if (state == ShadeState.DOWN)
 			throw new Exception("Cannot put down Shade " +
 					deviceNumber + " (" + name + ") when already down");
@@ -72,7 +72,7 @@ public class Shade extends Device {
 	 * Pulls up the shade.
 	 * @throws Exception if the shade is already up.
 	 */
-	private void pullUp() throws Exception {
+	protected void pullUp() throws Exception {
 		if (state == ShadeState.UP)
 			throw new Exception("Cannot pull up Shade " +
 					deviceNumber + " (" + name + ") when already up");
@@ -84,7 +84,7 @@ public class Shade extends Device {
 	 * @param dimLevel the dim level to set.
 	 * @throws Exception if the shade is up.
 	 */
-	private void dim(byte dimLevel) throws Exception {
+	protected void dim(byte dimLevel) throws Exception {
 		if (state == ShadeState.UP)
 			throw new Exception("Cannot dim Shade " +
 					deviceNumber + " (" + name + ") when up");
