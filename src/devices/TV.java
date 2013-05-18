@@ -69,7 +69,7 @@ public class TV extends Device {
 	 * Turns on the TV.
 	 * @throws Exception if the TV is already on.
 	 */
-	private void turnOn() throws Exception {
+	protected void turnOn() throws Exception {
 		if (state == TVState.ON)
 			throw new Exception("Cannot turn on TV " +
 					deviceNumber + " (" + name + ") when already on");
@@ -80,7 +80,7 @@ public class TV extends Device {
 	 * Turns off the TV.
 	 * @throws Exception if the TV is already off.
 	 */
-	private void turnOff() throws Exception {
+	protected void turnOff() throws Exception {
 		if (state == TVState.OFF)
 			throw new Exception("Cannot turn off TV " +
 					deviceNumber + " (" + name + ") when already off");
@@ -92,7 +92,7 @@ public class TV extends Device {
 	 * @param channel the channel to set.
 	 * @throws Exception if the TV is off.
 	 */
-	private void setChannel(byte channel) throws Exception {
+	protected void setChannel(byte channel) throws Exception {
 		if (state == TVState.OFF)
 			throw new Exception("Cannot set channel for TV " +
 					deviceNumber + " (" + name + ") when off");
@@ -104,7 +104,7 @@ public class TV extends Device {
 	 * @param volume the volume to set.
 	 * @throws Exception if the TV is off.
 	 */
-	private void setVolume(byte volume) throws Exception {
+	protected void setVolume(byte volume) throws Exception {
 		if (state == TVState.OFF)
 			throw new Exception("Cannot set volume for TV " +
 					deviceNumber + " (" + name + ") when off");
