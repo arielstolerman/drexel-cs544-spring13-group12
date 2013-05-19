@@ -28,7 +28,7 @@ public class ClientCommFactory {
 		return new ClientComm() {
 			public void run() {
 				try {
-					Socket S = new Socket("127.0.0.1", 7777);
+					Socket S = new Socket("127.0.0.1", 7070);
 					System.out.println("client connected.");
 					BufferedReader br = new BufferedReader(new InputStreamReader(S.getInputStream()));
 					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(S.getOutputStream()));
@@ -48,7 +48,7 @@ public class ClientCommFactory {
 		return new ClientComm() {
 			public void run() {
 				try {
-					Socket S = new Socket("127.0.0.1", 7777);
+					Socket S = new Socket("127.0.0.1", 7070);
 					System.out.println("client connected.");
 					BufferedReader br = new BufferedReader(new InputStreamReader(S.getInputStream()));
 					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(S.getOutputStream()));
