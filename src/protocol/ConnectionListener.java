@@ -16,7 +16,7 @@ public class ConnectionListener implements Runnable {
 	
 	public void run() {
 		try {
-			ServerSocket servSocket = new ServerSocket(7777);
+			ServerSocket servSocket = new ServerSocket(7070);
 			servSocket.setSoTimeout(1000);
 			while (true) {
 				Socket commSocket = null;
