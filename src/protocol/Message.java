@@ -1,17 +1,56 @@
 package protocol;
 
+import java.util.Arrays;
+
 import devices.House;
 
 public class Message {
-	private final String line;
-	public final static Message ERROR = new Message("ERROR\n");
+	private final byte[] b;
+	public final static Message ERROR_INIT;
+	public final static Message ERROR_GENERAL;
+	public final static Message SHUTDOWN;
 	public final static Message SERVER_VERSION = new Message("RSHC " + Server.version + '\n');
+	
+	static {
+		ERROR_INIT = createError("Poke error");
+		ERROR_GENERAL = createError("General error");
+		SHUTDOWN = new Message("");
+		
+	}
+	
+	public static Message createConfirm(byte seqNum) {
+		return new Message(new byte[] {5,seqNum});
+	}
+	
+	private static Message createError(String msg) {
+		byte m1[] = new byte[] {1};
+		byte m2[] = msg.getBytes();
+		
+		byte m3[] = new byte[m1.length + m2.length];
+		for (int i = 0; i < m1.length; i++) {
+			m3[i] = m1[i];
+		}
+		for (int i = 0; i < m2.length; i++) {
+			m3[m1.length+i] = m2[i];
+		}
+		return new Message(m3);
+	}
+	
+	
+	public Message(byte[] b) {
+		this.b = b;
+	}
+	
 	public Message(String line) {
-		this.line = line;
+		this.b = line.getBytes();	
+	}
+	
+	public byte[] bytes() {
+		return this.b;
 	}
 	
 	public String toString() {
-		return this.line;
+		return new String(b);
 	}
 
 	public static Message createChallenge() {
@@ -19,6 +58,6 @@ public class Message {
 	}
 
 	public static Message createINIT(House H) {
-		return new Message('3' + H.getINIT() + '\n');
+		return new Message(H.getINIT());
 	}
 }

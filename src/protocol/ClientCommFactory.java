@@ -3,6 +3,7 @@ package protocol;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Arrays;
@@ -52,7 +53,7 @@ public class ClientCommFactory {
 					Socket S = new Socket("127.0.0.1", 7070);
 					System.out.println("client connected.");
 					BufferedReader br = new BufferedReader(new InputStreamReader(S.getInputStream()));
-					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(S.getOutputStream()));
+					OutputStream os = S.getOutputStream();
 					
 					byte[] endOfLine = "\n".getBytes();
 					byte[] poke = new byte[]{0};
@@ -60,9 +61,9 @@ public class ClientCommFactory {
 					//String clientMessage = "0\n";
 					System.out.print("C: " + Arrays.toString(poke));//clientMessage);
 					//bw.write(clientMessage);
-					S.getOutputStream().write(poke);
-					S.getOutputStream().write(endOfLine);
-					S.getOutputStream().flush();
+					os.write(poke);
+					os.write(endOfLine);
+					os.flush();
 					//bw.flush();			
 					String resp = br.readLine();
 					if (!resp.equals("RSHC 0000")) {
@@ -71,20 +72,27 @@ public class ClientCommFactory {
 					}
 					System.out.println("S: " + resp);
 					
+					
 					String clientMessage = "RSHC 0000\n";
 					System.out.print("C: " + clientMessage);
-					bw.write(clientMessage);
-					bw.flush();
+					
+					os.write(clientMessage.getBytes());
+					os.flush();
 					resp = br.readLine();
 					System.out.println("S: " + resp);
 					
 					clientMessage = "CLIENT RESPONSE\n";
 					System.out.print("C: " + clientMessage);
-					bw.write(clientMessage);
-					bw.flush();
+					os.write(clientMessage.getBytes());
+					os.flush();
 					resp = br.readLine();
 					System.out.println("S: " + resp);
-									
+
+					byte[] shutdown = new byte[] {7};
+					os.write(shutdown);
+					os.write(endOfLine);
+					os.flush();
+					
 					S.close();
 				} catch (Exception e) {
 					e.printStackTrace();
