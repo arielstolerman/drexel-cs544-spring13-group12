@@ -40,6 +40,8 @@ public class ServerComm implements Runnable {
 						}
 					} catch (SocketTimeoutException e) {
 						if (shutdown) {
+							//TODO check if in the meanwhile house state is changed
+							// send message to client accordingly
 							socket.close();
 							return;
 						}
