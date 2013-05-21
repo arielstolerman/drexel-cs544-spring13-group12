@@ -33,21 +33,21 @@ public class Action {
 	 * @return the device type.
 	 */
 	public byte deviceType() {
-		return stream[0];
+		return stream[2];
 	}
 	
 	/**
 	 * @return the device number.
 	 */
 	public byte deviceNumber() {
-		return stream[1];
+		return stream[3];
 	}
 	
 	/**
 	 * @return the opcode (byte) of this action.
 	 */
 	public byte opcode() {
-		return stream[2];
+		return stream[4];
 	}
 	
 	/**

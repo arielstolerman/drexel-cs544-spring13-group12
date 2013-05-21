@@ -3,10 +3,13 @@ package protocol;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
 
 import devices.House;
 
 public class ConnectionListener implements Runnable {
+	private List<ServerComm> sList = new ArrayList<ServerComm>();
 	private boolean shutdown = false;
 	private House house;
 	
@@ -30,7 +33,9 @@ public class ConnectionListener implements Runnable {
 						}
 					}
 				}
-				Thread T = new Thread(new ServerComm(commSocket, new DFA(house)));
+				ServerComm serverComm = new ServerComm(this, commSocket, new DFA(house, this));
+				sList.add(serverComm);
+				Thread T = new Thread(serverComm);
 				T.start();
 			}
 		} catch (Exception e) {
@@ -40,5 +45,18 @@ public class ConnectionListener implements Runnable {
 	
 	public void shutdown() {
 		shutdown = true;
+	}
+
+	public void remove(ServerComm serverComm) {
+		this.sList.remove(serverComm);		
+	}
+
+	public void broadcast(byte[] b, ServerComm serverComm) {
+		for (ServerComm s : sList) {
+			if (s == serverComm) continue;
+			
+			s.appendToSendList(b);
+		}
+		
 	}
 }

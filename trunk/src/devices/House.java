@@ -40,16 +40,25 @@ public class House {
 				.doAction(action);
 	}
 	
-	public String getINIT() {
-		StringBuffer sb = new StringBuffer(1000);
-		for (List<Device> L : devices) {
-			sb.append(L.size());
+	public byte[] getINIT() {
+		List<Byte> B = new ArrayList<Byte>();
+		B.add((byte)3);
+		for (List<Device> L : devices) {			
+			B.add((byte)L.size());
 			for (Device D : L) {
-				sb.append(D.toString());
+				B.addAll(Util.toByteArray(D.getBytes()));
 			}
 		}
-		return sb.toString();
+		B.addAll(Util.toByteArray("\n".getBytes()));
+		
+		byte b[] = new byte[B.size()];
+		for (int i = 0; i < b.length; i++) {
+			b[i] = B.get(i);
+		}
+		
+		return b;
 	}
+	
 }
 
 

@@ -35,6 +35,8 @@ public abstract class Device {
 	 */
 	public abstract void doAction(Action action) throws Exception;
 	
+	public abstract byte[] getBytes();
+	
 	// common
 	
 	/**

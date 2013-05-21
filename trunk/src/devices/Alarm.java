@@ -92,6 +92,10 @@ public class Alarm extends Device {
 	public String toString() {
 		return Util.bufferLeft(' ', 16, name) + state.ordinal();
 	}
+	
+	public byte[] getBytes() {
+		return Util.cat(Util.bufferLeft(' ', 16, name).getBytes(), (byte)state.ordinal());
+	}
 }
 
 /**
