@@ -74,8 +74,9 @@ public class DESAuth {
 	}
 	
 	/**
-	 * Generates a response from the given challenge and key - DES encryption of
-	 * the input challenge using the given key. Returns the response.
+	 * Generates a response from the given challenge and password - DES
+	 * encryption of the input challenge using the given password.
+	 * Returns the response.
 	 */
 	private static byte[] genResponse(byte[] challenge, String password) {
 		try {
@@ -94,6 +95,11 @@ public class DESAuth {
 		}
 	}
 	
+	/**
+	 * Generates a response message in the form <code>username;response</code>
+	 * where the response is the DES encryption of the given challenge with the
+	 * given password.
+	 */
 	public static byte[] genUserSemiResponse(String username, String password, byte[] challenge) {
 		byte[] user = username.getBytes();
 		byte[] response = genResponse(challenge, password);
@@ -114,6 +120,11 @@ public class DESAuth {
 		return ans;
 	}
 
+	/**
+	 * Receives a user response in the form <code>username;response</code> and
+	 * checks if the response matches the challenge for the given username.
+	 * Returns true if and only if the response is correct for that user.
+	 */
 	public static boolean checkResponse(byte[] challenge,
 			byte[] userSemiResponse) {
 		String[] split = new String(userSemiResponse).split(";");
