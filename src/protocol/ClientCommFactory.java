@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class ClientCommFactory {
 	public static ClientComm createTest(int i) {
@@ -53,10 +54,16 @@ public class ClientCommFactory {
 					BufferedReader br = new BufferedReader(new InputStreamReader(S.getInputStream()));
 					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(S.getOutputStream()));
 					
-					String clientMessage = "0\n";
-					System.out.print("C: " + clientMessage);
-					bw.write(clientMessage);
-					bw.flush();			
+					byte[] endOfLine = "\n".getBytes();
+					byte[] poke = new byte[]{0};
+					
+					//String clientMessage = "0\n";
+					System.out.print("C: " + Arrays.toString(poke));//clientMessage);
+					//bw.write(clientMessage);
+					S.getOutputStream().write(poke);
+					S.getOutputStream().write(endOfLine);
+					S.getOutputStream().flush();
+					//bw.flush();			
 					String resp = br.readLine();
 					if (!resp.equals("RSHC 0000")) {
 						Exception e = new Exception("Response was: " + resp + " expected: " + "RSHC 0000");
@@ -64,7 +71,7 @@ public class ClientCommFactory {
 					}
 					System.out.println("S: " + resp);
 					
-					clientMessage = "RSHC 0000\n";
+					String clientMessage = "RSHC 0000\n";
 					System.out.print("C: " + clientMessage);
 					bw.write(clientMessage);
 					bw.flush();

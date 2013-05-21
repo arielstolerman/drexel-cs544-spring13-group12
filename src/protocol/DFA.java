@@ -27,7 +27,8 @@ public class DFA {
 
 
 	private Message processIdle(Message M) {
-		if ("0".equals(M.toString())) {
+		byte[] b = M.toString().getBytes(); 
+		if (b.length == 1 && b[0] == 0) {
 			this.state = ProtocolState.S_AWAITS_VERSION;
 			return Message.SERVER_VERSION;
 		} else {
