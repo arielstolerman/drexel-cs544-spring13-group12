@@ -224,9 +224,9 @@ public class Message {
 	 * @param sender
 	 */
 	public void prettyPrint(String sender) {
-		String prefix = sender + " > ";
+		String prefix = Util.time() + " " + sender + " > ";
 		String indent = indent(prefix);
-		String raw = toString().replaceAll("\n", "\\n").replaceAll("\r", "\\r");
+		String raw = toPrettyString().replaceAll("\n", "\\n").replaceAll("\r", "\\r");
 		String bytecode = toHexString();
 		System.out.println(indentedWrapped(
 				prefix + "raw:  ", raw, WRAP_SIZE));

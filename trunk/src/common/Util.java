@@ -1,8 +1,7 @@
 package common;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Util {
 
@@ -56,36 +55,34 @@ public class Util {
 		return b;
 	}
 	
-//	public static void print(String sender, byte[] stream, String streamStr) {
-//		String prefix = sender + " > ";
-//		String indent = indent(prefix);
-//		int wrap = 96;
-//		String raw = new String(stream).replaceAll("\n", "\\n")
-//				.replaceAll("\r", "\\r");
-//		System.out.println(indentedWrapped(prefix + "raw:  ", raw, wrap));
-//		System.out.println(indentedWrapped(indent + "byte: ", streamStr, wrap));
-//		System.out.println();
-//	}
-//	
-//	private static String indent(String s) {
-//		String res = "";
-//		int size = s.length();
-//		for (int i = 0; i < size; i++)
-//			res += " ";
-//		return res;
-//	}
-//	
-//	private static String indentedWrapped(String prefix, String s, int wrap) {
-//		String res = prefix;
-//		String ind = indent(prefix);
-//		int lim = s.length() / wrap;
-//		for (int i = 0; i < lim; i++) {
-//			res += s.substring(0, wrap) + "\n" + ind;
-//			s = s.substring(wrap, s.length());
-//		}
-//		res += s;
-//		return res;
-//	}
+	// date and time
+	
+	private static SimpleDateFormat tf = new SimpleDateFormat("HH:mm:ss");
+	private static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+	private static Calendar cal;
+
+	/**
+	 * @return The current date.
+	 */
+	public static String date() {
+		cal = Calendar.getInstance();
+		return df.format(cal.getTime());
+	}
+	
+	/**
+	 * @return The current time.
+	 */
+	public static String time() {
+		cal = Calendar.getInstance();
+		return tf.format(cal.getTime());
+	}
+	
+	/**
+	 * @return The current date and time.
+	 */
+	public static String dateTime() {
+		return date() + " " + time();
+	}
 }
 
 
