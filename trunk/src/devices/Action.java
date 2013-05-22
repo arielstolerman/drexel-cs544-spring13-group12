@@ -63,15 +63,15 @@ public class Action {
 	 * parameter exists at that index.
 	 */
 	public byte getParam(int index) {
-		if (index < 0 || stream.length < index + 4)
+		if (index < 0 || stream.length < index + 5)
 			return ILLEGAL_PARAM;
-		return stream[index + 1];
+		return stream[index + 5];
 	}
 	
 	/**
 	 * @return number of parameters in the action.
 	 */
 	public int numParams() {
-		return stream.length - 3;
+		return stream.length - 5;
 	}
 }

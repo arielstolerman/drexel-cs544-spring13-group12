@@ -28,11 +28,17 @@ public class House {
 		devices.add(new ArrayList<Device>());
 	}
 	
-	public Device addDevice(Device d) {
-		List<Device> l = devices.get(d.deviceType());
-		d.setDeviceNumber(l.size());
-		l.add(d);
-		return d;
+	/**
+	 * Adds the given device to the list of devices of the same type, with the
+	 * index of the last element as the device number.
+	 * @param device the device to add.
+	 * @return the added device.
+	 */
+	public Device addDevice(Device device) {
+		List<Device> l = devices.get(device.deviceType());
+		device.setDeviceNumber(l.size());
+		l.add(device);
+		return device;
 	}
 	
 	/**
@@ -44,6 +50,9 @@ public class House {
 				.doAction(action);
 	}
 	
+	/**
+	 * @return the init message for this house.
+	 */
 	public byte[] getInit() {
 		List<Byte> bytes = new ArrayList<Byte>();
 		bytes.add((byte) Message.OP_INIT);
@@ -61,6 +70,38 @@ public class House {
 		}
 		
 		return bytesArr;
+	}
+	
+	private static final String THIN_SEP =
+			"----------------------------------------" +
+			"----------------------------------------";
+	private static final String THICK_SEP =
+			"========================================" +
+			"========================================";
+	
+	public void prettyPrint() {
+		String ind = "       ";
+		String pre;
+		int devTypes = devices.size();
+		List<Device> devs;
+		
+		System.out.println(THICK_SEP);
+		System.out.println("House current state:");
+		System.out.println(String.format("%-7s%-4s %-16s %-10s %s",
+				"Type", "Num", "Name", "State", "Params"));
+		
+		for (int devType = 0; devType < devTypes; devType++) {
+			System.out.println(THIN_SEP);
+			pre = String.format("%-7s",DeviceType.typeFromCode((byte) devType));
+			devs = devices.get(devType);
+			for (Device d: devs) {
+				System.out.println(
+						(pre == null ? ind : pre) +
+						d.toPrettyString());
+				pre = null;
+			}
+		}	
+		System.out.println(THICK_SEP);
 	}
 	
 }

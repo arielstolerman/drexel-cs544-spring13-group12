@@ -98,6 +98,11 @@ public class Alarm extends Device {
 	public byte[] getBytes() {
 		return Util.cat(Util.bufferLeft(' ', 16, name).getBytes(), (byte)state.ordinal());
 	}
+	
+	public String toPrettyString() {
+		return String.format("#%03d %-16s %-10s",
+				deviceNumber, name, state);
+	}
 }
 
 /**

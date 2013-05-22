@@ -99,6 +99,29 @@ public class ClientCommFactory {
 						throw new Exception("authentication error! exiting");
 					}
 					
+					// do action - set volume of TV #2 to 78 with seq. #6A
+					outMsg = new Message(new byte[]{
+							Message.OP_ACTION,
+							(byte) 0x6A,
+							(byte) 0x03,
+							(byte) 0x02,
+							(byte) 0x03,
+							(byte) 0x4E
+					});
+					outMsg.prettyPrint("C");
+					outMsg.write(bw);
+					
+					// get confirm / deny from server
+					inBuff = br.readLine();
+					inMsg = Message.fromHexString(inBuff);
+					inMsg.prettyPrint("S");
+					if (inMsg.opcode() == Message.OP_CONFIRM) {
+						System.out.println("action confirmed");
+					}
+					else {
+						System.out.println("action denied");
+					}
+					
 					// shutdown
 					outMsg = Message.SHUTDOWN;
 					outMsg.prettyPrint("C");
