@@ -3,6 +3,8 @@ package devices;
 import java.util.ArrayList;
 import java.util.List;
 
+import common.Util;
+
 public class House {
 	
 	// fields
@@ -40,7 +42,7 @@ public class House {
 				.doAction(action);
 	}
 	
-	public byte[] getINIT() {
+	public byte[] getInit() {
 		List<Byte> B = new ArrayList<Byte>();
 		B.add((byte)3);
 		for (List<Device> L : devices) {			

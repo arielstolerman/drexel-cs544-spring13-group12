@@ -1,5 +1,7 @@
 package devices;
 
+import common.Util;
+
 public class Alarm extends Device {
 	
 	// legal opcodes

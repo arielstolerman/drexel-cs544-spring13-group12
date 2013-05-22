@@ -1,5 +1,7 @@
 package devices;
 
+import common.Util;
+
 public class AirCon extends Device {
 	
 	// legal opcodes
