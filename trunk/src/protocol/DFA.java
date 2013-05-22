@@ -40,8 +40,9 @@ public class DFA {
 			case CONNECTED: {
 				return processConnected(message);
 			}
+			default:
+				return Message.ERROR_GENERAL;
 		}
-		return Message.ERROR_GENERAL;
 	}
 
 

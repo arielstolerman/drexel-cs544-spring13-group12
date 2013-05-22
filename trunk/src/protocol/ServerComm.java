@@ -2,17 +2,16 @@ package protocol;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class ServerComm implements Runnable {
+	
 	private ConnectionListener connectionListener;
 	private boolean shutdown = false;
 	private Socket socket;
 	private DFA dfa;
 	
-	//private List<byte[]> sendList = new ArrayList<byte[]>();
 	private ConcurrentLinkedQueue<Message> sendQueue =
 			new ConcurrentLinkedQueue<>();
 
@@ -25,14 +24,14 @@ public class ServerComm implements Runnable {
 	
 	public void run() {
 		try {
-			OutputStream os = this.socket.getOutputStream();
-			InputStream  is = this.socket.getInputStream();
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+					socket.getOutputStream()));
 			String inBuff;
 			Message inMsg, outMsg;
 			
-			socket.setSoTimeout(1000);  //throw SocketTimeoutException every 1s if nothing to read.  Use this to check for shutdown.
+			socket.setSoTimeout(Server.LISTEN_TIMEOUT_MS);  //throw SocketTimeoutException every 1s if nothing to read.  Use this to check for shutdown.
 			while (true) {
 				inBuff = null;
 				inMsg = null;
