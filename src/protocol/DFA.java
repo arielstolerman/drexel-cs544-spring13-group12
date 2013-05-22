@@ -19,7 +19,7 @@ public class DFA {
 		this.serverComm = serverComm;
 	}
 	
-	public Message process(Message message) {
+	public Message serverProcess(Message message) {
 		switch (state) {
 			case IDLE: {
 				return processIdle(message);
@@ -52,9 +52,9 @@ public class DFA {
 		if ("RSHC 0000".equals(M.toString())) {
 			this.state = ProtocolState.S_AWAITS_RESPONSE;
 			challenge = DESAuth.genChallenge();
-			return Message.genWithNewline(challenge);
+			return new Message(challenge);
 		}
-		return Message.ERROR_GENERAL;
+		return Message.ERROR_VERSION;
 	}
 	
 	private Message processSAwaitsResponse(Message M) {
@@ -62,7 +62,7 @@ public class DFA {
 			this.state = ProtocolState.CONNECTED;
 			return Message.createINIT(this.house);
 		}
-		return Message.ERROR_GENERAL;
+		return Message.ERROR_AUTH;
 	}
 	
 	private Message processConnected(Message M) {
