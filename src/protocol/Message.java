@@ -31,7 +31,7 @@ public class Message {
 	public static final Message POKE = new Message(OP_POKE);
 	// server version
 	public static final Message SERVER_VERSION =
-			new Message(("RSHC " + Server.version).getBytes(), OP_VERSION);
+			new Message(("RSHC " + Server.VERSION).getBytes(), OP_VERSION);
 	// errors
 	public static final Message ERROR_GENERAL =
 			createError("General error");

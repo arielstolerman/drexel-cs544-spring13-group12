@@ -25,14 +25,14 @@ public class ClientCommFactory {
 		return new ClientComm() {
 			public void run() {
 				try {
-					Socket S = new Socket("127.0.0.1", 7070);
+					Socket socket = new Socket("127.0.0.1", 7070);
 					System.out.println("client connected.");
-					BufferedReader br = new BufferedReader(new InputStreamReader(S.getInputStream()));
-					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(S.getOutputStream()));
+					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 					bw.write("ping\n");
 					bw.flush();					
 					System.out.println("response: " + br.readLine());
-					S.close();
+					socket.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -45,11 +45,13 @@ public class ClientCommFactory {
 		return new ClientComm() {
 			public void run() {
 				try {
-					Socket S = new Socket("127.0.0.1", 7070);
+					Socket socket = Server.getRSHCSocket();
 					System.out.println("client connected.");
-					BufferedReader br = new BufferedReader(new InputStreamReader(S.getInputStream()));
-					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(S.getOutputStream()));
-					
+					BufferedReader br = new BufferedReader(
+							new InputStreamReader(socket.getInputStream()));
+					BufferedWriter bw = new BufferedWriter(
+							new OutputStreamWriter(socket.getOutputStream()));
+
 					String inBuff;
 					Message inMsg, outMsg;
 					
@@ -63,7 +65,7 @@ public class ClientCommFactory {
 					inMsg = Message.fromHexString(inBuff);
 					inMsg.prettyPrint("S");
 					if (!inMsg.content().equals("RSHC 0000")) {
-						S.close();
+						socket.close();
 						throw new Exception("Response was: " + inMsg.content() +
 								" expected: 'RSHC 0000'");
 					}
@@ -91,7 +93,7 @@ public class ClientCommFactory {
 					inMsg = Message.fromHexString(inBuff);
 					inMsg.prettyPrint("S");
 					if (inMsg.opcode() == Message.OP_ERROR) {
-						S.close();
+						socket.close();
 						throw new Exception("authentication error! exiting");
 					}
 					
@@ -100,7 +102,7 @@ public class ClientCommFactory {
 					outMsg.prettyPrint("C");
 					outMsg.write(bw);
 					
-					S.close();
+					socket.close();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
