@@ -11,7 +11,8 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
-import devices.Util;
+import common.Util;
+
 
 public class ServerComm implements Runnable {
 	private ConnectionListener connectionListener;

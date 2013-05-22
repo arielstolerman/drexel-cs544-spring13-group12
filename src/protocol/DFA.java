@@ -38,8 +38,8 @@ public class DFA {
 	}
 
 
-	private Message processIdle(Message M) {
-		byte[] b = M.bytes(); 
+	private Message processIdle(Message msg) {
+		byte[] b = msg.bytes(); 
 		if (b.length == 1 && b[0] == 0) {
 			this.state = ProtocolState.S_AWAITS_VERSION;
 			return Message.SERVER_VERSION;
@@ -60,7 +60,7 @@ public class DFA {
 	private Message processSAwaitsResponse(Message M) {
 		if (DESAuth.checkResponse(challenge, M.bytes())) {
 			this.state = ProtocolState.CONNECTED;
-			return Message.createINIT(this.house);
+			return Message.createInit(this.house);
 		}
 		return Message.ERROR_AUTH;
 	}
@@ -117,22 +117,6 @@ enum ProtocolState {
 	}
 }
 
-enum ProtocolMessage {
-	
-	POKE(""),
-	;
-	
-	private String desc;
-	
-	private ProtocolMessage(String desc) {
-		this.desc = desc;
-	}
-	
-	@Override
-	public String toString() {
-		return desc;
-	}
-}
 
 
 

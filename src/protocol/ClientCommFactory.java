@@ -8,7 +8,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Arrays;
 
-import devices.Util;
+import common.Util;
+
 
 public class ClientCommFactory {
 	public static ClientComm createTest(int i) {

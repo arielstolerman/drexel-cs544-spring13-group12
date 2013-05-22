@@ -7,11 +7,10 @@ import java.io.*;
 import java.math.BigInteger;
 
 import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.*;
-import javax.crypto.spec.SecretKeySpec;
 
-import devices.Util;
+import common.Util;
+
 
 /**
  * Class for DES authentication procedures.
