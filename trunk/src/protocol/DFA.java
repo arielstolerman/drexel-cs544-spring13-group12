@@ -9,10 +9,17 @@ public class DFA {
 	private ConnectionListener connectionListener;
 	private ServerComm serverComm;
 	private byte[] challenge;
+	private String version = "RSHC 0000";
 	
 	public DFA(House house, ConnectionListener cl) {
 		this.connectionListener = cl;
 		this.house = house;
+	}
+	
+	public DFA(House house, ConnectionListener cl, String version) {
+		this.connectionListener = cl;
+		this.house = house;
+		this.version = version;
 	}
 	
 	public void setServerComm(ServerComm serverComm) {
@@ -38,9 +45,8 @@ public class DFA {
 	}
 
 
-	private Message processIdle(Message msg) {
-		byte[] b = msg.bytes(); 
-		if (b.length == 1 && b[0] == 0) {
+	private Message processIdle(Message inMsg) {
+		if (inMsg.length() == 1 && inMsg.opcode() == Message.OP_POKE) {
 			this.state = ProtocolState.S_AWAITS_VERSION;
 			return Message.SERVER_VERSION;
 		} else {
@@ -48,33 +54,32 @@ public class DFA {
 		}
 	}
 	
-	private Message processSAwaitsVersion(Message M) {
-		if ("RSHC 0000".equals(M.toString())) {
+	private Message processSAwaitsVersion(Message inMsg) {
+		if (inMsg.content().equals(version)) {
 			this.state = ProtocolState.S_AWAITS_RESPONSE;
 			challenge = DESAuth.genChallenge();
-			return new Message(challenge);
+			return new Message(challenge, Message.OP_CHALLENGE);
 		}
 		return Message.ERROR_VERSION;
 	}
 	
-	private Message processSAwaitsResponse(Message M) {
-		if (DESAuth.checkResponse(challenge, M.bytes())) {
+	private Message processSAwaitsResponse(Message inMsg) {
+		if (DESAuth.checkResponse(challenge, inMsg.contentBytes())) {
 			this.state = ProtocolState.CONNECTED;
 			return Message.createInit(this.house);
 		}
 		return Message.ERROR_AUTH;
 	}
 	
-	private Message processConnected(Message M) {
+	private Message processConnected(Message inMsg) {
 		try {
-			byte[] b = M.bytes();
-			if (b.length == 1 && b[0] == 7) {
+			if (inMsg.length() == 1 && inMsg.opcode() == Message.OP_SHUTDOWN) {
 				return Message.SHUTDOWN;
-			} else if (b.length > 0 && b[0] == 4) {
-				Action action = new Action(b);
+			} else if (inMsg.length() > 0 && inMsg.opcode() == Message.OP_ACTION) {
+				Action action = new Action(inMsg);
 				house.doAction(action);
-				broadcastStateChange(b);
-				return Message.createConfirm(b[1]);
+				broadcastStateChange(inMsg);
+				return Message.createConfirm(action.sequenceNumber());
 			} else {
 				return Message.ERROR_GENERAL;
 			}
@@ -83,15 +88,9 @@ public class DFA {
 		}
 	}
 
-	private void broadcastStateChange(byte[] b) {
-		byte b1[] = new byte[b.length-1];
-		b1[0] = 6;      //message type
-		b1[1] = b[2];   //device type
-		b1[2] = b[3];   //device num
-		for (int i = 4; i < b.length; i++) { //action
-			b1[i-i] = b[i];
-		}
-		this.connectionListener.broadcast(b1, serverComm);		
+	private void broadcastStateChange(Message actionMsg) {
+		Message updateMsg = Message.createUpdate(actionMsg);
+		this.connectionListener.broadcast(updateMsg, serverComm);		
 	}
 	
 }

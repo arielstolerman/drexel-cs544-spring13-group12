@@ -51,11 +51,10 @@ public class ConnectionListener implements Runnable {
 		this.sList.remove(serverComm);		
 	}
 
-	public void broadcast(byte[] b, ServerComm serverComm) {
+	public void broadcast(Message updateMsg, ServerComm serverComm) {
 		for (ServerComm s : sList) {
 			if (s == serverComm) continue;
-			
-			s.appendToSendList(b);
+			s.appendToSendQueue(updateMsg);
 		}
 		
 	}

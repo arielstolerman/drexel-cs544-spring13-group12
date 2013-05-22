@@ -3,6 +3,8 @@ package devices;
 import java.util.ArrayList;
 import java.util.List;
 
+import protocol.Message;
+
 import common.Util;
 
 public class House {
@@ -43,30 +45,22 @@ public class House {
 	}
 	
 	public byte[] getInit() {
-		List<Byte> B = new ArrayList<Byte>();
-		B.add((byte)3);
-		for (List<Device> L : devices) {			
-			B.add((byte)L.size());
-			for (Device D : L) {
-				B.addAll(Util.toByteArray(D.getBytes()));
+		List<Byte> bytes = new ArrayList<Byte>();
+		bytes.add((byte) Message.OP_INIT);
+		for (List<Device> deviceList : devices) {			
+			bytes.add((byte) deviceList.size());
+			for (Device device : deviceList) {
+				bytes.addAll(Util.toByteArray(device.getBytes()));
 			}
 		}
-		B.addAll(Util.toByteArray("\n".getBytes()));
+		bytes.addAll(Util.toByteArray("\n".getBytes()));
 		
-		byte b[] = new byte[B.size()];
-		for (int i = 0; i < b.length; i++) {
-			b[i] = B.get(i);
+		byte bytesArr[] = new byte[bytes.size()];
+		for (int i = 0; i < bytesArr.length; i++) {
+			bytesArr[i] = bytes.get(i);
 		}
 		
-		return b;
+		return bytesArr;
 	}
 	
 }
-
-
-
-
-
-
-
-
