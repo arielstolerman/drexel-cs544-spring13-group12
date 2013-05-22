@@ -8,6 +8,7 @@ public class DFA {
 	private House house;
 	private ConnectionListener connectionListener;
 	private ServerComm serverComm;
+	private byte[] challenge;
 	
 	public DFA(House house, ConnectionListener cl) {
 		this.connectionListener = cl;
@@ -50,13 +51,14 @@ public class DFA {
 	private Message processSAwaitsVersion(Message M) {
 		if ("RSHC 0000".equals(M.toString())) {
 			this.state = ProtocolState.S_AWAITS_RESPONSE;
-			return Message.createChallenge();
+			challenge = DESAuth.genChallenge();
+			return Message.genWithNewline(challenge);
 		}
 		return Message.ERROR_GENERAL;
 	}
 	
 	private Message processSAwaitsResponse(Message M) {
-		if ("CLIENT RESPONSE".equals(M.toString())) {
+		if (DESAuth.checkResponse(challenge, M.bytes())) {
 			this.state = ProtocolState.CONNECTED;
 			return Message.createINIT(this.house);
 		}

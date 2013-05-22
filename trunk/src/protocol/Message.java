@@ -36,6 +36,18 @@ public class Message {
 		return new Message(m3);
 	}
 	
+	public static Message genWithNewline(byte[] stream) {
+		byte[] n = "\n".getBytes();
+		int len = stream.length + n.length;
+		byte[] msg = Arrays.copyOf(stream, len);
+		int tmp = stream.length;
+		for (int i = 0; i < n.length; i++) {
+			msg[tmp] = n[i];
+			tmp++;
+		}
+		return new Message(msg);
+	}
+	
 	
 	public Message(byte[] b) {
 		this.b = b;
@@ -52,11 +64,7 @@ public class Message {
 	public String toString() {
 		return new String(b);
 	}
-
-	public static Message createChallenge() {
-		return new Message("SERVER CHALLENGE\n");
-	}
-
+	
 	public static Message createINIT(House H) {
 		return new Message(H.getINIT());
 	}
