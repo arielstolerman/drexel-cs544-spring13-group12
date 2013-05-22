@@ -2,6 +2,8 @@ package protocol;
 
 import java.net.Socket;
 
+import common.Util;
+
 import devices.RandomHouseFactory;
 
 public class Server {
@@ -21,9 +23,10 @@ public class Server {
 	 */
 	public static void main(String[] args) throws Exception {
 		RandomHouseFactory rhf = new RandomHouseFactory(HOUSE_GEN_SEED);
-		connectionListener = new Thread(new ConnectionListener(rhf.createHouse()));
+		connectionListener = new Thread(new ConnectionListener(
+				rhf.createHouse()));
 		connectionListener.start();
-		System.out.println("Server started");
+		System.out.println(Util.dateTime() + " -- Server started\n");
 	}
 	
 	/**

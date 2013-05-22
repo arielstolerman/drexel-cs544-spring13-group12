@@ -3,6 +3,8 @@ package protocol;
 import java.io.*;
 import java.net.*;
 
+import common.Util;
+
 public class ClientCommFactory {
 	public static ClientComm createTest(int i) {
 		switch (i) {
@@ -25,8 +27,8 @@ public class ClientCommFactory {
 		return new ClientComm() {
 			public void run() {
 				try {
-					Socket socket = new Socket("127.0.0.1", 7070);
-					System.out.println("client connected.");
+					Socket socket = Server.getRSHCSocket();
+					System.out.println(Util.dateTime() + " -- Client connected\n");
 					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 					bw.write("ping\n");
@@ -46,7 +48,7 @@ public class ClientCommFactory {
 			public void run() {
 				try {
 					Socket socket = Server.getRSHCSocket();
-					System.out.println("client connected.");
+					System.out.println(Util.dateTime() + " -- Client connected\n");
 					BufferedReader br = new BufferedReader(
 							new InputStreamReader(socket.getInputStream()));
 					BufferedWriter bw = new BufferedWriter(
