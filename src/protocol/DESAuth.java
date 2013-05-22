@@ -1,10 +1,8 @@
 package protocol;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.KeySpec;
 import java.util.*;
 import java.io.*;
-import java.math.BigInteger;
 
 import javax.crypto.*;
 import javax.crypto.spec.*;
@@ -152,6 +150,7 @@ public class DESAuth {
 	 * For initial population of the DES storage.
 	 * @throws NoSuchAlgorithmException 
 	 */
+	@SuppressWarnings("unused")
 	private static void populateDESStroe() throws Exception {
 		// generate user-password pairs
 		String[][] userPassPairs = new String[][]{
