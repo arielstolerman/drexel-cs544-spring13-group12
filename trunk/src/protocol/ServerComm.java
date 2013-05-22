@@ -1,17 +1,8 @@
 package protocol;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
-
-import common.Util;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 
 public class ServerComm implements Runnable {
@@ -35,30 +26,27 @@ public class ServerComm implements Runnable {
 			InputStream  is = this.socket.getInputStream();
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
-			byte[] outBuff, inBuff;
-			String outBuffStr, inBuffStr;
+			String inBuff;
+			Message inMsg, outMsg;
 			
 			socket.setSoTimeout(1000);  //throw SocketTimeoutException every 1s if nothing to read.  Use this to check for shutdown.
 			while (true) {
-				inBuffStr = null;
 				inBuff = null;
-				while (inBuffStr == null) {
+				inMsg = null;
+				while (inBuff == null) {
 					try {
-						inBuffStr = br.readLine();
-						if (inBuffStr == null) {
+						inBuff = br.readLine();
+						if (inBuff == null) {
 							//client closed connection.
 							socket.close();
 							return;
 						}
-						inBuff = Util.toByteStream(inBuffStr);
+						inMsg = Message.fromHexString(inBuff);
 					} catch (SocketTimeoutException e) {
 						while (!sendList.isEmpty()) {
-							outBuff = sendList.remove(0);
-							outBuffStr = Util.toHexString(outBuff);
-							Util.print("S", outBuff, outBuffStr);
-							outBuffStr += "\n";
-							bw.write(outBuffStr);
-							bw.flush();
+							outMsg = new Message(sendList.remove(0));
+							outMsg.prettyPrint("S");
+							outMsg.write(bw);
 						}
 						if (shutdown) {
 							socket.close();
@@ -66,22 +54,18 @@ public class ServerComm implements Runnable {
 						}
 					}
 				}
-				Util.print("C", inBuff, inBuffStr);
-				Message msg = new Message(inBuff);
-				Message response = dfa.serverProcess(msg);
+				inMsg.prettyPrint("C");
+				outMsg = dfa.serverProcess(inMsg);
 				
-				if (response == Message.SHUTDOWN) {
+				// check for shutdown
+				if (outMsg.opcode() == Message.OP_SHUTDOWN) {
 					this.shutdown = true;
 					connectionListener.remove(this);
 					socket.close();
 					return;
 				}
-				outBuff = response.bytes();
-				outBuffStr = response.toHexString();
-				Util.print("S", outBuff, outBuffStr);
-				outBuffStr += "\n";
-				bw.write(outBuffStr);
-				bw.flush();
+				outMsg.prettyPrint("S");
+				outMsg.write(bw);
 			}
 		} catch (Exception e) {
 			connectionListener.remove(this);

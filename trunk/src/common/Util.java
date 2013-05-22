@@ -56,36 +56,36 @@ public class Util {
 		return b;
 	}
 	
-	public static void print(String sender, byte[] stream, String streamStr) {
-		String prefix = sender + " > ";
-		String indent = indent(prefix);
-		int wrap = 96;
-		String raw = new String(stream).replaceAll("\n", "\\n")
-				.replaceAll("\r", "\\r");
-		System.out.println(indentedWrapped(prefix + "raw:  ", raw, wrap));
-		System.out.println(indentedWrapped(indent + "byte: ", streamStr, wrap));
-		System.out.println();
-	}
-	
-	private static String indent(String s) {
-		String res = "";
-		int size = s.length();
-		for (int i = 0; i < size; i++)
-			res += " ";
-		return res;
-	}
-	
-	private static String indentedWrapped(String prefix, String s, int wrap) {
-		String res = prefix;
-		String ind = indent(prefix);
-		int lim = s.length() / wrap;
-		for (int i = 0; i < lim; i++) {
-			res += s.substring(0, wrap) + "\n" + ind;
-			s = s.substring(wrap, s.length());
-		}
-		res += s;
-		return res;
-	}
+//	public static void print(String sender, byte[] stream, String streamStr) {
+//		String prefix = sender + " > ";
+//		String indent = indent(prefix);
+//		int wrap = 96;
+//		String raw = new String(stream).replaceAll("\n", "\\n")
+//				.replaceAll("\r", "\\r");
+//		System.out.println(indentedWrapped(prefix + "raw:  ", raw, wrap));
+//		System.out.println(indentedWrapped(indent + "byte: ", streamStr, wrap));
+//		System.out.println();
+//	}
+//	
+//	private static String indent(String s) {
+//		String res = "";
+//		int size = s.length();
+//		for (int i = 0; i < size; i++)
+//			res += " ";
+//		return res;
+//	}
+//	
+//	private static String indentedWrapped(String prefix, String s, int wrap) {
+//		String res = prefix;
+//		String ind = indent(prefix);
+//		int lim = s.length() / wrap;
+//		for (int i = 0; i < lim; i++) {
+//			res += s.substring(0, wrap) + "\n" + ind;
+//			s = s.substring(wrap, s.length());
+//		}
+//		res += s;
+//		return res;
+//	}
 }
 
 
