@@ -130,7 +130,29 @@ public class Message {
 		return new Message(Util.toByteStream(hexStr));
 	}
 	
+	/**
+	 * @param actionMsg the action message to generate an update message from.
+	 * @return an update message corresponding to the given action message. To
+	 * be used when an action is performed to a client request, and an update
+	 * should be sent to all other clients.
+	 */
+	public static Message createUpdate(Message actionMsg) {
+		byte[] actionStream = actionMsg.bytes;
+		byte[] updateStream = new byte[actionStream.length - 1];
+		updateStream[0] = OP_UPDATE;
+		for (int i = 2; i < actionStream.length; i++)
+			updateStream[i - 1] = actionStream[i];
+		return new Message(updateStream);
+	}
+	
 	// getters
+	
+	/**
+	 * @return number of bytes in the message stream.
+	 */
+	public int length() {
+		return bytes.length;
+	}
 	
 	/**
 	 * @return the opcode of the message.
@@ -210,7 +232,6 @@ public class Message {
 				prefix + "raw:  ", raw, WRAP_SIZE));
 		System.out.println(indentedWrapped(
 				indent + "byte: ", bytecode, WRAP_SIZE));
-		System.out.println();
 	}
 	
 	// utility methods

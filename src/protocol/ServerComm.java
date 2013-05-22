@@ -3,6 +3,7 @@ package protocol;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 public class ServerComm implements Runnable {
@@ -11,7 +12,9 @@ public class ServerComm implements Runnable {
 	private Socket socket;
 	private DFA dfa;
 	
-	private List<byte[]> sendList = new ArrayList<byte[]>();
+	//private List<byte[]> sendList = new ArrayList<byte[]>();
+	private ConcurrentLinkedQueue<Message> sendQueue =
+			new ConcurrentLinkedQueue<>();
 
 	public ServerComm(ConnectionListener cl, Socket s, DFA dfa) {
 		this.connectionListener = cl;
@@ -43,8 +46,8 @@ public class ServerComm implements Runnable {
 						}
 						inMsg = Message.fromHexString(inBuff);
 					} catch (SocketTimeoutException e) {
-						while (!sendList.isEmpty()) {
-							outMsg = new Message(sendList.remove(0));
+						while (!sendQueue.isEmpty()) {
+							outMsg = sendQueue.remove();
 							outMsg.prettyPrint("S");
 							outMsg.write(bw);
 						}
@@ -77,7 +80,7 @@ public class ServerComm implements Runnable {
 		this.shutdown = true;
 	}
 
-	public void appendToSendList(byte[] b) {
-		sendList.add(b);
+	public void appendToSendQueue(Message msg) {
+		sendQueue.add(msg);
 	}
 }

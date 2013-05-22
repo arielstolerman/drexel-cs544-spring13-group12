@@ -10,5 +10,6 @@ public class Server {
 		RandomHouseFactory rhf = new RandomHouseFactory(2);
 		connectionListener = new Thread(new ConnectionListener(rhf.createHouse()));
 		connectionListener.start();
+		System.out.println("Server started");
 	}
 }

@@ -1,5 +1,7 @@
 package devices;
 
+import protocol.Message;
+
 public class Action {
 	
 	// fields
@@ -14,20 +16,25 @@ public class Action {
 	// constructors
 	
 	/**
-	 * Constructs an action from the given stream of bytes, where the first byte
-	 * is the the device type, second is device number, third is operation code
-	 * and the rest (if any) are the parameters.
-	 * @param stream the stream to construct the action from.
-	 * @throws Exception if the input stream is empty or null.
+	 * Constructs an action from the given action message.
+	 * @param inActionMsg the action message to construct an action from.
+	 * @throws Exception if the input message is not an action message.
 	 */
-	public Action(byte[] stream) throws Exception {
-		if (stream == null || stream.length < 3)
-			throw new Exception("action byte stream must contain at least " +
-					"three bytes");
-		this.stream = stream;
+	public Action(Message inActionMsg) throws Exception {
+		if (inActionMsg.opcode() != Message.OP_ACTION)
+			throw new Exception("Unexpected message when initializing Action: "
+					+ inActionMsg.toPrettyString());
+		this.stream = inActionMsg.bytes();
 	}
 	
 	// methods
+	
+	/**
+	 * @return the action sequence number.
+	 */
+	public byte sequenceNumber() {
+		return stream[1];
+	}
 	
 	/**
 	 * @return the device type.
