@@ -107,6 +107,10 @@ public class AirCon extends Device {
 		return temp;
 	}
 	
+	public String toPrettyString() {
+		return String.format("#%03d %-16s %-10s temp: %d",
+				deviceNumber, name, state, temp);
+	}
 }
 
 /**

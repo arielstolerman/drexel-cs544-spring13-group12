@@ -110,6 +110,11 @@ public class Light extends Device {
 	public byte dimLevel() {
 		return dimLevel;
 	}
+	
+	public String toPrettyString() {
+		return String.format("#%03d %-16s %-10s dim-level: %d",
+				deviceNumber, name, state, dimLevel);
+	}
 }
 
 /**

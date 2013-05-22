@@ -37,6 +37,8 @@ public abstract class Device {
 	
 	public abstract byte[] getBytes();
 	
+	public abstract String toPrettyString();
+	
 	// common
 	
 	/**
@@ -66,7 +68,8 @@ enum DeviceType {
 	SHADE((byte) 1),
 	AIRCON((byte) 2),
 	TV((byte) 3),
-	ALARM((byte) 4);
+	ALARM((byte) 4),
+	NO_SUCH_DEVICE((byte) -1);
 	
 	private DeviceType(byte type) {
 		this.type = type;
@@ -76,5 +79,16 @@ enum DeviceType {
 	
 	public byte type() {
 		return type;
+	}
+	
+	public static DeviceType typeFromCode(byte code) {
+		switch (code) {
+		case 0: return LIGHT;
+		case 1: return SHADE;
+		case 2: return AIRCON;
+		case 3: return TV;
+		case 4: return ALARM;
+		default: return NO_SUCH_DEVICE;
+		}
 	}
 }

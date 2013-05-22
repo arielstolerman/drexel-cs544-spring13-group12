@@ -130,6 +130,11 @@ public class TV extends Device {
 	public byte volume() {
 		return volume;
 	}
+	
+	public String toPrettyString() {
+		return String.format("#%03d %-16s %-10s channel: %-4d volume: %d",
+				deviceNumber, name, state, channel, volume);
+	}
 }
 
 /**

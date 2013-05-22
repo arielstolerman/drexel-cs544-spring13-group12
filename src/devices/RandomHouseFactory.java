@@ -82,4 +82,9 @@ public class RandomHouseFactory implements HouseFactory {
 		
 		return house;
 	}
+	
+	public static void main(String[] args) {
+		House h = new RandomHouseFactory().createHouse();
+		h.prettyPrint();
+	}
 }

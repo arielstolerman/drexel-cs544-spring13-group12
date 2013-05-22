@@ -79,6 +79,7 @@ public class DFA {
 			} else if (inMsg.length() > 0 && inMsg.opcode() == Message.OP_ACTION) {
 				Action action = new Action(inMsg);
 				house.doAction(action);
+				house.prettyPrint();
 				broadcastStateChange(inMsg);
 				return Message.createConfirm(action.sequenceNumber());
 			} else {
