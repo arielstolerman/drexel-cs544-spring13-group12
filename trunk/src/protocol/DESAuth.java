@@ -68,7 +68,10 @@ public class DESAuth {
 	 * Generates a random challenge as a stream of bytes and returns it.
 	 */
 	public static byte[] genChallenge() {
-		byte[] challenge = new byte[CHALLENGE_LENGTH_BYTES];
+		byte[] challenge;
+		do {
+			challenge = new byte[CHALLENGE_LENGTH_BYTES];
+		} while (new String(challenge).contains("\n"));
 		new Random().nextBytes(challenge); 
 		return challenge;
 	}
@@ -133,13 +136,15 @@ public class DESAuth {
 			return false;
 		// extract response
 		String username = split[0];
-		byte[] reponse = Arrays.copyOfRange(userSemiResponse,
+		byte[] response = Arrays.copyOfRange(userSemiResponse,
 				username.getBytes().length + SEMI.length,
 				userSemiResponse.length);
 		// calculate expected response
 		byte[] expectedResponse = genResponse(challenge,
 				DES_STORE.get(username));
-		return Arrays.equals(reponse, expectedResponse);
+//		System.out.println(">>> given:    " + new String(response));
+//		System.out.println(">>> expected: " + new String(expectedResponse));
+		return Arrays.equals(response, expectedResponse);
 	}
 	
 	// initial DES generation

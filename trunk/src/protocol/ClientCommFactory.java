@@ -8,6 +8,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Arrays;
 
+import devices.Util;
+
 public class ClientCommFactory {
 	public static ClientComm createTest(int i) {
 		switch (i) {
@@ -53,45 +55,71 @@ public class ClientCommFactory {
 					Socket S = new Socket("127.0.0.1", 7070);
 					System.out.println("client connected.");
 					BufferedReader br = new BufferedReader(new InputStreamReader(S.getInputStream()));
-					OutputStream os = S.getOutputStream();
+					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(S.getOutputStream()));
 					
-					byte[] endOfLine = "\n".getBytes();
-					byte[] poke = new byte[]{0};
+					byte[] outBuff, inBuff;
+					String outBuffStr, inBuffStr;
 					
-					//String clientMessage = "0\n";
-					System.out.print("C: " + Arrays.toString(poke));//clientMessage);
-					//bw.write(clientMessage);
-					os.write(poke);
-					os.write(endOfLine);
-					os.flush();
-					//bw.flush();			
-					String resp = br.readLine();
-					if (!resp.equals("RSHC 0000")) {
-						Exception e = new Exception("Response was: " + resp + " expected: " + "RSHC 0000");
+					// poke
+					outBuff = new byte[]{0};
+					outBuffStr = Util.toHexString(outBuff);
+					Util.print("C", outBuff, outBuffStr);
+					outBuffStr += "\n";
+					bw.write(outBuffStr);
+					bw.flush();
+					
+					// get version from server
+					inBuffStr = br.readLine();
+					inBuff = Util.toByteStream(inBuffStr);
+					Util.print("S", inBuff, inBuffStr);
+					inBuffStr = new String(inBuff);
+					if (!inBuffStr.equals("RSHC 0000")) {
+						Exception e = new Exception("Response was: "
+								+ inBuffStr + " expected: " + "RSHC 0000");
+						S.close();
 						throw e;
 					}
-					System.out.println("S: " + resp);
 					
+					// send version to server
+					outBuffStr = "RSHC 0000";
+					outBuff = outBuffStr.getBytes();
+					outBuffStr = Util.toHexString(outBuff);
+					Util.print("C", outBuff, outBuffStr);
+					outBuffStr += "\n";
+					bw.write(outBuffStr);
+					bw.flush();
 					
-					String clientMessage = "RSHC 0000\n";
-					System.out.print("C: " + clientMessage);
+					// get challenge from server
+					inBuffStr = br.readLine();
+					inBuff = Util.toByteStream(inBuffStr);
+					Util.print("S", inBuff, inBuffStr);
+					inBuffStr = new String(inBuff);
 					
-					os.write(clientMessage.getBytes());
-					os.flush();
-					resp = br.readLine();
-					System.out.println("S: " + resp);
+					// generate response
+					outBuff = DESAuth.genUserSemiResponse("ariel", "stolerman", inBuff);
+					outBuffStr = Util.toHexString(outBuff);
+					Util.print("C", outBuff, outBuffStr);
+					outBuffStr += "\n";
+					bw.write(outBuffStr);
+					bw.flush();
 					
-					clientMessage = "CLIENT RESPONSE\n";
-					System.out.print("C: " + clientMessage);
-					os.write(clientMessage.getBytes());
-					os.flush();
-					resp = br.readLine();
-					System.out.println("S: " + resp);
-
-					byte[] shutdown = new byte[] {7};
-					os.write(shutdown);
-					os.write(endOfLine);
-					os.flush();
+					// get init from server or failure
+					inBuffStr = br.readLine();
+					inBuff = Util.toByteStream(inBuffStr);
+					Util.print("S", inBuff, inBuffStr);
+					inBuffStr = new String(inBuff);
+					if (inBuff[0] == 1) {
+						S.close();
+						throw new Exception("authentication error! exiting");
+					}
+					
+					// shutdown
+					outBuff = new byte[]{7};
+					outBuffStr = Util.toHexString(outBuff);
+					Util.print("C", outBuff, outBuffStr);
+					outBuffStr += "\n";
+					bw.write(outBuffStr);
+					bw.flush();
 					
 					S.close();
 				} catch (Exception e) {
