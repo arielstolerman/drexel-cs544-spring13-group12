@@ -17,12 +17,16 @@ public class ClientCLI implements ClientComm {
 
 	private String host;
 	private int port;
+	private String user;
+	private String pass;
 	private DFA dfa;
 	private boolean shutdown = false;
 	
-	public ClientCLI(String host, int port) {
+	public ClientCLI(String host, int port, String user, String pass) {
 		this.host = host;
 		this.port = port;
+		this.user = user;
+		this.pass = pass;
 		this.dfa = new DFA();
 	}
 	
@@ -32,7 +36,8 @@ public class ClientCLI implements ClientComm {
 			Socket socket = new Socket(host, port);
 			socket.setSoTimeout(Client.LISTEN_TIMEOUT_MS);
 
-			System.out.println(Util.dateTime() + " -- Client connected\n");
+			System.out.println(Util.dateTime() + " -- Client " + user
+					+ " connected\n");
 			
 			BufferedReader br = new BufferedReader(
 					new InputStreamReader(socket.getInputStream()));
@@ -85,5 +90,22 @@ public class ClientCLI implements ClientComm {
 		M.prettyPrint("C");
 		M.write(bw);
 	}
-
+	
+	// getters
+	
+	public String host() {
+		return host;
+	}
+	
+	public int port() {
+		return port;
+	}
+	
+	public String user() {
+		return user;
+	}
+	
+	public String pass() {
+		return pass;
+	}
 }
