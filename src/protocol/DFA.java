@@ -1,5 +1,7 @@
 package protocol;
 
+import server.ConnectionListener;
+import server.ServerComm;
 import devices.Action;
 import devices.House;
 
@@ -10,6 +12,10 @@ public class DFA {
 	private ServerComm serverComm;
 	private byte[] challenge;
 	private String version = "RSHC 0000";
+	
+	public DFA() {
+		
+	}
 	
 	public DFA(House house, ConnectionListener cl) {
 		this.connectionListener = cl;
@@ -45,6 +51,33 @@ public class DFA {
 		}
 	}
 
+	public Message clientProcess(Message m) {
+		switch (state) {
+			case IDLE: {
+				return processClientIdle(m);
+			}
+			case C_AWAITS_INIT: {
+				return processClientAwaitsInit(m);
+			}
+			default: {
+				throw new RuntimeException("Client in unsupported state.");
+			}
+		}
+	}
+	
+	private Message processClientAwaitsInit(Message m) {
+		if ("RSHC 0000".equals(m.content())) {
+			state = ProtocolState.C_AWAITS_CHALLENGE;
+			return Message.CLIENT_VERSION;
+		} else {
+			throw new RuntimeException("Server does not support client's version.");
+		}
+	}
+
+	private Message processClientIdle(Message m) {
+		state = ProtocolState.C_AWAITS_INIT;
+		return Message.POKE;
+	}
 
 	private Message processIdle(Message inMsg) {
 		if (inMsg.length() == 1 && inMsg.opcode() == Message.OP_POKE) {

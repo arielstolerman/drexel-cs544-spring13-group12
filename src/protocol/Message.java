@@ -4,6 +4,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
+import server.Server;
+import client.Client;
+
 import common.Util;
 
 import devices.House;
@@ -32,6 +35,9 @@ public class Message {
 	// server version
 	public static final Message SERVER_VERSION =
 			new Message(("RSHC " + Server.VERSION).getBytes(), OP_VERSION);
+
+	public static final Message CLIENT_VERSION =
+			new Message(("RSHC " + Client.VERSION).getBytes(), OP_VERSION);
 	// errors
 	public static final Message ERROR_GENERAL =
 			createError("General error");
@@ -41,6 +47,9 @@ public class Message {
 			createError("Unsupported version");
 	public static final Message ERROR_AUTH =
 			createError("Failed authentication");
+	public static final Message ERROR_UNSUPPORTED_VERSION = createError("Unsupported version");
+
+	
 	// shutdown
 	public static final Message SHUTDOWN = new Message(OP_SHUTDOWN);
 	

@@ -1,10 +1,14 @@
-package protocol;
+package server;
 
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+
+import protocol.DFA;
+import protocol.Message;
+
 
 import devices.House;
 
