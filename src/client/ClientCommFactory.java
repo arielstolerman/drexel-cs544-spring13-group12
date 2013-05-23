@@ -29,8 +29,9 @@ public class ClientCommFactory {
 		}
 	}
 	
-	public static ClientComm createClientCLI(String host, int port) {
-		return new ClientCLI(host, port);
+	public static ClientComm createClientCLI(String host, int port, String user,
+			String pass) {
+		return new ClientCLI(host, port, user, pass);
 	}
 	
 	private static ClientComm createTest1() {
