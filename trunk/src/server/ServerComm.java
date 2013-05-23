@@ -1,8 +1,11 @@
-package protocol;
+package server;
 
 import java.io.*;
 import java.net.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import protocol.DFA;
+import protocol.Message;
 
 
 public class ServerComm implements Runnable {
@@ -28,13 +31,11 @@ public class ServerComm implements Runnable {
 					socket.getInputStream()));
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
 					socket.getOutputStream()));
-			String inBuff;
-			Message inMsg, outMsg;
 			
 			socket.setSoTimeout(Server.LISTEN_TIMEOUT_MS);  //throw SocketTimeoutException every 1s if nothing to read.  Use this to check for shutdown.
+
 			while (true) {
-				inBuff = null;
-				inMsg = null;
+				String inBuff = null;
 				while (inBuff == null) {
 					try {
 						inBuff = br.readLine();
@@ -43,10 +44,9 @@ public class ServerComm implements Runnable {
 							socket.close();
 							return;
 						}
-						inMsg = Message.fromHexString(inBuff);
 					} catch (SocketTimeoutException e) {
 						while (!sendQueue.isEmpty()) {
-							outMsg = sendQueue.remove();
+							Message outMsg = sendQueue.remove();
 							outMsg.prettyPrint("S");
 							outMsg.write(bw);
 						}
@@ -56,8 +56,9 @@ public class ServerComm implements Runnable {
 						}
 					}
 				}
-				inMsg.prettyPrint("C");
-				outMsg = dfa.serverProcess(inMsg);
+				Message inMsg = Message.fromHexString(inBuff);
+				        inMsg.prettyPrint("C");
+				Message outMsg = dfa.serverProcess(inMsg);
 				
 				// check for shutdown
 				if (outMsg.opcode() == Message.OP_SHUTDOWN) {
@@ -66,6 +67,7 @@ public class ServerComm implements Runnable {
 					socket.close();
 					return;
 				}
+				
 				outMsg.prettyPrint("S");
 				outMsg.write(bw);
 			}

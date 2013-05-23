@@ -1,7 +1,13 @@
-package protocol;
+package client;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+
+import protocol.DESAuth;
+import protocol.Message;
 
 import common.Util;
 
@@ -23,11 +29,15 @@ public class ClientCommFactory {
 		}
 	}
 	
+	public static ClientComm createClientCLI(String host, int port) {
+		return new ClientCLI(host, port);
+	}
+	
 	private static ClientComm createTest1() {
 		return new ClientComm() {
 			public void run() {
 				try {
-					Socket socket = Server.getRSHCSocket();
+					Socket socket = new Socket("127.0.0.1", 7070);
 					System.out.println(Util.dateTime() + " -- Client connected\n");
 					BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -47,7 +57,7 @@ public class ClientCommFactory {
 		return new ClientComm() {
 			public void run() {
 				try {
-					Socket socket = Server.getRSHCSocket();
+					Socket socket = new Socket("127.0.0.1", 7070);
 					System.out.println(Util.dateTime() + " -- Client connected\n");
 					BufferedReader br = new BufferedReader(
 							new InputStreamReader(socket.getInputStream()));
