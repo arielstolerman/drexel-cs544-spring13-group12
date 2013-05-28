@@ -116,6 +116,26 @@ public class Shade extends Device {
  * Enumeration of Shade states.
  */
 enum ShadeState {
-	UP,
-	DOWN
+	UP((byte) 0),
+	DOWN((byte) 1);
+	
+	private ShadeState(byte type) {
+		this.type = type;
+	}
+	
+	private byte type;
+	
+	public byte type() {
+		return type;
+	}
+	
+	public static ShadeState typeFromCode(byte code) {
+		switch (code) {
+			case 0: return UP;
+			case 1: return DOWN;
+			default: {
+				throw new RuntimeException("Invalid ShadeState given: " + code);
+			}
+		}
+	}		
 }

@@ -117,6 +117,26 @@ public class AirCon extends Device {
  * Enumeration of AirCon states.
  */
 enum AirConState {
-	OFF,
-	ON
+	OFF((byte)0),
+	ON((byte)1);
+	
+	private AirConState(byte type) {
+		this.type = type;
+	}
+	
+	private byte type;
+	
+	public byte type() {
+		return type;
+	}
+	
+	public static AirConState typeFromCode(byte code) {
+		switch (code) {
+			case 0: return OFF;
+			case 1: return ON;
+			default: {
+				throw new RuntimeException("Invalid AirConState given: " + code);
+			}
+		}
+	}	
 }

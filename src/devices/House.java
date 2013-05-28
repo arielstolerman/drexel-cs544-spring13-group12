@@ -110,7 +110,7 @@ public class House {
 		byte[] b = m.bytes();
 		int index = 1;
 		
-		for (byte deviceType = 0; deviceType < 1; deviceType++) {
+		for (byte deviceType = 0; deviceType < 5; deviceType++) {
 			int deviceCount = b[index++];
 			for (int deviceNum = 0; deviceNum < deviceCount; deviceNum++) {
 				byte[] d = new byte[17];
