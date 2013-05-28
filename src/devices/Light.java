@@ -121,6 +121,26 @@ public class Light extends Device {
  * Enumeration of Light states.
  */
 enum LightState {
-	OFF,
-	ON
+	OFF((byte)0),
+	ON((byte)1);
+	
+	private LightState(byte type) {
+		this.type = type;
+	}
+	
+	private byte type;
+	
+	public byte type() {
+		return type;
+	}
+	
+	public static LightState typeFromCode(byte code) {
+		switch (code) {
+			case 0: return OFF;
+			case 1: return ON;
+			default: {
+				throw new RuntimeException("Invalid LightState given: " + code);
+			}
+		}
+	}	
 }

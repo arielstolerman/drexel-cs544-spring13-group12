@@ -103,5 +103,26 @@ public class House {
 		}	
 		System.out.println(THICK_SEP);
 	}
+
+	public static House createHouseFromInit(Message m) {
+		House house = new House();
+		
+		byte[] b = m.bytes();
+		int index = 1;
+		
+		for (byte deviceType = 0; deviceType < 1; deviceType++) {
+			int deviceCount = b[index++];
+			for (int deviceNum = 0; deviceNum < deviceCount; deviceNum++) {
+				byte[] d = new byte[17];
+				for (int k = 0; k < 17; k++) {
+					d[k] = b[index++];
+				}
+				Device device = Device.createDeviceFromBytes(DeviceType.typeFromCode(deviceType), deviceNum, d);
+				house.addDevice(device);
+			}
+		}
+		
+		return house;
+	}
 	
 }
