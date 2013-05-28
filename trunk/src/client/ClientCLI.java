@@ -27,7 +27,7 @@ public class ClientCLI implements ClientComm {
 		this.port = port;
 		this.user = user;
 		this.pass = pass;
-		this.dfa = new DFA();
+		this.dfa = new DFA(user, pass);
 	}
 	
 	@Override

@@ -12,9 +12,17 @@ public class DFA {
 	private ServerComm serverComm;
 	private byte[] challenge;
 	private String version = "RSHC 0000";
+	private String user = null;
+	private String pass = null;
+	
 	
 	public DFA() {
 		
+	}
+	
+	public DFA(String user, String pass) {
+		this.user = user;
+		this.pass = pass;
 	}
 	
 	public DFA(House house, ConnectionListener cl) {
@@ -37,6 +45,9 @@ public class DFA {
 			case IDLE: {
 				return processIdle(message);
 			}
+			case C_AWAITS_VERSION: {
+				return processServerCAwaitsVersion(message);
+			}
 			case S_AWAITS_VERSION: {
 				return processSAwaitsVersion(message);
 			}
@@ -56,8 +67,23 @@ public class DFA {
 			case IDLE: {
 				return processClientIdle(m);
 			}
+			case C_AWAITS_VERSION: {
+				return processClientAwaitsVersion(m);
+			}
+			case S_AWAITS_VERSION: {
+				return processClientServerAwaitsVersion(m);
+			}
+			case C_AWAITS_CHALLENGE: {
+				return processClientAwaitsChallenge(m);
+			}
+			case S_AWAITS_RESPONSE: {
+				return processClientServerAwaitsResponse(m);
+			}
 			case C_AWAITS_INIT: {
 				return processClientAwaitsInit(m);
+			}
+			case S_AWAITS_ACTION: {
+				return processClientServerAwaitsAction(m);
 			}
 			default: {
 				throw new RuntimeException("Client in unsupported state.");
@@ -66,28 +92,67 @@ public class DFA {
 	}
 	
 	private Message processClientAwaitsInit(Message m) {
+		if (m.opcode() == 5) {
+			this.house = House.createHouseFromInit(m);
+			System.out.println("client's house:::::::::::::::::::");
+			this.house.prettyPrint();
+			this.state = ProtocolState.S_AWAITS_ACTION;
+			return clientProcess(m);
+		} else {
+			throw new RuntimeException("Bad message");
+		}
+	}
+
+	private Message processClientServerAwaitsAction(Message m) {
+		throw new RuntimeException("CLI not implemented");
+	}
+	
+	private Message processClientAwaitsChallenge(Message m) {
+		Message outMsg = new Message(DESAuth.genUserSemiResponse(user,
+				pass, m.contentBytes()),
+				Message.OP_RESPONSE);
+		state = ProtocolState.S_AWAITS_RESPONSE;
+		return outMsg;
+	}
+	
+	private Message processClientServerAwaitsResponse(Message m) {
+		this.state = ProtocolState.C_AWAITS_INIT;
+		return clientProcess(m);
+	}
+
+	private Message processClientAwaitsVersion(Message m) {
 		if ("RSHC 0000".equals(m.content())) {
-			state = ProtocolState.C_AWAITS_CHALLENGE;
+			state = ProtocolState.S_AWAITS_VERSION;
 			return Message.CLIENT_VERSION;
 		} else {
 			throw new RuntimeException("Server does not support client's version.");
 		}
 	}
 
+	private Message processClientServerAwaitsVersion(Message m) {
+		this.state = ProtocolState.C_AWAITS_CHALLENGE;
+		return clientProcess(m);
+	}
+	
 	private Message processClientIdle(Message m) {
-		state = ProtocolState.C_AWAITS_INIT;
+		state = ProtocolState.C_AWAITS_VERSION;
 		return Message.POKE;
 	}
 
 	private Message processIdle(Message inMsg) {
 		if (inMsg.length() == 1 && inMsg.opcode() == Message.OP_POKE) {
-			this.state = ProtocolState.S_AWAITS_VERSION;
-			return Message.SERVER_VERSION;
+			this.state = ProtocolState.C_AWAITS_VERSION;
+			return serverProcess(inMsg); 
 		} else {
 			return Message.ERROR_INIT;
 		}
 	}
 	
+	private Message processServerCAwaitsVersion(Message inMsg) {
+		this.state = ProtocolState.S_AWAITS_VERSION;
+		return Message.SERVER_VERSION;
+	}
+
 	private Message processSAwaitsVersion(Message inMsg) {
 		if (inMsg.content().equals(version)) {
 			this.state = ProtocolState.S_AWAITS_RESPONSE;
@@ -137,7 +202,8 @@ enum ProtocolState {
 	S_AWAITS_RESPONSE(""),
 	C_AWAITS_INIT(""),
 	CONNECTED(""),
-	CONNECTED_PENDING("");
+	CONNECTED_PENDING(""), C_AWAITS_VERSION(""), 
+	S_AWAITS_ACTION("");
 	
 	private String desc;
 	

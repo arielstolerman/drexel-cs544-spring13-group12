@@ -58,6 +58,20 @@ public abstract class Device {
 	protected void setDeviceNumber(int deviceNumber) {
 		this.deviceNumber = deviceNumber;
 	}
+
+	public static Device createDeviceFromBytes(DeviceType deviceType, int deviceNum, byte[] d) {
+		String desc = new String(d, 0, 16);
+		byte state = d[16];
+		
+		switch (deviceType) {
+			case LIGHT: {			
+				return new Light(desc, deviceNum, LightState.typeFromCode(state));
+			}
+			default: {
+				throw new RuntimeException("Invalid device type.");
+			}
+		}
+	}
 }
 
 /**
