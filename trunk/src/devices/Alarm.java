@@ -109,7 +109,28 @@ public class Alarm extends Device {
  * Enumeration of Alarm states.
  */
 enum AlarmState {
-	OFF,
-	ON,
-	ARMED
+	OFF((byte)0),
+	ON((byte)1),
+	ARMED((byte)2);
+	
+	private AlarmState(byte type) {
+		this.type = type;
+	}
+	
+	private byte type;
+	
+	public byte type() {
+		return type;
+	}
+	
+	public static AlarmState typeFromCode(byte code) {
+		switch (code) {
+			case 0: return OFF;
+			case 1: return ON;
+			case 2: return ARMED;
+			default: {
+				throw new RuntimeException("Invalid AlarmState given: " + code);
+			}
+		}
+	}		
 }

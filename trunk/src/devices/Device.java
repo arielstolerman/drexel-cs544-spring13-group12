@@ -67,6 +67,18 @@ public abstract class Device {
 			case LIGHT: {			
 				return new Light(desc, deviceNum, LightState.typeFromCode(state));
 			}
+			case SHADE: {
+				return new Shade(desc, deviceNum, ShadeState.typeFromCode(state));
+			}
+			case AIRCON: {
+				return new AirCon(desc, deviceNum, AirConState.typeFromCode(state));
+			}
+			case TV: {
+				return new TV(desc, deviceNum, TVState.typeFromCode(state));
+			}
+			case ALARM: {
+				return new Alarm(desc, deviceNum, AlarmState.typeFromCode(state));
+			}
 			default: {
 				throw new RuntimeException("Invalid device type.");
 			}

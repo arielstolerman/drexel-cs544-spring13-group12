@@ -141,6 +141,26 @@ public class TV extends Device {
  * Enumeration of TV states.
  */
 enum TVState {
-	OFF,
-	ON
+	OFF((byte)0),
+	ON((byte)1);
+	
+	private TVState(byte type) {
+		this.type = type;
+	}
+	
+	private byte type;
+	
+	public byte type() {
+		return type;
+	}
+	
+	public static TVState typeFromCode(byte code) {
+		switch (code) {
+			case 0: return OFF;
+			case 1: return ON;
+			default: {
+				throw new RuntimeException("Invalid TVState given: " + code);
+			}
+		}
+	}		
 }
