@@ -95,8 +95,9 @@ public class ClientCommFactory {
 					inMsg.prettyPrint("S");
 					
 					// generate response
-					outMsg = new Message(DESAuth.genUserSemiResponse("ariel",
-							"stolerman", inMsg.contentBytes()),
+					outMsg = new Message(DESAuth.genUserSemiResponse(
+							"ariel",
+							"ariel123", inMsg.contentBytes()),
 							Message.OP_RESPONSE);
 					outMsg.prettyPrint("C");
 					outMsg.write(bw);
