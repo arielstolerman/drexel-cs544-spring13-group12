@@ -28,36 +28,37 @@ public class Message {
 	public static final byte OP_UPDATE =	8;
 	public static final byte OP_SHUTDOWN =	9;
 	
-	// predefined messages
-	
+	// PREDEFINED MESSAGES
 	// poke
 	public static final Message POKE = new Message(OP_POKE);
 	// server version
 	public static final Message SERVER_VERSION =
 			new Message(("RSHC " + Server.VERSION).getBytes(), OP_VERSION);
-
+	// client version
 	public static final Message CLIENT_VERSION =
 			new Message(("RSHC " + Client.VERSION).getBytes(), OP_VERSION);
-	// errors
+	// shutdown
+		public static final Message SHUTDOWN = new Message(OP_SHUTDOWN);
+		
+	// ERROR MESSAGES
+	// General catch-all error
 	public static final Message ERROR_GENERAL =
 			createError("General error");
+	// Error on the poke message
 	public static final Message ERROR_INIT =
 			createError("Poke error");
+	// An unsupported version message was sent
 	public static final Message ERROR_VERSION =
 			createError("Unsupported version");
+	// Client/server authentication failed.  
 	public static final Message ERROR_AUTH =
 			createError("Failed authentication");
-	public static final Message ERROR_UNSUPPORTED_VERSION = createError("Unsupported version");
-
 	
-	// shutdown
-	public static final Message SHUTDOWN = new Message(OP_SHUTDOWN);
 	
-	// general config
-	
+	// GENERAL CONFIG
 	private static final int WRAP_SIZE = 96;
 	
-	// fields
+	// FIELDS
 	
 	/**
 	 * Message opcode.
@@ -69,7 +70,7 @@ public class Message {
 	private final byte[] bytes;
 	
 	
-	// constructors
+	// CONSTRUCTORS
 	
 	/**
 	 * Constructs a new message from the given stream of bytes, which should
@@ -104,7 +105,7 @@ public class Message {
 		bytes = new byte[]{opcode};
 	}
 	
-	// factory methods
+	// FACTORY METHODS
 	
 	/**
 	 * @param seqNum sequence number to confirm.
@@ -154,7 +155,7 @@ public class Message {
 		return new Message(updateStream);
 	}
 	
-	// getters
+	// GETTERS
 	
 	/**
 	 * @return number of bytes in the message stream.
@@ -215,7 +216,7 @@ public class Message {
 		return "OP: " + opcode + " | MESSAGE: " + content();
 	}
 	
-	// actions
+	// ACTIONS
 	
 	/**
 	 * Writes the message (its hexadecimal + '\n' representation) to the given
@@ -243,7 +244,7 @@ public class Message {
 				indent + "byte: ", bytecode, WRAP_SIZE));
 	}
 	
-	// utility methods
+	// UTILITY METHODS
 		
 	private static String indent(String s) {
 		String res = "";
