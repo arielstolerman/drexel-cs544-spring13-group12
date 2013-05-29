@@ -1,5 +1,8 @@
 package devices;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import common.Util;
 
 public class Alarm extends Device {
@@ -8,6 +11,21 @@ public class Alarm extends Device {
 	private static final byte TURN_ON = 0;
 	private static final byte TURN_OFF = 1;
 	private static final byte ARM = 2;
+	protected static Map<Byte,String> opcodeMap;
+	protected static Map<Byte,String[]> opcodeParamMap;
+	static {
+		// opcode map
+		opcodeMap = new HashMap<>();
+		opcodeMap.put(TURN_ON, "Turn ON");
+		opcodeMap.put(TURN_OFF, "Turn OFF");
+		opcodeMap.put(ARM, "Arm");
+		
+		// opcode parameters map
+		opcodeParamMap = new HashMap<>();
+		opcodeParamMap.put(TURN_ON, null);
+		opcodeParamMap.put(TURN_OFF, null);
+		opcodeParamMap.put(ARM, null);
+	}
 	
 	// fields
 	private AlarmState state;
@@ -114,21 +132,12 @@ public class Alarm extends Device {
 				deviceNumber, name, state);
 	}
 	
-	public int parmCount(byte opcode) {
-		return 0;
+	public Map<Byte,String> opCodesMap() {
+		return opcodeMap;
 	}
 	
-	public void printOpCodes() {
-		System.out.println("Turn on: 0");
-		System.out.println("Turn off: 1");
-		System.out.println("Arm: 2");
-	}
-	
-	public void printParms(byte opcode) {
-	}
-	
-	public int maxParms() {
-		return 0;
+	public Map<Byte,String[]> opCodesParamMap() {
+		return opcodeParamMap;
 	}			
 }
 

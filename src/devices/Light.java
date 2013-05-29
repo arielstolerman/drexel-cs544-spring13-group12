@@ -1,5 +1,8 @@
 package devices;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import protocol.Message;
 import common.Util;
 
@@ -9,6 +12,21 @@ public class Light extends Device {
 	private static final byte TURN_ON = 0;
 	private static final byte TURN_OFF = 1;
 	private static final byte DIM = 2;
+	protected static Map<Byte,String> opcodeMap;
+	protected static Map<Byte,String[]> opcodeParamMap;
+	static {
+		// opcode map
+		opcodeMap = new HashMap<>();
+		opcodeMap.put(TURN_ON, "Turn ON");
+		opcodeMap.put(TURN_OFF, "Turn OFF");
+		opcodeMap.put(DIM, "Dim");
+		
+		// opcode parameters map
+		opcodeParamMap = new HashMap<>();
+		opcodeParamMap.put(TURN_ON, null);
+		opcodeParamMap.put(TURN_OFF, null);
+		opcodeParamMap.put(DIM, new String[]{"Dim level"});
+	}
 	
 	// fields
 	private LightState state;
@@ -134,28 +152,12 @@ public class Light extends Device {
 		return action.toMessage();
 	}
 	
-	public int parmCount(byte opcode) {
-		if (opcode == DIM) {
-			return 1;
-		} else {
-			return 0;
-		}
+	public Map<Byte,String> opCodesMap() {
+		return opcodeMap;
 	}
 	
-	public void printOpCodes() {
-		System.out.println("Turn on: 0");
-		System.out.println("Turn off: 1");
-		System.out.println("Dim: 2");
-	}
-	
-	public void printParms(byte opcode) {
-		if (opcode == DIM) {
-			System.out.println("Parm 1: dim level");
-		}
-	}
-	
-	public int maxParms() {
-		return 1;
+	public Map<Byte,String[]> opCodesParamMap() {
+		return opcodeParamMap;
 	}
 }
 

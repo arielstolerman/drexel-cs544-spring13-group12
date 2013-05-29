@@ -1,5 +1,8 @@
 package devices;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import common.Util;
 
 public class TV extends Device {
@@ -9,6 +12,23 @@ public class TV extends Device {
 	private static final byte TURN_OFF = 1;
 	private static final byte SET_CHANNEL = 2;
 	private static final byte SET_VOLUME = 3;
+	protected static Map<Byte,String> opcodeMap;
+	protected static Map<Byte,String[]> opcodeParamMap;
+	static {
+		// opcode map
+		opcodeMap = new HashMap<>();
+		opcodeMap.put(TURN_ON, "Turn ON");
+		opcodeMap.put(TURN_OFF, "Turn OFF");
+		opcodeMap.put(SET_CHANNEL, "Set channel");
+		opcodeMap.put(SET_VOLUME, "Set volume");
+		
+		// opcode parameters map
+		opcodeParamMap = new HashMap<>();
+		opcodeParamMap.put(TURN_ON, null);
+		opcodeParamMap.put(TURN_OFF, null);
+		opcodeParamMap.put(SET_CHANNEL, new String[]{"Channel"});
+		opcodeParamMap.put(SET_VOLUME, new String[]{"Volume"});
+	}
 	
 	// fields
 	private TVState state;
@@ -148,31 +168,12 @@ public class TV extends Device {
 				deviceNumber, name, state, channel, volume);
 	}
 	
-	public int parmCount(byte opcode) {
-		if (opcode == SET_CHANNEL || opcode == SET_VOLUME) {
-			return 1;
-		} else {
-			return 0;
-		}
+	public Map<Byte,String> opCodesMap() {
+		return opcodeMap;
 	}
 	
-	public void printOpCodes() {
-		System.out.println("Turn on: 0");
-		System.out.println("Turn off: 1");
-		System.out.println("Set channel: 2");
-		System.out.println("Set volume: 3");
-	}
-	
-	public void printParms(byte opcode) {
-		if (opcode == SET_CHANNEL) {
-			System.out.println("Parm 1: channel");
-		} else if (opcode == SET_VOLUME) {
-			System.out.println("Parm 1: set volume");
-		}
-	}
-	
-	public int maxParms() {
-		return 2;
+	public Map<Byte,String[]> opCodesParamMap() {
+		return opcodeParamMap;
 	}	
 }
 
