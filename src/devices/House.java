@@ -129,9 +129,11 @@ public class House {
 		return house;
 	}
 
-	public Message createActionMessage(byte t, byte n, byte s, byte[] parms) {
-		try {			
-			return devices.get(t).get(n).getActionMessage(sequenceNumber++, s, parms);
+	public Message createActionMessage(byte deviceType, byte deviceNumber,
+			byte opcode, byte[] params) {
+		try {
+			return devices.get(deviceType).get(deviceNumber)
+					.getActionMessage(sequenceNumber++, opcode, params);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Message.ERROR_GENERAL;
