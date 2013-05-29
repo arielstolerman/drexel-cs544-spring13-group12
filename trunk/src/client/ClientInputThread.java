@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import devices.Device;
@@ -47,10 +48,13 @@ public class ClientInputThread extends Thread {
 				try {
 					byte code = Byte.parseByte(input);
 					if (code < legalMin || code > legalMax)
-						throw new Exception();
+						throw new Exception("selected device code not in range");
 					selectedType = DeviceType.typeFromCode(code);
+					if (house.devices().get(selectedType.type()).isEmpty())
+						throw new Exception("no devices of selected type");
 				} catch (Exception e) {
-					System.err.println("Illegal selection, try again");
+					System.err.println("Illegal selection, try again: " +
+							e.getMessage());
 					continue;
 				}
 				// mark input is legal
@@ -64,13 +68,10 @@ public class ClientInputThread extends Thread {
 			// selected devices
 			List<Device> selectedDevices = house.devices().get(
 					selectedType.type());
-			Set<Byte> selectedDeviceNums = new HashSet<>();
-			for (Device d: selectedDevices)
-				selectedDeviceNums.add(d.deviceNumber());
 			
 			// get device number
 			// -----------------
-			int selectedDevice = -1;
+			byte selectedDeviceIndex = -1;
 			// set message for user
 			msg = "Select device:";
 			for (Device d: selectedDevices)
@@ -80,11 +81,14 @@ public class ClientInputThread extends Thread {
 				System.out.println(msg);
 				try {
 					input = br.readLine();
-					selectedDevice = Byte.parseByte(input);
-					if (!selectedDeviceNums.contains(selectedDevice))
-						throw new Exception();
+					selectedDeviceIndex = Byte.parseByte(input);
+					if (selectedDeviceIndex < 0
+							|| selectedDeviceIndex >= selectedDevices.size()) {
+						throw new Exception("selected device number not in range");
+					}
 				} catch (Exception e) {
-					System.err.println("Illegal selection, try again");
+					System.err.println("Illegal selection, try again: " +
+							e.getMessage());
 					continue;
 				}
 				// mark input is legal
@@ -95,51 +99,90 @@ public class ClientInputThread extends Thread {
 			input = null;
 			legalInput = false;
 			
+			// selected device
+			Device selectedDevice = selectedDevices.get(selectedDeviceIndex);
+			
 			// operation
 			// ---------
+			byte selectedOpcode = -1;
+			// set message for user
+			msg = "Select operation:";
+			Map<Byte,String> opCodesMap = selectedDevice.opCodesMap();
+			for (byte key: opCodesMap.keySet())
+				msg += "\n[" + key + "] " + opCodesMap.get(key);
+			// read user input until legal
+			while (!legalInput) {
+				try {
+					input = br.readLine();
+					selectedOpcode = Byte.parseByte(input);
+					if (selectedOpcode < 0 || selectedOpcode >= opCodesMap.size()) {
+						throw new Exception("selected opcode not in range");
+					}
+				} catch (Exception e) {
+					System.err.println("Illegal selection, try again: " +
+							e.getMessage());
+					continue;
+				}
+				// mark input is legal
+				legalInput = true;
+				if (killInput) return;
+			}
+			// reset
+			input = null;
+			legalInput = false;
 			
-			System.out.println("What operation?");
-			selectedType.printOpCode();
-			String opcode = br.readLine();
-			if (killInput) return;
+			// operation parameters
+			// --------------------
+			String[] paramNames = selectedDevice.opCodesParamMap().get(
+					selectedOpcode);
+			byte[] params;
 			
-			byte opcode_b = Byte.parseByte(opcode);
-			
-			String parameters = null;
-			if (selectedType.parmCount(opcode_b) > 0) {
-				System.out.println("What parameters?");
-				selectedType.printParms(opcode_b);
-				parameters = br.readLine();				
+			if (paramNames == null) {
+				System.out.println("No parameters for operation: "
+						+ selectedOpcode);
+				params = new byte[]{};
+			} else {
+				params = new byte[paramNames.length];
+				String[] inputArr;
+				// set message for user
+				msg = "Input operation parameters, sparated by commas, "
+						+ "in the format: "
+						+ paramNames.toString().replace("[", "")
+								.replace("]", "");
+				// read user input until legal
+				while (!legalInput) {
+					try {
+						inputArr = br.readLine().split(",");
+						// check number of parameters
+						if (inputArr.length != paramNames.length)
+							throw new Exception(
+									"unexpected number of parameters");
+						// parse and check parameters
+						for (int i = 0; i < inputArr.length; i++) {
+							params[i] = Byte.parseByte(inputArr[i].trim());
+						}
+					} catch (Exception e) {
+						System.err.println("Illegal selection, try again: "
+								+ e.getMessage());
+						continue;
+					}
+					// mark input is legal
+					legalInput = true;
+					if (killInput) return;
+				}
 			}
 			
-			if (killInput) return;
+			// finally, post action 
+			clientComm.postAction(house.createActionMessage(
+					selectedType.type(),
+					selectedDeviceIndex,
+					selectedOpcode,
+					params));
 			
-			postAction(selectedType, selectedDevice + "", opcode_b, parameters);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		
-	}
-
-	private void postAction(DeviceType deviceType, String deviceNum, byte opcode, String parameters) {
-		byte n = (byte) Byte.parseByte(deviceNum);
-		
-		String[] parms = new String[0];
-		
-		if (parameters != null)
-			parms = parameters.split(" ");
-		
-		if (parms.length != deviceType.parmCount(opcode)) {
-			throw new RuntimeException("Invalid number of parameters, expected: " + deviceType.parmCount(opcode) + " got: " + parms.length);
-		}
-		
-		byte[] p = new byte[parms.length];
-		
-		for (int i = 0; i < parms.length; i++) {
-			p[i] = Byte.parseByte(parms[i]);
-		}
-		
-		clientComm.postAction(house.createActionMessage(deviceType.type(), n, opcode, p));
 	}
 	
 	public void killInput() {
