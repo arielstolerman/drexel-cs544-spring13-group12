@@ -101,7 +101,6 @@ public abstract class Device {
 	
 	public void printOpCodes() { }
 	public void printParms(byte opcode) { }
-	public int parmCount() { return 0; }
-	public boolean opHasParms(byte opcode) { return false; }
+	public int parmCount(byte opcode) { return 0; }
 	public int maxParms() { return 0; } 
 }

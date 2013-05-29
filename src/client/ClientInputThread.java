@@ -41,8 +41,8 @@ public class ClientInputThread extends Thread {
 			
 			byte opcode_b = Byte.parseByte(opcode);
 			
-			String parameters = "";
-			if (dT.opHasParms(opcode_b)) {
+			String parameters = null;
+			if (dT.parmCount(opcode_b) > 0) {
 				System.out.println("What parameters?");
 				dT.printParms(opcode_b);
 				parameters = br.readLine();				
@@ -60,10 +60,13 @@ public class ClientInputThread extends Thread {
 	private void postAction(DeviceType deviceType, String deviceNum, byte opcode, String parameters) {
 		byte n = (byte) Byte.parseByte(deviceNum);
 		
-		String[] parms = parameters.split(" ");
+		String[] parms = new String[0];
 		
-		if (parms.length != deviceType.parmCount()) {
-			throw new RuntimeException("Invalid number of parameters, expected: " + deviceType.parmCount() + " got: " + parms.length);
+		if (parameters != null)
+			parms = parameters.split(" ");
+		
+		if (parms.length != deviceType.parmCount(opcode)) {
+			throw new RuntimeException("Invalid number of parameters, expected: " + deviceType.parmCount(opcode) + " got: " + parms.length);
 		}
 		
 		byte[] p = new byte[parms.length];
