@@ -26,6 +26,13 @@ public class Light extends Device {
 		super(name, deviceNumber);
 		this.state = state;
 	}
+
+	public Light(String name, int deviceNumber, LightState state, byte[] parms) {
+		super(name, deviceNumber);
+		this.state = state;
+		this.dimLevel = parms[0];
+	}
+
 	
 	// methods
 	
@@ -127,8 +134,12 @@ public class Light extends Device {
 		return action.toMessage();
 	}
 	
-	public int parmCount() {
-		return 1;
+	public int parmCount(byte opcode) {
+		if (opcode == DIM) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 	
 	public void printOpCodes() {
@@ -141,6 +152,10 @@ public class Light extends Device {
 		if (opcode == DIM) {
 			System.out.println("Parm 1: dim level");
 		}
+	}
+	
+	public int maxParms() {
+		return 1;
 	}
 }
 

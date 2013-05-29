@@ -42,7 +42,7 @@ public class ClientInputThread extends Thread {
 			byte opcode_b = Byte.parseByte(opcode);
 			
 			String parameters = "";
-			if (dT.parmCount() > 0) {
+			if (dT.opHasParms(opcode_b)) {
 				System.out.println("What parameters?");
 				dT.printParms(opcode_b);
 				parameters = br.readLine();				
