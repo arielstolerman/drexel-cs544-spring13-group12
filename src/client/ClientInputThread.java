@@ -47,7 +47,7 @@ public class ClientInputThread extends Thread {
 					if (house.devices().get(selectedType.type()).isEmpty())
 						throw new Exception("no devices of selected type");
 				} catch (Exception e) {
-					System.err.println("Illegal selection, try again: " +
+					System.out.println("Illegal selection, try again: " +
 							e.getMessage());
 					continue;
 				}
@@ -81,7 +81,7 @@ public class ClientInputThread extends Thread {
 						throw new Exception("selected device number not in range");
 					}
 				} catch (Exception e) {
-					System.err.println("Illegal selection, try again: " +
+					System.out.println("Illegal selection, try again: " +
 							e.getMessage());
 					continue;
 				}
@@ -106,6 +106,7 @@ public class ClientInputThread extends Thread {
 				msg += "\n[" + key + "] " + opCodesMap.get(key);
 			// read user input until legal
 			while (!legalInput) {
+				System.out.println(msg);
 				try {
 					input = br.readLine();
 					selectedOpcode = Byte.parseByte(input);
@@ -113,7 +114,7 @@ public class ClientInputThread extends Thread {
 						throw new Exception("selected opcode not in range");
 					}
 				} catch (Exception e) {
-					System.err.println("Illegal selection, try again: " +
+					System.out.println("Illegal selection, try again: " +
 							e.getMessage());
 					continue;
 				}
@@ -139,12 +140,12 @@ public class ClientInputThread extends Thread {
 				params = new byte[paramNames.length];
 				String[] inputArr;
 				// set message for user
-				msg = "Input operation parameters, sparated by commas, "
-						+ "in the format: "
-						+ paramNames.toString().replace("[", "")
-								.replace("]", "");
+				msg = "Input " +
+						Arrays.toString(paramNames).replace("[", "").replace("]", "") +
+						(params.length > 1 ? " (separated by commas):" : ":");
 				// read user input until legal
 				while (!legalInput) {
+					System.out.println(msg);
 					try {
 						inputArr = br.readLine().split(",");
 						// check number of parameters
@@ -156,7 +157,7 @@ public class ClientInputThread extends Thread {
 							params[i] = Byte.parseByte(inputArr[i].trim());
 						}
 					} catch (Exception e) {
-						System.err.println("Illegal selection, try again: "
+						System.out.println("Illegal selection, try again: "
 								+ e.getMessage());
 						continue;
 					}

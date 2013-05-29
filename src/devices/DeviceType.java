@@ -7,7 +7,7 @@ public enum DeviceType {
 	LIGHT	((byte) 0, 1),
 	SHADE	((byte) 1, 1),
 	AIRCON	((byte) 2, 1),
-	TV		((byte) 3, 1),
+	TV		((byte) 3, 2),
 	ALARM	((byte) 4, 0);
 	//NO_SUCH_DEVICE((byte) -1, null);
 	
