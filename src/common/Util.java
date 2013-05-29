@@ -46,12 +46,22 @@ public class Util {
 		return l;
 	}
 
-	public static byte[] cat(byte[] bytes, byte ordinal) {
-		byte b[] = new byte[bytes.length + 1];
-		for (int i = 0; i < bytes.length; i++) {
+	public static byte[] cat(byte[] bytes, byte ordinal, byte[] params) {
+		byte b[] = new byte[bytes.length + 1 + params.length];
+		// name
+		int i = 0;
+		for (; i < bytes.length; i++) {
 			b[i] = bytes[i];
 		}
-		b[b.length-1] = ordinal;
+		// state
+		b[i] = ordinal;
+		i++;
+		// parameters
+		int j = 0;
+		for (; i < b.length; i++) {
+			b[i] = params[j];
+			j++;
+		}
 		return b;
 	}
 	

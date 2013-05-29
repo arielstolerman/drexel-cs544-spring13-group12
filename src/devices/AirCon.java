@@ -100,7 +100,10 @@ public class AirCon extends Device {
 	}
 	
 	public byte[] getBytes() {
-		return Util.cat(Util.bufferLeft(' ', 16, name).getBytes(), (byte)state.ordinal());
+		return Util.cat(
+				Util.bufferLeft(' ', 16, name).getBytes(),	// name
+				(byte)state.ordinal(),						// state
+				new byte[]{temp});							// params
 	}
 	
 	// getters
