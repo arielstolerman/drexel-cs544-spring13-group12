@@ -124,5 +124,13 @@ public class House {
 		
 		return house;
 	}
+
+	public Message createActionMessage(byte t, byte n, byte s) {		
+		return Message.ERROR_GENERAL;
+	}
+
+	public void doUpdate(Update update) {
+		// TODO IMPLEMENT doUPDATE();
+	}
 	
 }

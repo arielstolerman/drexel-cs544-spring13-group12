@@ -2,14 +2,17 @@ package protocol;
 
 import server.ConnectionListener;
 import server.ServerComm;
+import client.ClientComm;
 import devices.Action;
 import devices.House;
+import devices.Update;
 
 public class DFA {
 	private ProtocolState state = ProtocolState.IDLE;
 	private House house;
 	private ConnectionListener connectionListener;
 	private ServerComm serverComm;
+	private ClientComm clientComm;
 	private byte[] challenge;
 	private String version = "RSHC 0000";
 	private String user = null;
@@ -20,9 +23,10 @@ public class DFA {
 		
 	}
 	
-	public DFA(String user, String pass) {
+	public DFA(ClientComm clientComm, String user, String pass) {
 		this.user = user;
 		this.pass = pass;
+		this.clientComm = clientComm;
 	}
 	
 	public DFA(House house, ConnectionListener cl) {
@@ -97,14 +101,26 @@ public class DFA {
 			System.out.println("client's house:::::::::::::::::::");
 			this.house.prettyPrint();
 			this.state = ProtocolState.S_AWAITS_ACTION;
-			return clientProcess(m);
+			return clientProcess(null);
 		} else {
 			throw new RuntimeException("Bad message");
 		}
 	}
 
 	private Message processClientServerAwaitsAction(Message m) {
-		throw new RuntimeException("CLI not implemented");
+		if (m == null) {
+			return Message.AWAITING_CLIENT_INPUT;
+		} else if (m.opcode() == Message.OP_ACTION) {
+			this.state = ProtocolState.C_AWAITS_CONFIRM;
+			return m;
+		} else if (m.opcode() == Message.OP_UPDATE) {
+			this.house.doUpdate(new Update(m.bytes()));
+			this.clientComm.killInput();
+			this.house.prettyPrint();
+			return Message.AWAITING_CLIENT_INPUT;
+		} else {
+			throw new RuntimeException("clientServerAwaitsAction doesn't know what to do.");
+		}
 	}
 	
 	private Message processClientAwaitsChallenge(Message m) {
@@ -193,6 +209,10 @@ public class DFA {
 		this.connectionListener.broadcast(updateMsg, serverComm);		
 	}
 	
+	public House getHouse() {
+		return this.house;
+	}
+	
 }
 
 enum ProtocolState {
@@ -203,7 +223,8 @@ enum ProtocolState {
 	C_AWAITS_INIT(""),
 	CONNECTED(""),
 	CONNECTED_PENDING(""), C_AWAITS_VERSION(""), 
-	S_AWAITS_ACTION("");
+	S_AWAITS_ACTION(""), 
+	C_AWAITS_CONFIRM("");
 	
 	private String desc;
 	
