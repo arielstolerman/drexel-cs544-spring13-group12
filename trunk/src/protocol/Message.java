@@ -105,7 +105,7 @@ public class Message {
 		bytes = new byte[]{opcode};
 	}
 	
-	// FACTORY METHODS
+	// METHODS
 	
 	/**
 	 * @param seqNum sequence number to confirm.
