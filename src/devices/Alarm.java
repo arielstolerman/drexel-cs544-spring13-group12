@@ -14,6 +14,8 @@ public class Alarm extends Device {
 	
 	// constructors
 	
+	Alarm() {}
+	
 	public Alarm(String name, int deviceNumber) {
 		super(name, deviceNumber);
 	}

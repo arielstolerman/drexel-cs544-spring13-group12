@@ -13,7 +13,7 @@ public class House {
 	// list of devices available in the house
 	
 	private List<List<Device>> devices = new ArrayList<List<Device>>();
-		
+	private byte sequenceNumber = 0;
 	// constructors
 	
 	/**
@@ -125,8 +125,13 @@ public class House {
 		return house;
 	}
 
-	public Message createActionMessage(byte t, byte n, byte s) {		
-		return Message.ERROR_GENERAL;
+	public Message createActionMessage(byte t, byte n, byte s, byte[] parms) {
+		try {
+			return devices.get(t).get(n).getActionMessage(sequenceNumber++, s, parms);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Message.ERROR_GENERAL;
+		}
 	}
 
 	public void doUpdate(Update update) {

@@ -13,6 +13,19 @@ public class Action {
 	 */
 	private byte[] stream;
 	
+	public Action(byte sequenceNumber, byte deviceType, byte deviceNumber, byte opcode, byte parms[]) {
+		this.stream = new byte[5 + parms.length];
+		stream[0] = Message.OP_ACTION;
+		stream[1] = sequenceNumber;
+		stream[2] = deviceType;
+		stream[3] = deviceNumber;
+		stream[4] = opcode;
+		
+		for (int i = 0; i < parms.length; i++) {
+			stream[5+i] = parms[i];
+		}		
+	}
+	
 	// constructors
 	
 	/**
@@ -73,5 +86,9 @@ public class Action {
 	 */
 	public int numParams() {
 		return stream.length - 5;
+	}
+
+	public Message toMessage() {
+		return new Message(this.stream);
 	}
 }

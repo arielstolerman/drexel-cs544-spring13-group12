@@ -1,5 +1,7 @@
 package devices;
 
+import protocol.Message;
+
 public abstract class Device {
 
 	// device information
@@ -7,6 +9,10 @@ public abstract class Device {
 	
 	protected final String name;
 	protected int deviceNumber;
+	
+	Device() {
+		this.name = "Not a real device.";
+	}
 	
 	/**
 	 * Constructs a new device with the given name and device number.
@@ -84,37 +90,12 @@ public abstract class Device {
 			}
 		}
 	}
-}
 
-/**
- * Enumerator for known device types.
- */
-enum DeviceType {
-	LIGHT((byte) 0),
-	SHADE((byte) 1),
-	AIRCON((byte) 2),
-	TV((byte) 3),
-	ALARM((byte) 4),
-	NO_SUCH_DEVICE((byte) -1);
-	
-	private DeviceType(byte type) {
-		this.type = type;
+	public Message getActionMessage(byte sequenceNumber, byte opcode, byte[] parameters) {
+		throw new RuntimeException("getActionMessage not implemented");		
 	}
 	
-	private byte type;
-	
-	public byte type() {
-		return type;
-	}
-	
-	public static DeviceType typeFromCode(byte code) {
-		switch (code) {
-		case 0: return LIGHT;
-		case 1: return SHADE;
-		case 2: return AIRCON;
-		case 3: return TV;
-		case 4: return ALARM;
-		default: return NO_SUCH_DEVICE;
-		}
-	}
+	public void printOpCodes() { }
+	public void printParms() { }
+	public int parmCount() { return 0; } 
 }
