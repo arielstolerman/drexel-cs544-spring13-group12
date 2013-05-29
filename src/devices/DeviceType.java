@@ -37,4 +37,12 @@ public enum DeviceType {
 	public int parmCount() {
 		return this.device.parmCount();
 	}
+	
+	public void printOpCode() {
+		this.device.printOpCodes();
+	}
+	
+	public void printParms(byte opcode) {
+		this.device.printParms(opcode);
+	}
 }

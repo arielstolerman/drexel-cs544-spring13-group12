@@ -34,28 +34,31 @@ public class ClientInputThread extends Thread {
 			String deviceNum = br.readLine();
 			if (killInput) return;
 			
-			System.out.println("What state?");
-			String state = br.readLine();
+			System.out.println("What operation?");
+			dT.printOpCode();
+			String opcode = br.readLine();
 			if (killInput) return;
 			
-			String parameters = null;
+			byte opcode_b = Byte.parseByte(opcode);
+			
+			String parameters = "";
 			if (dT.parmCount() > 0) {
 				System.out.println("What parameters?");
+				dT.printParms(opcode_b);
 				parameters = br.readLine();				
 			}
 			
 			if (killInput) return;
 			
-			postAction(dT, deviceNum, state, parameters);
+			postAction(dT, deviceNum, opcode_b, parameters);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		
 	}
 
-	private void postAction(DeviceType deviceType, String deviceNum, String state, String parameters) {
+	private void postAction(DeviceType deviceType, String deviceNum, byte opcode, String parameters) {
 		byte n = (byte) Byte.parseByte(deviceNum);
-		byte s = (byte) Byte.parseByte(state);
 		
 		String[] parms = parameters.split(" ");
 		
@@ -69,7 +72,7 @@ public class ClientInputThread extends Thread {
 			p[i] = Byte.parseByte(parms[i]);
 		}
 		
-		clientComm.postAction(house.createActionMessage(deviceType.type(), n, s, p));
+		clientComm.postAction(house.createActionMessage(deviceType.type(), n, opcode, p));
 	}
 	
 	public void killInput() {
