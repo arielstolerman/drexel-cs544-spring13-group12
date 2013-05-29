@@ -36,7 +36,7 @@ public class House {
 	 */
 	public Device addDevice(Device device) {
 		List<Device> l = devices.get(device.deviceType());
-		device.setDeviceNumber(l.size());
+		device.setDeviceNumber((byte)l.size());
 		l.add(device);
 		return device;
 	}
@@ -92,7 +92,8 @@ public class House {
 		
 		for (int devType = 0; devType < devTypes; devType++) {
 			System.out.println(THIN_SEP);
-			pre = String.format("%-7s",DeviceType.typeFromCode((byte) devType));
+			pre = String.format("%-7s",
+					DeviceType.typeFromCodeSafe((byte) devType));
 			devs = devices.get(devType);
 			for (Device d: devs) {
 				System.out.println(
@@ -112,13 +113,15 @@ public class House {
 		
 		for (byte deviceType = 0; deviceType < 5; deviceType++) {
 			int deviceCount = b[index++];
-			for (int deviceNum = 0; deviceNum < deviceCount; deviceNum++) {
-				int maxParms = DeviceType.typeFromCode(deviceType).maxParms();
+			for (byte deviceNum = 0; deviceNum < deviceCount; deviceNum++) {
+				int maxParms = DeviceType.typeFromCodeSafe(deviceType)
+						.maxParms();
 				byte[] d = new byte[17+maxParms];
 				for (int k = 0; k < d.length; k++) {
 					d[k] = b[index++];
 				}
-				Device device = Device.createDeviceFromBytes(DeviceType.typeFromCode(deviceType), deviceNum, d);
+				Device device = Device.createDeviceFromBytes(
+						DeviceType.typeFromCodeSafe(deviceType), deviceNum, d);
 				house.addDevice(device);
 			}
 		}
@@ -137,6 +140,15 @@ public class House {
 
 	public void doUpdate(Update update) {
 		// TODO IMPLEMENT doUPDATE();
+	}
+	
+	// getters
+	
+	/**
+	 * @return all devices in the house.
+	 */
+	public List<List<Device>> devices() {
+		return devices;
 	}
 	
 }

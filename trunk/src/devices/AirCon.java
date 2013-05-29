@@ -17,18 +17,18 @@ public class AirCon extends Device {
 	
 	AirCon() {}
 	
-	public AirCon(String name, int deviceNumber) {
+	public AirCon(String name, byte deviceNumber) {
 		super(name, deviceNumber);
 	}
 	
-	public AirCon(String name, int deviceNumber, AirConState state) {
+	public AirCon(String name, byte deviceNumber, AirConState state) {
 		super(name, deviceNumber);
 		this.state = state;
 	}
 	
 	// methods
 	
-	public AirCon(String name, int deviceNumber, AirConState state, byte[] parms) {
+	public AirCon(String name, byte deviceNumber, AirConState state, byte[] parms) {
 		super(name, deviceNumber);
 		this.state = state;
 		this.temp = parms[0];

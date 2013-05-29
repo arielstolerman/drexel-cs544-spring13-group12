@@ -8,7 +8,7 @@ public abstract class Device {
 	// common to all device types
 	
 	protected final String name;
-	protected int deviceNumber;
+	protected byte deviceNumber;
 	
 	Device() {
 		this.name = "Not a real device.";
@@ -19,7 +19,7 @@ public abstract class Device {
 	 * @param name
 	 * @param deviceNumber
 	 */
-	public Device(String name, int deviceNumber) {
+	public Device(String name, byte deviceNumber) {
 		this.name = name;
 		this.deviceNumber = deviceNumber;
 	}
@@ -57,15 +57,15 @@ public abstract class Device {
 	/**
 	 * @return the device unique id.
 	 */
-	public int deviceNumber() {
+	public byte deviceNumber() {
 		return deviceNumber;
 	}
 	
-	protected void setDeviceNumber(int deviceNumber) {
+	protected void setDeviceNumber(byte deviceNumber) {
 		this.deviceNumber = deviceNumber;
 	}
 
-	public static Device createDeviceFromBytes(DeviceType deviceType, int deviceNum, byte[] d) {
+	public static Device createDeviceFromBytes(DeviceType deviceType, byte deviceNum, byte[] d) {
 		String desc = new String(d, 0, 16);
 		byte state = d[16];
 		byte[] parms = new byte[d.length - 17];

@@ -18,16 +18,16 @@ public class Light extends Device {
 	
 	Light() {}
 	
-	public Light(String name, int deviceNumber) {
+	public Light(String name, byte deviceNumber) {
 		super(name, deviceNumber);
 	}
 	
-	public Light(String name, int deviceNumber, LightState state) {
+	public Light(String name, byte deviceNumber, LightState state) {
 		super(name, deviceNumber);
 		this.state = state;
 	}
 
-	public Light(String name, int deviceNumber, LightState state, byte[] parms) {
+	public Light(String name, byte deviceNumber, LightState state, byte[] parms) {
 		super(name, deviceNumber);
 		this.state = state;
 		this.dimLevel = parms[0];

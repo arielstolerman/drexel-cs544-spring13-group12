@@ -16,18 +16,18 @@ public class Alarm extends Device {
 	
 	Alarm() {}
 	
-	public Alarm(String name, int deviceNumber) {
+	public Alarm(String name, byte deviceNumber) {
 		super(name, deviceNumber);
 	}
 	
-	public Alarm(String name, int deviceNumber, AlarmState state) {
+	public Alarm(String name, byte deviceNumber, AlarmState state) {
 		super(name, deviceNumber);
 		this.state = state;
 	}
 	
 	// methods
 	
-	public Alarm(String name, int deviceNumber, AlarmState state, byte[] parms) {
+	public Alarm(String name, byte deviceNumber, AlarmState state, byte[] parms) {
 		super(name, deviceNumber);
 		this.state = state;
 	}
