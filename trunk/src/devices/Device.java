@@ -96,6 +96,6 @@ public abstract class Device {
 	}
 	
 	public void printOpCodes() { }
-	public void printParms() { }
+	public void printParms(byte opcode) { }
 	public int parmCount() { return 0; } 
 }

@@ -126,7 +126,7 @@ public class House {
 	}
 
 	public Message createActionMessage(byte t, byte n, byte s, byte[] parms) {
-		try {
+		try {			
 			return devices.get(t).get(n).getActionMessage(sequenceNumber++, s, parms);
 		} catch (Exception e) {
 			e.printStackTrace();
