@@ -4,23 +4,36 @@ package devices;
  * Enumerator for known device types.
  */
 public enum DeviceType {
-	LIGHT((byte) 0, new Light()),
-	SHADE((byte) 1, new Shade()),
-	AIRCON((byte) 2, new AirCon()),
-	TV((byte) 3, new TV()),
-	ALARM((byte) 4, new Alarm());
+	LIGHT	((byte) 0, 1),
+	SHADE	((byte) 1, 1),
+	AIRCON	((byte) 2, 1),
+	TV		((byte) 3, 1),
+	ALARM	((byte) 4, 0);
 	//NO_SUCH_DEVICE((byte) -1, null);
 	
-	private DeviceType(byte type, Device device) {
+	private DeviceType(byte type, int numParams) {
 		this.type = type;
-		this.device = device;
+		this.numParams = numParams;
 	}
 	
+	// fields
 	private byte type;
-	private Device device; 
+	private int numParams;
 	
+	// getters
+	
+	/**
+	 * @return the type byte code.
+	 */
 	public byte type() {
 		return type;
+	}
+	
+	/**
+	 * @return the number of parameters related to the device.
+	 */
+	public int numParams() {
+		return numParams;
 	}
 	
 	public static DeviceType[] legalValues() {
@@ -58,19 +71,17 @@ public enum DeviceType {
 		}
 	}
 
-	public int parmCount(byte opcode) {
-		return this.device.parmCount(opcode);
-	}
-		
-	public void printOpCode() {
-		this.device.printOpCodes();
-	}
-	
-	public void printParms(byte opcode) {
-		this.device.printParms(opcode);
-	}
 
-	public int maxParms() {
-		return this.device.maxParms();
-	}
+//	public int parmCount(byte opcode) {
+//		return this.device.parmCount(opcode);
+//	}
+//		
+//	public void printOpCode() {
+//		this.device.printOpCodes();
+//	}
+//	
+//	public void printParms(byte opcode) {
+//		this.device.printParms(opcode);
+//	}
+//
 }

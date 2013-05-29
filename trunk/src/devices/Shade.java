@@ -1,5 +1,8 @@
 package devices;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import common.Util;
 
 public class Shade extends Device {
@@ -8,6 +11,21 @@ public class Shade extends Device {
 	private static final byte PUT_DOWN = 0;
 	private static final byte PULL_UP = 1;
 	private static final byte DIM = 2;
+	protected static Map<Byte,String> opcodeMap;
+	protected static Map<Byte,String[]> opcodeParamMap;
+	static {
+		// opcode map
+		opcodeMap = new HashMap<>();
+		opcodeMap.put(PUT_DOWN, "Put down");
+		opcodeMap.put(PULL_UP, "Pull up");
+		opcodeMap.put(DIM, "Dim");
+		
+		// opcode parameters map
+		opcodeParamMap = new HashMap<>();
+		opcodeParamMap.put(PUT_DOWN, null);
+		opcodeParamMap.put(PULL_UP, null);
+		opcodeParamMap.put(DIM, new String[]{"Dim level"});
+	}
 	
 	// fields
 	private ShadeState state;
@@ -123,28 +141,12 @@ public class Shade extends Device {
 				deviceNumber, name, state, dimLevel);
 	}
 	
-	
-	public int parmCount(byte opcode) {
-		if (opcode == DIM)
-			return 1;
-		else 
-			return 0;
+	public Map<Byte,String> opCodesMap() {
+		return opcodeMap;
 	}
 	
-	public void printOpCodes() {
-		System.out.println("Pull Up: 0");
-		System.out.println("Pull Down: 1");
-		System.out.println("Dim: 2");
-	}
-	
-	public void printParms(byte opcode) {
-		if (opcode == DIM) {
-			System.out.println("Parm 1: dim level");
-		}
-	}
-	
-	public int maxParms() {
-		return 1;
+	public Map<Byte,String[]> opCodesParamMap() {
+		return opcodeParamMap;
 	}	
 }
 

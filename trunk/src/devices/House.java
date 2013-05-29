@@ -114,9 +114,9 @@ public class House {
 		for (byte deviceType = 0; deviceType < 5; deviceType++) {
 			int deviceCount = b[index++];
 			for (byte deviceNum = 0; deviceNum < deviceCount; deviceNum++) {
-				int maxParms = DeviceType.typeFromCodeSafe(deviceType)
-						.maxParms();
-				byte[] d = new byte[17+maxParms];
+				int numParms = DeviceType.typeFromCodeSafe(deviceType)
+						.numParams();
+				byte[] d = new byte[17+numParms];
 				for (int k = 0; k < d.length; k++) {
 					d[k] = b[index++];
 				}

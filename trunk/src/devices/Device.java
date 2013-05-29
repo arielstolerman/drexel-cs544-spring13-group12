@@ -1,5 +1,7 @@
 package devices;
 
+import java.util.Map;
+
 import protocol.Message;
 
 public abstract class Device {
@@ -44,6 +46,10 @@ public abstract class Device {
 	public abstract byte[] getBytes();
 	
 	public abstract String toPrettyString();
+	
+	public abstract Map<Byte,String> opCodesMap();
+	
+	public abstract Map<Byte,String[]> opCodesParamMap();
 	
 	// common
 	
@@ -98,9 +104,4 @@ public abstract class Device {
 	public Message getActionMessage(byte sequenceNumber, byte opcode, byte[] parameters) {
 		throw new RuntimeException("getActionMessage not implemented");		
 	}
-	
-	public void printOpCodes() { }
-	public void printParms(byte opcode) { }
-	public int parmCount(byte opcode) { return 0; }
-	public int maxParms() { return 0; } 
 }
