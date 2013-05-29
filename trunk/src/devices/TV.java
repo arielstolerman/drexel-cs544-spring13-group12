@@ -30,6 +30,13 @@ public class TV extends Device {
 	
 	// methods
 	
+	public TV(String name, int deviceNumber, TVState state, byte[] parms) {
+		super(name, deviceNumber);
+		this.state = state;
+		this.channel = parms[0];
+		this.volume = parms[1];
+	}
+
 	public byte deviceType() {
 		return DeviceType.TV.type();
 	}
@@ -140,6 +147,33 @@ public class TV extends Device {
 		return String.format("#%03d %-16s %-10s channel: %-4d volume: %d",
 				deviceNumber, name, state, channel, volume);
 	}
+	
+	public int parmCount(byte opcode) {
+		if (opcode == SET_CHANNEL || opcode == SET_VOLUME) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	
+	public void printOpCodes() {
+		System.out.println("Turn on: 0");
+		System.out.println("Turn off: 1");
+		System.out.println("Set channel: 2");
+		System.out.println("Set volume: 3");
+	}
+	
+	public void printParms(byte opcode) {
+		if (opcode == SET_CHANNEL) {
+			System.out.println("Parm 1: channel");
+		} else if (opcode == SET_VOLUME) {
+			System.out.println("Parm 1: set volume");
+		}
+	}
+	
+	public int maxParms() {
+		return 2;
+	}	
 }
 
 /**

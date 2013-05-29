@@ -113,8 +113,9 @@ public class House {
 		for (byte deviceType = 0; deviceType < 5; deviceType++) {
 			int deviceCount = b[index++];
 			for (int deviceNum = 0; deviceNum < deviceCount; deviceNum++) {
-				byte[] d = new byte[17];
-				for (int k = 0; k < 17; k++) {
+				int maxParms = DeviceType.typeFromCode(deviceType).maxParms();
+				byte[] d = new byte[17+maxParms];
+				for (int k = 0; k < d.length; k++) {
 					d[k] = b[index++];
 				}
 				Device device = Device.createDeviceFromBytes(DeviceType.typeFromCode(deviceType), deviceNum, d);

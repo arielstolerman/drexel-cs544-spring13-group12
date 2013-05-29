@@ -68,22 +68,26 @@ public abstract class Device {
 	public static Device createDeviceFromBytes(DeviceType deviceType, int deviceNum, byte[] d) {
 		String desc = new String(d, 0, 16);
 		byte state = d[16];
+		byte[] parms = new byte[d.length - 17];
+		for (int i = 0; i < parms.length; i++) {
+			parms[i] = d[17 + i];
+		}
 		
 		switch (deviceType) {
 			case LIGHT: {			
-				return new Light(desc, deviceNum, LightState.typeFromCode(state));
+				return new Light(desc, deviceNum, LightState.typeFromCode(state), parms);
 			}
 			case SHADE: {
-				return new Shade(desc, deviceNum, ShadeState.typeFromCode(state));
+				return new Shade(desc, deviceNum, ShadeState.typeFromCode(state), parms);
 			}
 			case AIRCON: {
-				return new AirCon(desc, deviceNum, AirConState.typeFromCode(state));
+				return new AirCon(desc, deviceNum, AirConState.typeFromCode(state), parms);
 			}
 			case TV: {
-				return new TV(desc, deviceNum, TVState.typeFromCode(state));
+				return new TV(desc, deviceNum, TVState.typeFromCode(state), parms);
 			}
 			case ALARM: {
-				return new Alarm(desc, deviceNum, AlarmState.typeFromCode(state));
+				return new Alarm(desc, deviceNum, AlarmState.typeFromCode(state), parms);
 			}
 			default: {
 				throw new RuntimeException("Invalid device type.");
@@ -97,5 +101,7 @@ public abstract class Device {
 	
 	public void printOpCodes() { }
 	public void printParms(byte opcode) { }
-	public int parmCount() { return 0; } 
+	public int parmCount() { return 0; }
+	public boolean opHasParms(byte opcode) { return false; }
+	public int maxParms() { return 0; } 
 }

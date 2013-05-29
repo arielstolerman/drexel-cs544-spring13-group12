@@ -28,6 +28,12 @@ public class AirCon extends Device {
 	
 	// methods
 	
+	public AirCon(String name, int deviceNumber, AirConState state, byte[] parms) {
+		super(name, deviceNumber);
+		this.state = state;
+		this.temp = parms[0];
+	}
+
 	public byte deviceType() {
 		return DeviceType.AIRCON.type();
 	}
@@ -116,6 +122,30 @@ public class AirCon extends Device {
 		return String.format("#%03d %-16s %-10s temp: %d",
 				deviceNumber, name, state, temp);
 	}
+	
+	public int parmCount(byte opcode) {
+		if (opcode == SET_TEMP) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	
+	public void printOpCodes() {
+		System.out.println("Turn on: 0");
+		System.out.println("Turn off: 1");
+		System.out.println("Set temp: 2");
+	}
+	
+	public void printParms(byte opcode) {
+		if (opcode == SET_TEMP) {
+			System.out.println("Parm 1: temp");
+		}
+	}
+	
+	public int maxParms() {
+		return 1;
+	}		
 }
 
 /**

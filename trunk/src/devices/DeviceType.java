@@ -38,11 +38,19 @@ public enum DeviceType {
 		return this.device.parmCount();
 	}
 	
+	public boolean opHasParms(byte opcode) {
+		return this.device.opHasParms(opcode);
+	}
+	
 	public void printOpCode() {
 		this.device.printOpCodes();
 	}
 	
 	public void printParms(byte opcode) {
 		this.device.printParms(opcode);
+	}
+
+	public int maxParms() {
+		return this.device.maxParms();
 	}
 }

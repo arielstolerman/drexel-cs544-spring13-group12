@@ -27,6 +27,11 @@ public class Alarm extends Device {
 	
 	// methods
 	
+	public Alarm(String name, int deviceNumber, AlarmState state, byte[] parms) {
+		super(name, deviceNumber);
+		this.state = state;
+	}
+
 	public byte deviceType() {
 		return DeviceType.ALARM.type();
 	}
@@ -108,6 +113,23 @@ public class Alarm extends Device {
 		return String.format("#%03d %-16s %-10s",
 				deviceNumber, name, state);
 	}
+	
+	public int parmCount(byte opcode) {
+		return 0;
+	}
+	
+	public void printOpCodes() {
+		System.out.println("Turn on: 0");
+		System.out.println("Turn off: 1");
+		System.out.println("Arm: 2");
+	}
+	
+	public void printParms(byte opcode) {
+	}
+	
+	public int maxParms() {
+		return 0;
+	}			
 }
 
 /**

@@ -28,6 +28,12 @@ public class Shade extends Device {
 	
 	// methods
 	
+	public Shade(String desc, int deviceNum, ShadeState state, byte[] parms) {
+		super(desc, deviceNum);
+		this.state = state;
+		this.dimLevel = parms[0];
+	}
+
 	public byte deviceType() {
 		return DeviceType.SHADE.type();
 	}
@@ -116,6 +122,30 @@ public class Shade extends Device {
 		return String.format("#%03d %-16s %-10s dim-level: %d",
 				deviceNumber, name, state, dimLevel);
 	}
+	
+	
+	public int parmCount(byte opcode) {
+		if (opcode == DIM)
+			return 1;
+		else 
+			return 0;
+	}
+	
+	public void printOpCodes() {
+		System.out.println("Pull Up: 0");
+		System.out.println("Pull Down: 1");
+		System.out.println("Dim: 2");
+	}
+	
+	public void printParms(byte opcode) {
+		if (opcode == DIM) {
+			System.out.println("Parm 1: dim level");
+		}
+	}
+	
+	public int maxParms() {
+		return 1;
+	}	
 }
 
 /**
