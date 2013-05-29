@@ -112,10 +112,13 @@ public class Message {
 	
 	/**
 	 * @param seqNum sequence number to confirm.
+	 * @param accept whether the action was accepted and applied or denied by
+	 * the server.
 	 * @return a new confirm message for the given sequence number.
 	 */
-	public static Message createConfirm(byte seqNum) {
-		return new Message(new byte[] {OP_CONFIRM, seqNum});
+	public static Message createConfirm(byte seqNum, boolean accept) {
+		return new Message(new byte[] {OP_CONFIRM, seqNum,
+				(accept? (byte) 1 : (byte) 0)});
 	}
 	
 	/**
