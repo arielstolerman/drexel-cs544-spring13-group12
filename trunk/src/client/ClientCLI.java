@@ -15,19 +15,22 @@ import common.Util;
 
 public class ClientCLI implements ClientComm {
 
+	private static final String POSTED_MESSAGE = "POSTED_MESSAGE";
 	private String host;
 	private int port;
 	private String user;
 	private String pass;
 	private DFA dfa;
 	private boolean shutdown = false;
+	private ClientInputThread clientInputThread;
+	private Message postedMessage;
 	
 	public ClientCLI(String host, int port, String user, String pass) {
 		this.host = host;
 		this.port = port;
 		this.user = user;
 		this.pass = pass;
-		this.dfa = new DFA(user, pass);
+		this.dfa = new DFA(this, user, pass);
 	}
 	
 	@Override
@@ -49,13 +52,22 @@ public class ClientCLI implements ClientComm {
 			while (true) {
 				String line = read(socket, br);
 				if (line == null) return;
+
 				
-				Message inMsg = Message.fromHexString(line);
+				Message inMsg = null;
+				if (line == POSTED_MESSAGE) {
+					inMsg = postedMessage;
+					postedMessage = null;
+				} else {
+					inMsg = Message.fromHexString(line);
+				}
 				inMsg.prettyPrint("S");
 				Message outMsg = dfa.clientProcess(inMsg);
 				
 				if (outMsg == null) {
 					throw new RuntimeException("Invalid Out Message.");
+				} else if (outMsg == Message.AWAITING_CLIENT_INPUT) {
+					createClientInputThread();
 				} else {
 					write(outMsg, bw);
 				}					
@@ -65,6 +77,15 @@ public class ClientCLI implements ClientComm {
 			e.printStackTrace();
 		}
 	}
+
+	private void createClientInputThread() {
+		if (this.clientInputThread == null) {
+			this.clientInputThread = new ClientInputThread(this, this.dfa.getHouse());
+			this.clientInputThread.start();
+		}		
+	}
+	
+	
 
 	private String read(Socket socket, BufferedReader br) throws IOException {
 		String line = null;
@@ -80,6 +101,9 @@ public class ClientCLI implements ClientComm {
 				if (shutdown) {
 					socket.close();
 					return null;
+				}
+				if (this.postedMessage != null) {
+					return POSTED_MESSAGE;
 				}
 			}
 		}
@@ -107,5 +131,13 @@ public class ClientCLI implements ClientComm {
 	
 	public String pass() {
 		return pass;
+	}
+
+	public void postAction(Message createUpdateMessage) {
+		this.postedMessage = createUpdateMessage;
+	}
+	
+	public void killInput() {
+		this.clientInputThread.killInput();
 	}
 }

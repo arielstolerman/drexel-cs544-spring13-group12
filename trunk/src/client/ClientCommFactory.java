@@ -50,6 +50,18 @@ public class ClientCommFactory {
 					e.printStackTrace();
 				}
 			}
+
+			@Override
+			public void postAction(Message createUpdateMessage) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void killInput() {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 
 	}
@@ -143,6 +155,18 @@ public class ClientCommFactory {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}
+
+			@Override
+			public void postAction(Message createUpdateMessage) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void killInput() {
+				// TODO Auto-generated method stub
+				
 			}
 		};
 

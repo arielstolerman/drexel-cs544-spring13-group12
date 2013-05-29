@@ -40,6 +40,9 @@ public class Message {
 	// shutdown
 		public static final Message SHUTDOWN = new Message(OP_SHUTDOWN);
 		
+	public static final Message AWAITING_CLIENT_INPUT = new Message((byte)-1);
+	
+		
 	// ERROR MESSAGES
 	// General catch-all error
 	public static final Message ERROR_GENERAL =
