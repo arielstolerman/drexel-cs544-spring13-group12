@@ -17,18 +17,18 @@ public class Shade extends Device {
 	
 	Shade() {}
 	
-	public Shade(String name, int deviceNumber) {
+	public Shade(String name, byte deviceNumber) {
 		super(name, deviceNumber);
 	}
 	
-	public Shade(String name, int deviceNumber, ShadeState state) {
+	public Shade(String name, byte deviceNumber, ShadeState state) {
 		super(name, deviceNumber);
 		this.state = state;
 	}
 	
 	// methods
 	
-	public Shade(String desc, int deviceNum, ShadeState state, byte[] parms) {
+	public Shade(String desc, byte deviceNum, ShadeState state, byte[] parms) {
 		super(desc, deviceNum);
 		this.state = state;
 		this.dimLevel = parms[0];

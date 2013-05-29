@@ -2,7 +2,11 @@ package client;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import devices.Device;
 import devices.DeviceType;
 import devices.House;
 
@@ -10,7 +14,7 @@ public class ClientInputThread extends Thread {
 	
 	private ClientComm clientComm;
 	private House house;
-	private boolean killInput = false;
+	private volatile boolean killInput = false;
 	
 	public ClientInputThread(ClientComm clientComm, House house) {
 		this.clientComm = clientComm;
@@ -19,38 +23,98 @@ public class ClientInputThread extends Thread {
 	
 	public void run() {
 		try {
+			boolean legalInput = false;
+			byte legalMin, legalMax;
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-			System.out.println("Modify which device Type?");
-			String deviceType = br.readLine();
-			if (killInput) return;
+			String input = null;
+			String msg;
 			
-			DeviceType dT = DeviceType.typeFromCode(Byte.parseByte(deviceType));
+			// get device type
+			// ---------------
+			// set legal configuration
+			DeviceType[] types = DeviceType.values();
+			legalMin = types[0].type();
+			legalMax = types[types.length - 1].type();
+			DeviceType selectedType = null;
+			// set message for user
+			msg = "Select device type:\n";
+			for (DeviceType type: types)
+				msg += "[" + type.type() + "] " + type + "  ";
+			// read until legal
+			while (!legalInput) {
+				System.out.println(msg);
+				input = br.readLine();
+				try {
+					byte code = Byte.parseByte(input);
+					if (code < legalMin || code > legalMax)
+						throw new Exception();
+					selectedType = DeviceType.typeFromCode(code);
+				} catch (Exception e) {
+					System.err.println("Illegal selection, try again");
+					continue;
+				}
+				// mark input is legal
+				legalInput = true;
+				if (killInput) return;
+			}
+			// reset
+			input = null;
+			legalInput = false;
 			
-			if (dT == DeviceType.NO_SUCH_DEVICE) {
-				throw new RuntimeException("Invalid device type.");
-			}			
+			// selected devices
+			List<Device> selectedDevices = house.devices().get(
+					selectedType.type());
+			Set<Byte> selectedDeviceNums = new HashSet<>();
+			for (Device d: selectedDevices)
+				selectedDeviceNums.add(d.deviceNumber());
 			
-			System.out.println("Modify which device Num?");
-			String deviceNum = br.readLine();
-			if (killInput) return;
+			// get device number
+			// -----------------
+			int selectedDevice = -1;
+			// set message for user
+			msg = "Select device:";
+			for (Device d: selectedDevices)
+				msg += "\n[" + d.deviceNumber() + "] " + d.name().trim();
+			// read user input until legal
+			while (!legalInput) {
+				System.out.println(msg);
+				try {
+					input = br.readLine();
+					selectedDevice = Byte.parseByte(input);
+					if (!selectedDeviceNums.contains(selectedDevice))
+						throw new Exception();
+				} catch (Exception e) {
+					System.err.println("Illegal selection, try again");
+					continue;
+				}
+				// mark input is legal
+				legalInput = true;
+				if (killInput) return;
+			}
+			// reset
+			input = null;
+			legalInput = false;
+			
+			// operation
+			// ---------
 			
 			System.out.println("What operation?");
-			dT.printOpCode();
+			selectedType.printOpCode();
 			String opcode = br.readLine();
 			if (killInput) return;
 			
 			byte opcode_b = Byte.parseByte(opcode);
 			
 			String parameters = null;
-			if (dT.parmCount(opcode_b) > 0) {
+			if (selectedType.parmCount(opcode_b) > 0) {
 				System.out.println("What parameters?");
-				dT.printParms(opcode_b);
+				selectedType.printParms(opcode_b);
 				parameters = br.readLine();				
 			}
 			
 			if (killInput) return;
 			
-			postAction(dT, deviceNum, opcode_b, parameters);
+			postAction(selectedType, selectedDevice + "", opcode_b, parameters);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

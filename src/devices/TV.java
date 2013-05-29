@@ -19,18 +19,18 @@ public class TV extends Device {
 	
 	TV() {}
 	
-	public TV(String name, int deviceNumber) {
+	public TV(String name, byte deviceNumber) {
 		super(name, deviceNumber);
 	}
 	
-	public TV(String name, int deviceNumber, TVState state) {
+	public TV(String name, byte deviceNumber, TVState state) {
 		super(name, deviceNumber);
 		this.state = state;
 	}
 	
 	// methods
 	
-	public TV(String name, int deviceNumber, TVState state, byte[] parms) {
+	public TV(String name, byte deviceNumber, TVState state, byte[] parms) {
 		super(name, deviceNumber);
 		this.state = state;
 		this.channel = parms[0];

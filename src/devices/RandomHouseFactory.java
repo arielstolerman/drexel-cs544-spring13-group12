@@ -23,7 +23,7 @@ public class RandomHouseFactory implements HouseFactory {
 		int numLights = 1 + rand.nextInt(MAX_DEVICES_PER_TYPE);
 		for (int i = 0; i < numLights; i++) {
 			LightState s = (rand.nextInt(2) == 0 ? LightState.OFF : LightState.ON);
-			Light d = new Light("light_" + i, i, s);
+			Light d = new Light("light_" + i, (byte) i, s);
 			try {
 				d.dim((byte) rand.nextInt(256));
 			} catch (Exception e) {}
@@ -34,7 +34,7 @@ public class RandomHouseFactory implements HouseFactory {
 		for (int i = 0; i < numShades; i++) {
 			ShadeState s = (rand.nextInt(2) == 0 ? ShadeState.UP
 					: ShadeState.DOWN);
-			Shade d = new Shade("shade_" + i, i, s);
+			Shade d = new Shade("shade_" + i, (byte) i, s);
 			try {
 				d.dim((byte) rand.nextInt(256));
 			} catch (Exception e) {}
@@ -45,7 +45,7 @@ public class RandomHouseFactory implements HouseFactory {
 		for (int i = 0; i < numAirCons; i++) {
 			AirConState s = (rand.nextInt(2) == 0 ? AirConState.OFF
 					: AirConState.ON);
-			AirCon d = new AirCon("aircon_" + i, i, s);
+			AirCon d = new AirCon("aircon_" + i, (byte) i, s);
 			try {
 				d.setTemp((byte) rand.nextInt(256));
 			} catch (Exception e) {}
@@ -56,7 +56,7 @@ public class RandomHouseFactory implements HouseFactory {
 		for (int i = 0; i < numTVs; i++) {
 			TVState s = (rand.nextInt(2) == 0 ? TVState.OFF
 					: TVState.ON);
-			TV d = new TV("tv_" + i, i, s);
+			TV d = new TV("tv_" + i, (byte) i, s);
 			try {
 				d.setChannel((byte) rand.nextInt(256));
 				d.setVolume((byte) rand.nextInt(256));
@@ -76,7 +76,7 @@ public class RandomHouseFactory implements HouseFactory {
 				s = AlarmState.ARMED;
 				break;
 			}
-			Alarm d = new Alarm("alarm_" + i, i, s);
+			Alarm d = new Alarm("alarm_" + i, (byte) i, s);
 			house.addDevice(d);
 		}
 		
