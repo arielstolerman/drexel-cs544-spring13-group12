@@ -192,10 +192,17 @@ public class DFA {
 				return Message.SHUTDOWN;
 			} else if (inMsg.length() > 0 && inMsg.opcode() == Message.OP_ACTION) {
 				Action action = new Action(inMsg);
-				house.doAction(action);
+				try {
+					house.doAction(action);
+				} catch (Exception e) {
+					// action failed
+					System.err.println("Action failed: " + e.getMessage());
+					return Message.createConfirm(action.sequenceNumber(), false);
+				}
+				// action succeeded
 				house.prettyPrint();
 				broadcastStateChange(inMsg);
-				return Message.createConfirm(action.sequenceNumber());
+				return Message.createConfirm(action.sequenceNumber(), true);
 			} else {
 				return Message.ERROR_GENERAL;
 			}
