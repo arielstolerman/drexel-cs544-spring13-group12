@@ -50,11 +50,11 @@ public class TV extends Device {
 	
 	// methods
 	
-	public TV(String name, byte deviceNumber, TVState state, byte[] parms) {
+	public TV(String name, byte deviceNumber, TVState state, byte[] params) {
 		super(name, deviceNumber);
 		this.state = state;
-		this.channel = parms[0];
-		this.volume = parms[1];
+		this.channel = params[0];
+		this.volume = params[1];
 	}
 
 	public byte deviceType() {
