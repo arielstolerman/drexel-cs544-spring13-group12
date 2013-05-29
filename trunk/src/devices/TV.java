@@ -17,6 +17,8 @@ public class TV extends Device {
 	
 	// constructors
 	
+	TV() {}
+	
 	public TV(String name, int deviceNumber) {
 		super(name, deviceNumber);
 	}

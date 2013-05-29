@@ -1,5 +1,6 @@
 package devices;
 
+import protocol.Message;
 import common.Util;
 
 public class Light extends Device {
@@ -14,6 +15,8 @@ public class Light extends Device {
 	private byte dimLevel;
 	
 	// constructors
+	
+	Light() {}
 	
 	public Light(String name, int deviceNumber) {
 		super(name, deviceNumber);
@@ -114,6 +117,17 @@ public class Light extends Device {
 	public String toPrettyString() {
 		return String.format("#%03d %-16s %-10s dim-level: %d",
 				deviceNumber, name, state, dimLevel);
+	}
+	
+	public Message getActionMessage(byte sequenceNumber, byte opcode, byte[] parameters) {
+		Action action = new Action(sequenceNumber, this.deviceType(), (byte) this.deviceNumber, opcode, parameters);
+		return action.toMessage();
+	}
+	
+	public void printOpCodes() {
+		System.out.println("Turn on: 0");
+		System.out.println("Turn off: 1");
+		System.out.println("Dim: 2");
 	}
 }
 

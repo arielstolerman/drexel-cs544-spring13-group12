@@ -15,6 +15,8 @@ public class AirCon extends Device {
 	
 	// constructors
 	
+	AirCon() {}
+	
 	public AirCon(String name, int deviceNumber) {
 		super(name, deviceNumber);
 	}
