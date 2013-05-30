@@ -82,8 +82,6 @@ enum ProtocolState {
 	C_AWAITS_CHALLENGE	("Client awaits challenge"),
 	S_AWAITS_RESPONSE	("Server awaits response"),
 	C_AWAITS_INIT		("Client awaits init"),
-	//CONNECTED(""),
-	//CONNECTED_PENDING(""), 
 	S_AWAITS_ACTION		("Server awaits action"), 
 	C_AWAITS_CONFIRM	("Client awaits confirmation");
 	
@@ -98,14 +96,3 @@ enum ProtocolState {
 		return desc;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
