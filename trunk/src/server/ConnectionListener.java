@@ -13,6 +13,7 @@ import devices.House;
 public class ConnectionListener implements Runnable {
 	
 	// fields
+	private static int ID_COUNTER = 0;
 	private List<ServerComm> sList = new ArrayList<ServerComm>();
 	private boolean shutdown = false;
 	private House house;
@@ -37,7 +38,10 @@ public class ConnectionListener implements Runnable {
 						}
 					}
 				}
-				ServerComm serverComm = new ServerComm(this, commSocket,
+				ServerComm serverComm = new ServerComm(
+						ID_COUNTER++,
+						this,
+						commSocket,
 						new ServerDFA(house, this));
 				sList.add(serverComm);
 				Thread thread = new Thread(serverComm);

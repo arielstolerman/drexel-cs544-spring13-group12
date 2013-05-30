@@ -100,8 +100,18 @@ public abstract class Device {
 			}
 		}
 	}
-
+	
+	
 	public Message getActionMessage(byte sequenceNumber, byte opcode, byte[] parameters) {
-		throw new RuntimeException("getActionMessage not implemented");		
+		byte[] b = new byte[5 + parameters.length];
+		int i = 0;
+		b[i++] = Message.OP_ACTION;
+		b[i++] = sequenceNumber;
+		b[i++] = deviceType();
+		b[i++] = deviceNumber;
+		b[i++] = opcode;
+		for (byte param: parameters)
+			b[i++] = param;
+		return new Message(b);		
 	}
 }
