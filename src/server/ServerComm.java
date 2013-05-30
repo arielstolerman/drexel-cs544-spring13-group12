@@ -4,8 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import protocol.DFA;
-import protocol.Message;
+import protocol.*;
 
 
 public class ServerComm implements Runnable {
@@ -18,7 +17,7 @@ public class ServerComm implements Runnable {
 	private ConcurrentLinkedQueue<Message> sendQueue =
 			new ConcurrentLinkedQueue<>();
 
-	public ServerComm(ConnectionListener cl, Socket s, DFA dfa) {
+	public ServerComm(ConnectionListener cl, Socket s, ServerDFA dfa) {
 		this.connectionListener = cl;
 		this.socket = s;
 		this.dfa = dfa;
@@ -58,7 +57,7 @@ public class ServerComm implements Runnable {
 				}
 				Message inMsg = Message.fromHexString(inBuff);
 				        inMsg.prettyPrint("C");
-				Message outMsg = dfa.serverProcess(inMsg);
+				Message outMsg = dfa.process(inMsg);
 				
 				// check for shutdown
 				if (outMsg.opcode() == Message.OP_SHUTDOWN) {

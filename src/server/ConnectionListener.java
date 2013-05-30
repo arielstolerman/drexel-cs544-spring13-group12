@@ -3,11 +3,9 @@ package server;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import protocol.DFA;
-import protocol.Message;
+import protocol.*;
 
 
 import devices.House;
@@ -40,7 +38,7 @@ public class ConnectionListener implements Runnable {
 					}
 				}
 				ServerComm serverComm = new ServerComm(this, commSocket,
-						new DFA(house, this));
+						new ServerDFA(house, this));
 				sList.add(serverComm);
 				Thread thread = new Thread(serverComm);
 				thread.start();

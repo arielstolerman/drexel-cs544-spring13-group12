@@ -1,15 +1,10 @@
 package client;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import protocol.DFA;
-import protocol.Message;
+import protocol.*;
 
 import common.Util;
 
@@ -30,7 +25,7 @@ public class ClientCLI implements ClientComm {
 		this.port = port;
 		this.user = user;
 		this.pass = pass;
-		this.dfa = new DFA(this, user, pass);
+		this.dfa = new ClientDFA(this, user, pass);
 	}
 	
 	@Override
@@ -47,7 +42,7 @@ public class ClientCLI implements ClientComm {
 			BufferedWriter bw = new BufferedWriter(
 					new OutputStreamWriter(socket.getOutputStream()));
 			
-			write(dfa.clientProcess(null), bw); //POKE
+			write(dfa.process(null), bw); //POKE
 			
 			while (true) {
 				String line = read(socket, br);
@@ -62,7 +57,7 @@ public class ClientCLI implements ClientComm {
 					inMsg = Message.fromHexString(line);
 				}
 				inMsg.prettyPrint("S");
-				Message outMsg = dfa.clientProcess(inMsg);
+				Message outMsg = dfa.process(inMsg);
 				
 				if (outMsg == null) {
 					throw new RuntimeException("Invalid Out Message.");
@@ -80,7 +75,7 @@ public class ClientCLI implements ClientComm {
 
 	private void createClientInputThread() {
 		if (this.clientInputThread == null) {
-			this.clientInputThread = new ClientInputThread(this, this.dfa.getHouse());
+			this.clientInputThread = new ClientInputThread(this, this.dfa.house());
 			this.clientInputThread.start();
 		}		
 	}
@@ -132,9 +127,13 @@ public class ClientCLI implements ClientComm {
 	public String pass() {
 		return pass;
 	}
+	
+	public Message postedActionMessage() {
+		return postedMessage;
+	}
 
-	public void postAction(Message createUpdateMessage) {
-		this.postedMessage = createUpdateMessage;
+	public void postAction(Message actionMessage) {
+		this.postedMessage = actionMessage;
 	}
 	
 	public void killInput() {
