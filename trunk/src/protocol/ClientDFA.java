@@ -10,7 +10,6 @@ public class ClientDFA extends DFA {
 	private String user = null;
 	private String pass = null;
 	private Message response;
-	private Action action;
 
 	// constructors
 	
