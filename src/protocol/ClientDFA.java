@@ -24,8 +24,13 @@ public class ClientDFA extends DFA {
 
 	@Override
 	protected Message processIdle(Message m) {
-		state = ProtocolState.C_AWAITS_VERSION;
-		return Message.POKE;
+		if (m.opcode() == Message.OP_INTERNAL) {
+			state = ProtocolState.C_AWAITS_VERSION;
+			return Message.POKE;
+		}
+		// error: go back to idle and return error message
+		this.state = ProtocolState.IDLE;
+		return Message.ERROR_GENERAL;
 	}
 
 	@Override
@@ -125,8 +130,7 @@ public class ClientDFA extends DFA {
 			boolean confirmed = b[2] == 1;
 			if (confirmed) {
 				// apply confirmed message internally
-				Action action = new Action(
-						((ClientCLI) clientComm).postedActionMessage());
+				Action action = new Action(clientComm.getPostedAction());
 				try {
 					house.doAction(action);
 				} catch (Exception e) {

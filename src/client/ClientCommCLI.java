@@ -8,25 +8,41 @@ import protocol.*;
 
 import common.Util;
 
-public class ClientCLI implements ClientComm {
+public class ClientCommCLI implements ClientComm {
 
+	// indicator to flag the client to process user input
 	private static final String POSTED_MESSAGE = "POSTED_MESSAGE";
+	
+	// fields
+	
 	private String host;
 	private int port;
 	private String user;
 	private String pass;
 	private DFA dfa;
-	private boolean shutdown = false;
+	private volatile boolean shutdown = false;
 	private ClientInputThread clientInputThread;
-	private Message postedMessage;
+	private Message postedAction;
 	
-	public ClientCLI(String host, int port, String user, String pass) {
+	// constructors
+	
+	/**
+	 * Constructor for a client communication handler with a CLI for processing
+	 * client input.
+	 * @param host the host to connect to.
+	 * @param port the port to connect to.
+	 * @param user client username.
+	 * @param pass client password.
+	 */
+	public ClientCommCLI(String host, int port, String user, String pass) {
 		this.host = host;
 		this.port = port;
 		this.user = user;
 		this.pass = pass;
 		this.dfa = new ClientDFA(this, user, pass);
 	}
+	
+	// methods
 	
 	@Override
 	public void run() {
@@ -42,17 +58,18 @@ public class ClientCLI implements ClientComm {
 			BufferedWriter bw = new BufferedWriter(
 					new OutputStreamWriter(socket.getOutputStream()));
 			
-			write(dfa.process(null), bw); //POKE
+			// poke
+			write(dfa.process(Message.INTERNAL), bw);
 			
 			while (true) {
+				// read next message from input
 				String line = read(socket, br);
 				if (line == null) return;
-
 				
 				Message inMsg = null;
 				if (line == POSTED_MESSAGE) {
-					inMsg = postedMessage;
-					postedMessage = null;
+					inMsg = postedAction;
+					postedAction = null;
 				} else {
 					inMsg = Message.fromHexString(line);
 				}
@@ -73,6 +90,10 @@ public class ClientCLI implements ClientComm {
 		}
 	}
 
+	/**
+	 * Initializes the client input thread, that runs in parallel to the client
+	 * listening on server updates.
+	 */
 	private void createClientInputThread() {
 		if (this.clientInputThread == null) {
 			this.clientInputThread = new ClientInputThread(this, this.dfa.house());
@@ -80,8 +101,9 @@ public class ClientCLI implements ClientComm {
 		}		
 	}
 	
-	
-
+	/**
+	 * Utility method to read from the input buffer.
+	 */
 	private String read(Socket socket, BufferedReader br) throws IOException {
 		String line = null;
 		while (line == null) {
@@ -97,7 +119,7 @@ public class ClientCLI implements ClientComm {
 					socket.close();
 					return null;
 				}
-				if (this.postedMessage != null) {
+				if (this.postedAction != null) {
 					return POSTED_MESSAGE;
 				}
 			}
@@ -105,9 +127,12 @@ public class ClientCLI implements ClientComm {
 		return line;
 	}
 
-	private void write(Message M, BufferedWriter bw) throws IOException {
-		M.prettyPrint("C");
-		M.write(bw);
+	/**
+	 * Utility method to write to the output buffer.
+	 */
+	private void write(Message m, BufferedWriter bw) throws IOException {
+		m.prettyPrint("C");
+		m.write(bw);
 	}
 	
 	// getters
@@ -128,12 +153,14 @@ public class ClientCLI implements ClientComm {
 		return pass;
 	}
 	
-	public Message postedActionMessage() {
-		return postedMessage;
-	}
-
+	// overriding
+	
 	public void postAction(Message actionMessage) {
-		this.postedMessage = actionMessage;
+		this.postedAction = actionMessage;
+	}
+	
+	public Message getPostedAction() {
+		return postedAction;
 	}
 	
 	public void killInput() {
