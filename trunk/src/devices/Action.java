@@ -13,20 +13,19 @@ public class Action {
 	 */
 	private byte[] stream;
 	
-	public Action(byte sequenceNumber, byte deviceType, byte deviceNumber, byte opcode, byte parms[]) {
-		this.stream = new byte[5 + parms.length];
+	// constructors
+	
+	public Action(byte sequenceNumber, byte deviceType, byte deviceNumber, byte opcode, byte params[]) {
+		this.stream = new byte[5 + params.length];
 		stream[0] = Message.OP_ACTION;
 		stream[1] = sequenceNumber;
 		stream[2] = deviceType;
 		stream[3] = deviceNumber;
 		stream[4] = opcode;
-		
-		for (int i = 0; i < parms.length; i++) {
-			stream[5+i] = parms[i];
+		for (int i = 0; i < params.length; i++) {
+			stream[5+i] = params[i];
 		}		
 	}
-	
-	// constructors
 	
 	/**
 	 * Constructs an action from the given action message, without making an
@@ -35,6 +34,14 @@ public class Action {
 	 */
 	public Action(Message inActionMsg) {
 		this.stream = inActionMsg.bytes();
+	}
+	
+	/**
+	 * Constructs an action from the given stream. Does not check validity.
+	 * @param stream
+	 */
+	public Action(byte[] stream) {
+		this.stream = stream;
 	}
 	
 	// methods
