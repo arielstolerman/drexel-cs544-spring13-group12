@@ -128,9 +128,9 @@ public class ClientDFA extends DFA {
 		if (m.opcode() == Message.OP_CONFIRM) {
 			byte[] b = m.bytes();
 			boolean confirmed = b[2] == 1;
+			Action action = new Action(clientComm.getPostedActionAndReset());
 			if (confirmed) {
 				// apply confirmed message internally
-				Action action = new Action(clientComm.getPostedActionAndReset());
 				try {
 					house.doAction(action);
 				} catch (Exception e) {
