@@ -36,10 +36,10 @@ public class Message {
 	public static final Message POKE = new Message(OP_POKE);
 	// server version
 	public static final Message SERVER_VERSION =
-			new Message(("RSHC " + Server.VERSION).getBytes(), OP_VERSION);
+			new Message((Server.VERSION).getBytes(), OP_VERSION);
 	// client version
 	public static final Message CLIENT_VERSION =
-			new Message(("RSHC " + Client.VERSION).getBytes(), OP_VERSION);
+			new Message((Client.VERSION).getBytes(), OP_VERSION);
 	// shutdown
 		public static final Message SHUTDOWN = new Message(OP_SHUTDOWN);
 		
