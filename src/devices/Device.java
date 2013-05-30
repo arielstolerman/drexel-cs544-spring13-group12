@@ -22,7 +22,7 @@ public abstract class Device {
 	 * @param deviceNumber
 	 */
 	public Device(String name, byte deviceNumber) {
-		this.name = name;
+		this.name = name.trim();
 		this.deviceNumber = deviceNumber;
 	}
 	

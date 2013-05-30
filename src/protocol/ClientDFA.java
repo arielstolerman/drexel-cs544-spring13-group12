@@ -130,7 +130,7 @@ public class ClientDFA extends DFA {
 			boolean confirmed = b[2] == 1;
 			if (confirmed) {
 				// apply confirmed message internally
-				Action action = new Action(clientComm.getPostedAction());
+				Action action = new Action(clientComm.getPostedActionAndReset());
 				try {
 					house.doAction(action);
 				} catch (Exception e) {

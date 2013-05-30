@@ -55,7 +55,7 @@ public class ClientCommFactory {
 			public void postAction(Message createUpdateMessage) {}
 			
 			@Override
-			public Message getPostedAction() { return null; }
+			public Message getPostedActionAndReset() { return null; }
 
 			@Override
 			public void killInput() {}
@@ -158,7 +158,7 @@ public class ClientCommFactory {
 			public void postAction(Message createUpdateMessage) {}
 			
 			@Override
-			public Message getPostedAction() { return null; }
+			public Message getPostedActionAndReset() { return null; }
 
 			@Override
 			public void killInput() {}
