@@ -107,10 +107,8 @@ public class ClientCommCLI implements ClientComm {
 	 * listening on server updates.
 	 */
 	private void createClientInputThread() {
-		if (this.clientInputThread == null) {
-			this.clientInputThread = new ClientInputThread(this, this.dfa.house());
-			this.clientInputThread.start();
-		}		
+		clientInputThread = new ClientInputThread(this, this.dfa.house());
+		clientInputThread.start();
 	}
 	
 	/**
