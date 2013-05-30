@@ -6,7 +6,7 @@ public interface ClientComm extends Runnable {
 
 	public void postAction(Message actionMessage);
 	
-	public Message getPostedAction();
+	public Message getPostedActionAndReset();
 
 	public void killInput();
 
