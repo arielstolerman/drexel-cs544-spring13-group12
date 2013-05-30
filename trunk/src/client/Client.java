@@ -4,7 +4,7 @@ public class Client {
 	
 	// client configuration
 	public static final int LISTEN_TIMEOUT_MS = 1000;
-	public static final String VERSION = "RSHC 0000";
+	public static final String VERSION = "RSHC 0001";
 	private static final String DEFAULT_HOST = "127.0.0.1";
 	private static final int DEFAULT_PORT = 7070;
 	
