@@ -4,8 +4,10 @@ import protocol.Message;
 
 public interface ClientComm extends Runnable {
 
-	void postAction(Message createUpdateMessage);
+	public void postAction(Message actionMessage);
+	
+	public Message getPostedAction();
 
-	void killInput();
+	public void killInput();
 
 }

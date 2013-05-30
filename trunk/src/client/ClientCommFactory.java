@@ -31,7 +31,7 @@ public class ClientCommFactory {
 	
 	public static ClientComm createClientCLI(String host, int port, String user,
 			String pass) {
-		return new ClientCLI(host, port, user, pass);
+		return new ClientCommCLI(host, port, user, pass);
 	}
 	
 	private static ClientComm createTest1() {
@@ -52,16 +52,13 @@ public class ClientCommFactory {
 			}
 
 			@Override
-			public void postAction(Message createUpdateMessage) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void postAction(Message createUpdateMessage) {}
+			
+			@Override
+			public Message getPostedAction() { return null; }
 
 			@Override
-			public void killInput() {
-				// TODO Auto-generated method stub
-				
-			}
+			public void killInput() {}
 		};
 
 	}
@@ -158,16 +155,13 @@ public class ClientCommFactory {
 			}
 
 			@Override
-			public void postAction(Message createUpdateMessage) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void postAction(Message createUpdateMessage) {}
+			
+			@Override
+			public Message getPostedAction() { return null; }
 
 			@Override
-			public void killInput() {
-				// TODO Auto-generated method stub
-				
-			}
+			public void killInput() {}
 		};
 
 	}
