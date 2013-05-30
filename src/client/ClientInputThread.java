@@ -53,7 +53,7 @@ public class ClientInputThread extends Thread {
 				}
 				// mark input is legal
 				legalInput = true;
-				if (killInput) return;
+				if (killInput) continue;
 			}
 			// reset
 			input = null;
@@ -87,7 +87,7 @@ public class ClientInputThread extends Thread {
 				}
 				// mark input is legal
 				legalInput = true;
-				if (killInput) return;
+				if (killInput) continue;
 			}
 			// reset
 			input = null;
@@ -120,7 +120,7 @@ public class ClientInputThread extends Thread {
 				}
 				// mark input is legal
 				legalInput = true;
-				if (killInput) return;
+				if (killInput) continue;
 			}
 			// reset
 			input = null;
@@ -163,7 +163,7 @@ public class ClientInputThread extends Thread {
 					}
 					// mark input is legal
 					legalInput = true;
-					if (killInput) return;
+					if (killInput) continue;
 				}
 			}
 			
