@@ -9,6 +9,7 @@ import protocol.*;
 
 public class ServerComm implements Runnable {
 	
+	private int id;
 	private ConnectionListener connectionListener;
 	private boolean shutdown = false;
 	private Socket socket;
@@ -17,7 +18,8 @@ public class ServerComm implements Runnable {
 	private ConcurrentLinkedQueue<Message> sendQueue =
 			new ConcurrentLinkedQueue<>();
 
-	public ServerComm(ConnectionListener cl, Socket s, ServerDFA dfa) {
+	public ServerComm(int id, ConnectionListener cl, Socket s, ServerDFA dfa) {
+		this.id = id;
 		this.connectionListener = cl;
 		this.socket = s;
 		this.dfa = dfa;
@@ -46,7 +48,7 @@ public class ServerComm implements Runnable {
 					} catch (SocketTimeoutException e) {
 						while (!sendQueue.isEmpty()) {
 							Message outMsg = sendQueue.remove();
-							outMsg.prettyPrint("S");
+							outMsg.prettyPrint("S ");
 							outMsg.write(bw);
 						}
 						if (shutdown) {
@@ -56,7 +58,7 @@ public class ServerComm implements Runnable {
 					}
 				}
 				Message inMsg = Message.fromHexString(inBuff);
-				        inMsg.prettyPrint("C");
+				        inMsg.prettyPrint("C" + id);
 				Message outMsg = dfa.process(inMsg);
 				
 				// check for shutdown
@@ -67,7 +69,7 @@ public class ServerComm implements Runnable {
 					return;
 				}
 				
-				outMsg.prettyPrint("S");
+				outMsg.prettyPrint("S ");
 				outMsg.write(bw);
 			}
 		} catch (Exception e) {
