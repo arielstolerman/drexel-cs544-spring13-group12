@@ -140,8 +140,15 @@ public class House {
 		}
 	}
 
-	public void doUpdate(Update update) {
-		// TODO IMPLEMENT doUPDATE();
+	public void doUpdate(Message updateMessage) throws Exception {
+		byte[] b = updateMessage.bytes();
+		byte[] actionBytes = new byte[b.length + 1];
+		actionBytes[0] = Message.OP_ACTION;
+		actionBytes[1] = 0x00;	// dummy sequence number
+		for (int i = 1; i < b.length; i++)
+			actionBytes[i + 1] = b[i];
+		Action a = new Action(actionBytes);
+		doAction(a);
 	}
 	
 	// getters

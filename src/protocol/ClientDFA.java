@@ -113,10 +113,7 @@ public class ClientDFA extends DFA {
 		}
 		// process server update
 		else if (m.opcode() == Message.OP_UPDATE) {
-			house.doUpdate(new Update(m.bytes()));
-			clientComm.killInput();
-			house.prettyPrint();
-			return Message.AWAITING_CLIENT_INPUT;
+			return processUpdate(m);
 		}
 		// error: go back to idle and return error message
 		this.state = ProtocolState.IDLE;
@@ -147,9 +144,33 @@ public class ClientDFA extends DFA {
 			}
 			return Message.AWAITING_CLIENT_INPUT;
 		}
+		// process server update
+		else if (m.opcode() == Message.OP_UPDATE) {
+			return processUpdate(m);
+		}
 		// error: go back to idle and return error message
 		this.state = ProtocolState.IDLE;
 		return Message.ERROR_GENERAL;
+	}
+	
+	/**
+	 * Should be called to process a server update (response to actions
+	 * performed by some other client).
+	 * @param m update message.
+	 * @return
+	 */
+	private Message processUpdate(Message m) {
+		try {
+			house.doUpdate(m);
+		} catch (Exception e) {
+			System.out.println("Internal error applying update on house");
+			state = ProtocolState.IDLE;
+			return Message.ERROR_GENERAL;
+		}
+		clientComm.killInput();
+		System.out.println("::: Update received from server :::");
+		house.prettyPrint();
+		return Message.AWAITING_CLIENT_INPUT;
 	}
 
 }
