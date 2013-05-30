@@ -8,7 +8,7 @@ import devices.RandomHouseFactory;
 public class Server {
 	
 	// server static configuration
-	public static final String VERSION = "0000";
+	public static final String VERSION = "RSHC 0000";
 	private static final long HOUSE_GEN_SEED = 4;
 	public static final int LISTEN_TIMEOUT_MS = 1000;
 	public static final int PORT = 7070;
