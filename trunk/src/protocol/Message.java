@@ -17,6 +17,7 @@ import devices.House;
 public class Message {
 	
 	// message types
+	public static final byte OP_INTERNAL =	-2;
 	public static final byte OP_POKE =		0;
 	public static final byte OP_VERSION =	1;
 	public static final byte OP_ERROR =		2;
@@ -28,7 +29,9 @@ public class Message {
 	public static final byte OP_UPDATE =	8;
 	public static final byte OP_SHUTDOWN =	9;
 	
-	// PREDEFINED MESSAGES
+	// predefined messages
+	// internal message - used only by client / server for internal processing
+	public static final Message INTERNAL = new Message(OP_INTERNAL);
 	// poke
 	public static final Message POKE = new Message(OP_POKE);
 	// server version

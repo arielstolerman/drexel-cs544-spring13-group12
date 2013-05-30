@@ -29,14 +29,11 @@ public class Action {
 	// constructors
 	
 	/**
-	 * Constructs an action from the given action message.
+	 * Constructs an action from the given action message, without making an
+	 * input check.
 	 * @param inActionMsg the action message to construct an action from.
-	 * @throws Exception if the input message is not an action message.
 	 */
-	public Action(Message inActionMsg) throws Exception {
-		if (inActionMsg.opcode() != Message.OP_ACTION)
-			throw new Exception("Unexpected message when initializing Action: "
-					+ inActionMsg.toPrettyString());
+	public Action(Message inActionMsg) {
 		this.stream = inActionMsg.bytes();
 	}
 	
