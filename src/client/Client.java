@@ -75,8 +75,10 @@ public class Client {
 		System.out.println("Expected arguments:");
 		System.out.println("[-host <host>] [-port <port>] -login <user>:<pass>");
 		System.out.println("E.g.: -host 127.0.0.1 -port 7070 -login myname:mypassword");
-		System.out.println("Default host: 127.0.0.1");
-		System.out.println("Default port: 7070");
+		System.out.println("*  Default host: 127.0.0.1");
+		System.out.println("*  Default port: 7070");
+		System.out.println("Or to run in test mode (send raw messages to the server):");
+		System.out.println("-test");
 		System.exit(-1);
 	}
 }
