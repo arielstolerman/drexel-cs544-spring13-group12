@@ -57,11 +57,12 @@ public class Client {
 		if (!test && (user == null || pass == null))
 			printUsageAndExit("user and password not given");
 		
-		// start
+		// start test mode
 		if (test) {
 			System.out.println(">>> TEST MODE");
 			cc = new ClientCommTester(host, port);
 		}
+		// start standard mode
 		else {
 			cc = new ClientCommCLI(host, port, user, pass);
 		}
