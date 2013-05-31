@@ -87,8 +87,10 @@ public class House {
 	 * @return the init message for this house.
 	 */
 	public byte[] getInit() {
+		// initialize byte stream and init opcode
 		List<Byte> bytes = new ArrayList<Byte>();
 		bytes.add((byte) Message.OP_INIT);
+		// iterate over devices and accumulate their encoding
 		for (List<Device> deviceList : devices) {			
 			bytes.add((byte) deviceList.size());
 			for (Device device : deviceList) {
@@ -96,15 +98,15 @@ public class House {
 			}
 		}
 		bytes.addAll(Util.toByteList("\n".getBytes()));
-		
+		// convert to array before return
 		byte bytesArr[] = new byte[bytes.size()];
 		for (int i = 0; i < bytesArr.length; i++) {
 			bytesArr[i] = bytes.get(i);
 		}
-		
 		return bytesArr;
 	}
 	
+	// used for pretty printing the state of the house
 	private static final String THIN_SEP =
 			"----------------------------------------" +
 			"------------------------------";
@@ -112,17 +114,23 @@ public class House {
 			"========================================" +
 			"==============================";
 	
+	/**
+	 * Prints the current state of the house - the list of all contained devices
+	 * and their states.
+	 */
 	public void prettyPrint() {
 		String ind = "       ";
 		String pre;
 		int devTypes = devices.size();
 		List<Device> devs;
 		
+		// print header
 		System.out.println(THICK_SEP);
 		System.out.println("House current state:");
 		System.out.println(String.format("%-7s%-4s %-16s %-10s %s",
 				"Type", "Num", "Name", "State", "Params"));
 		
+		// iterate over device types and print all devices
 		for (int devType = 0; devType < devTypes; devType++) {
 			System.out.println(THIN_SEP);
 			pre = String.format("%-7s",
@@ -137,15 +145,21 @@ public class House {
 		}	
 		System.out.println(THICK_SEP);
 	}
-
+	
+	/**
+	 * @return the house object generated from the given INIT message, used by
+	 * the client to construct the image of the house locally from the encoding
+	 * sent from the server.
+	 */
 	public static House createHouseFromInit(Message m) {
+		// initialize an empty house
 		House house = new House();
-		
 		byte[] b = m.bytes();
 		int index = 1;
-		
+		// iterate over device types and construct devices
 		for (byte deviceType = 0; deviceType < 5; deviceType++) {
 			int deviceCount = b[index++];
+			// construct device instances
 			for (byte deviceNum = 0; deviceNum < deviceCount; deviceNum++) {
 				int numParms = DeviceType.typeFromCodeSafe(deviceType)
 						.numParams();
@@ -153,15 +167,19 @@ public class House {
 				for (int k = 0; k < d.length; k++) {
 					d[k] = b[index++];
 				}
+				// create device and add to house
 				Device device = Device.createDeviceFromBytes(
 						DeviceType.typeFromCodeSafe(deviceType), deviceNum, d);
 				house.addDevice(device);
 			}
 		}
-		
 		return house;
 	}
 
+	/**
+	 * @return the action message generated from the given device type, number,
+	 * sequence number, opcode and parameters.
+	 */
 	public Message createActionMessage(byte deviceType, byte deviceNumber,
 			byte opcode, byte[] params) {
 		try {
@@ -173,7 +191,11 @@ public class House {
 		}
 	}
 
+	/**
+	 * Apply the update from the given update message on the house.
+	 */
 	public void doUpdate(Message updateMessage) throws Exception {
+		// disguise the update as an action
 		byte[] b = updateMessage.bytes();
 		byte[] actionBytes = new byte[b.length + 1];
 		actionBytes[0] = Message.OP_ACTION;
@@ -181,6 +203,7 @@ public class House {
 		for (int i = 1; i < b.length; i++)
 			actionBytes[i + 1] = b[i];
 		Action a = new Action(actionBytes);
+		// apply the action
 		doAction(a);
 	}
 	
@@ -192,5 +215,4 @@ public class House {
 	public List<List<Device>> devices() {
 		return devices;
 	}
-	
 }
