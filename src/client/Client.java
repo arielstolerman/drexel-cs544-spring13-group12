@@ -46,12 +46,25 @@ public class Client {
 				break;
 			}
 		}
-		if (user == null || pass == null)
+		// test client
+		boolean test = false;
+		for (int i = 0; i < args.length - 1; i++) {
+			if (args[i].equalsIgnoreCase("-test")) {
+				test = true;
+				break;
+			}
+		}
+		if (!test && (user == null || pass == null))
 			printUsageAndExit("user and password not given");
 		
 		// start
-		cc = ClientCommFactory.createClientCLI(host, port, user, pass);
-		//cc = ClientCommFactory.createTest(2);
+		if (test) {
+			System.out.println(">>> TEST MODE");
+			cc = new ClientCommTester(host, port);
+		}
+		else {
+			cc = new ClientCommCLI(host, port, user, pass);
+		}
 		Thread T = new Thread(cc);
 		T.start();
 	}
