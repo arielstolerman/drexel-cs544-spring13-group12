@@ -62,7 +62,7 @@ public class Message {
 	
 	
 	// GENERAL CONFIG
-	private static final int WRAP_SIZE = 70;
+	private static final int WRAP_SIZE = 60;
 	
 	// FIELDS
 	
@@ -243,14 +243,13 @@ public class Message {
 	 * @param sender
 	 */
 	public void prettyPrint(String sender) {
-		String prefix = Util.time() + " " + sender + " > ";
-		String indent = indent(prefix);
+		System.out.println(Util.time() + " " + sender + " >");
 		String raw = toPrettyString().replaceAll("\n", "\\n").replaceAll("\r", "\\r");
 		String bytecode = toHexString();
 		System.out.println(indentedWrapped(
-				prefix + "raw:  ", raw, WRAP_SIZE));
+				"raw:  ", raw, WRAP_SIZE));
 		System.out.println(indentedWrapped(
-				indent + "byte: ", bytecode, WRAP_SIZE));
+				"byte: ", bytecode, WRAP_SIZE));
 	}
 	
 	// UTILITY METHODS

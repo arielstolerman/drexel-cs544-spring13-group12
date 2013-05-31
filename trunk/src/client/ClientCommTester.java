@@ -74,6 +74,15 @@ public class ClientCommTester implements ClientComm {
 							m.opcode() == Message.OP_ERROR) {
 						break;
 					}
+					if (m.opcode() == Message.OP_CHALLENGE) {
+						System.out.println(">>> valid response message would be:");
+						System.out.println(Util.toHexString(
+								new Message(DESAuth.genUserSemiResponse(
+										"ariel",
+										"ariel123",
+										m.contentBytes()),
+										Message.OP_RESPONSE).bytes()));
+					}
 				}
 
 				// shutdown
@@ -169,4 +178,9 @@ public class ClientCommTester implements ClientComm {
 	
 	@Override
 	public void killInput() {}
+	
+	// run Client in test mode
+	public static void main(String[] args) {
+		Client.main(new String[]{"-test"});
+	}
 }
