@@ -9,13 +9,17 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: House.java
  * 
  * Purpose:
- * 
+ * Class for representing a house controlled by the protocol. The house
+ * maintains all device instances. The server holds a house object for the house
+ * it controls, and the clients receive encoding of the house, from which they
+ * generate a local image of the house they control remotely.
  * 
  * Relevant requirements (details in the file):
- * - 
+ * - SERVICE - the house is the core of the service, since the entire purpose of
+ *   the protocol is to remotely control the house.
  * 
  * =============================================================================
  */
@@ -32,10 +36,17 @@ import common.Util;
 public class House {
 	
 	// fields
-	// list of devices available in the house
 	
+	/**
+	 * List of devices available in the house
+	 */
 	private List<List<Device>> devices = new ArrayList<List<Device>>();
+	/**
+	 * Sequence number field, used for tracking actions generated to be applied
+	 * on the house devices.
+	 */
 	private byte sequenceNumber = 0;
+	
 	// constructors
 	
 	/**
@@ -81,10 +92,10 @@ public class House {
 		for (List<Device> deviceList : devices) {			
 			bytes.add((byte) deviceList.size());
 			for (Device device : deviceList) {
-				bytes.addAll(Util.toByteArray(device.getBytes()));
+				bytes.addAll(Util.toByteList(device.getBytes()));
 			}
 		}
-		bytes.addAll(Util.toByteArray("\n".getBytes()));
+		bytes.addAll(Util.toByteList("\n".getBytes()));
 		
 		byte bytesArr[] = new byte[bytes.size()];
 		for (int i = 0; i < bytesArr.length; i++) {

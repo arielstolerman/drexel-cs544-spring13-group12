@@ -9,13 +9,16 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: Action.java
  * 
  * Purpose:
+ * Class for presenting an action that can be applied on a device. Provides
+ * functionality for converting the action to a message that can be passed to
+ * and from the server.
  * 
- * 
- * Relevant requirements (details in the file):
- * - 
+ * Relevant requirements:
+ * - SERVICE - handling client actions to be applied on devices in the house
+ *   is part of the protocol's service
  * 
  * =============================================================================
  */
@@ -37,6 +40,10 @@ public class Action {
 	
 	// constructors
 	
+	/**
+	 * Constructs a new action from the given sequence number, device type code,
+	 * device number, operation code and operation parameters.
+	 */
 	public Action(byte sequenceNumber, byte deviceType, byte deviceNumber, byte opcode, byte params[]) {
 		this.stream = new byte[5 + params.length];
 		stream[0] = Message.OP_ACTION;
