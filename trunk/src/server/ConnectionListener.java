@@ -5,6 +5,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.*;
 
+import common.Util;
+
 import protocol.*;
 
 
@@ -26,6 +28,7 @@ public class ConnectionListener implements Runnable {
 		try {
 			ServerSocket servSocket = new ServerSocket(Server.PORT);
 			servSocket.setSoTimeout(Server.LISTEN_TIMEOUT_MS);
+			System.out.println(Util.dateTime() + " -- Server started\n");
 			while (true) {
 				Socket commSocket = null;
 				while (commSocket == null) {

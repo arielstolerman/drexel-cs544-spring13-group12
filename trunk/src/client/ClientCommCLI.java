@@ -97,7 +97,12 @@ public class ClientCommCLI implements ClientComm {
 					if (outMsg == Message.SHUTDOWN) break;
 				}					
 			}
-				
+			
+			// shutdown
+			socket.close();
+			System.out.println(Util.dateTime() + " -- Client " + user
+					+ " disconnected\n");
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
