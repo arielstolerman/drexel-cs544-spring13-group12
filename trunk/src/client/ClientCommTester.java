@@ -35,43 +35,59 @@ public class ClientCommTester implements ClientComm {
 	@Override
 	public void run() {
 		try {
-			Socket socket = new Socket(host, port);
-			socket.setSoTimeout(Client.LISTEN_TIMEOUT_MS);
-			
-			System.out.println(Util.dateTime() + " -- TEST CLIENT CONNECTED\n");
-			
-			BufferedReader br = new BufferedReader(
-					new InputStreamReader(socket.getInputStream()));
-			BufferedWriter bw = new BufferedWriter(
-					new OutputStreamWriter(socket.getOutputStream()));
-			
-			Message m;
-			
-			// collect user input, send to server and process response
-			while (true) {
-				// read message from user and send to server
-				m = getUserInputMessage();
-				
-				// send message to server
-				System.out.println(">>> sending message to server:");
-				m.prettyPrint("TEST CLIENT");
-				write(m, bw);
-				
-				// shutdown if necessary
-				if (m.opcode() == Message.OP_SHUTDOWN)
-					break;
-				
-				// read message from server
-				System.out.println(">>> reading response from server:");
-				String line = read(socket, br);
-				if (line == null) return;
-				m = Message.fromHexString(line);
-				m.prettyPrint("SERVER");
+			boolean connect = true;
+			while (connect) {
+				Socket socket = new Socket(host, port);
+				socket.setSoTimeout(Client.LISTEN_TIMEOUT_MS);
+
+				System.out.println(Util.dateTime() + " -- TEST CLIENT CONNECTED\n");
+
+				BufferedReader br = new BufferedReader(
+						new InputStreamReader(socket.getInputStream()));
+				BufferedWriter bw = new BufferedWriter(
+						new OutputStreamWriter(socket.getOutputStream()));
+
+				Message m;
+
+				// collect user input, send to server and process response
+				while (true) {
+					// read message from user and send to server
+					m = getUserInputMessage();
+
+					// send message to server
+					System.out.println(">>> sending message to server:");
+					m.prettyPrint("TEST CLIENT");
+					write(m, bw);
+
+					// shutdown if necessary
+					if (m.opcode() == Message.OP_SHUTDOWN) {
+						connect = false;
+						break;
+					}
+
+					// read message from server
+					System.out.println(">>> reading response from server:");
+					String line = read(socket, br);
+					if (line == null) return;
+					m = Message.fromHexString(line);
+					m.prettyPrint("SERVER");
+					
+					if (m.opcode() == Message.OP_SHUTDOWN ||
+							m.opcode() == Message.OP_ERROR) {
+						System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+								"~~~~~~~~~~~~~~~~~~");
+						System.out.println("shutdown / error received from server");
+						System.out.println("reconnecting");
+						System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+								"~~~~~~~~~~~~~~~~~~");
+						System.out.println();
+					}
+				}
+
+				// shutdown
+				socket.close();
+				System.out.println(Util.dateTime() + " -- TEST CLIENT DISCONNECTED");
 			}
-			
-			// shutdown
-			socket.close();
-			System.out.println(Util.dateTime() + " -- TEST CLIENT DISCONNECTED");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
