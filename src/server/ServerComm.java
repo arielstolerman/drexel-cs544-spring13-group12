@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import common.Util;
+
 import protocol.*;
 
 
@@ -34,7 +36,9 @@ public class ServerComm implements Runnable {
 					socket.getOutputStream()));
 			
 			socket.setSoTimeout(Server.LISTEN_TIMEOUT_MS);  //throw SocketTimeoutException every 1s if nothing to read.  Use this to check for shutdown.
-
+			
+			System.out.println(Util.dateTime() + " -- Connection with C" + id +
+					" initiated");
 			while (true) {
 				String inBuff = null;
 				while (inBuff == null) {
@@ -66,6 +70,8 @@ public class ServerComm implements Runnable {
 					this.shutdown = true;
 					connectionListener.remove(this);
 					socket.close();
+					System.out.println(Util.dateTime() + " -- Connection with C"
+							+ id + " terminated");
 					return;
 				}
 				
