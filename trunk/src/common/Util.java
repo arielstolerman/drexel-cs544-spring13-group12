@@ -9,13 +9,14 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: Util.java
  * 
  * Purpose:
+ * Utility methods unrelated to any particular part of the protocol. Include
+ * procedures for string to byte-stream conversion (and vice-versa), date and
+ * time etc.
  * 
- * 
- * Relevant requirements (details in the file):
- * - 
+ * Relevant requirements: - NONE -
  * 
  * =============================================================================
  */
@@ -27,6 +28,10 @@ import java.util.*;
 
 public class Util {
 
+	/**
+	 * @return concats the given character to the given name until reached the
+	 * given string length.
+	 */
 	public static String bufferLeft(char c, int i, String name) {
 		while (name.length() < i) {
 			name = c + name;
@@ -59,15 +64,21 @@ public class Util {
 		return res;
 	}
 	
-	public static List<Byte> toByteArray(byte[] bytes) {
+	/**
+	 * @return a list of bytes constructed from the given array of bytes.
+	 */
+	public static List<Byte> toByteList(byte[] bytes) {
 		List<Byte> l = new ArrayList<Byte>();
 		for (int i = 0; i < bytes.length; i++) {
 			l.add(bytes[i]);
 		}
-		
 		return l;
 	}
 
+	/**
+	 * @return the given stream of bytes with the ordinal and parameters
+	 * concatenated to it.
+	 */
 	public static byte[] cat(byte[] bytes, byte ordinal, byte[] params) {
 		byte b[] = new byte[bytes.length + 1 + params.length];
 		// name
@@ -116,12 +127,3 @@ public class Util {
 		return date() + " " + time();
 	}
 }
-
-
-
-
-
-
-
-
-
