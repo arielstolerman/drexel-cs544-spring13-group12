@@ -1,8 +1,7 @@
 package client;
 
 import java.io.*;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
+import java.net.*;
 
 import protocol.*;
 
@@ -34,9 +33,9 @@ public class ClientCommTester implements ClientComm {
 	
 	@Override
 	public void run() {
-		try {
-			boolean connect = true;
-			while (connect) {
+		boolean connect = true;
+		while (connect) {
+			try {
 				Socket socket = new Socket(host, port);
 				socket.setSoTimeout(Client.LISTEN_TIMEOUT_MS);
 
@@ -56,7 +55,6 @@ public class ClientCommTester implements ClientComm {
 
 					// send message to server
 					System.out.println(">>> sending message to server:");
-					m.prettyPrint("TEST CLIENT");
 					write(m, bw);
 
 					// shutdown if necessary
@@ -70,27 +68,32 @@ public class ClientCommTester implements ClientComm {
 					String line = read(socket, br);
 					if (line == null) return;
 					m = Message.fromHexString(line);
-					m.prettyPrint("SERVER");
+					m.prettyPrint("S");
 					
 					if (m.opcode() == Message.OP_SHUTDOWN ||
 							m.opcode() == Message.OP_ERROR) {
-						System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
-								"~~~~~~~~~~~~~~~~~~");
-						System.out.println("shutdown / error received from server");
-						System.out.println("reconnecting");
-						System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
-								"~~~~~~~~~~~~~~~~~~");
-						System.out.println();
+						break;
 					}
 				}
 
 				// shutdown
 				socket.close();
 				System.out.println(Util.dateTime() + " -- TEST CLIENT DISCONNECTED");
+				
+				if (connect) {
+					System.out.println();
+					System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+							"~~~~~~~~~~~~~~~~~~");
+					System.out.println("shutdown / error received from server");
+					System.out.println("reconnecting");
+					System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+							"~~~~~~~~~~~~~~~~~~");
+					System.out.println();
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -126,11 +129,14 @@ public class ClientCommTester implements ClientComm {
 			try {
 				line = br.readLine();
 				if (line == null) {
-					//server closed connection
 					socket.close();
 					return null;
 				}
-			} catch (SocketTimeoutException ste) {}
+			} catch (SocketException e) {
+				System.err.println("socket exception thrown:");
+				e.printStackTrace();
+				return null;
+			}
 		}
 		return line;
 	}
