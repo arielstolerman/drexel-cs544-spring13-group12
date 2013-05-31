@@ -105,6 +105,7 @@ public class ClientInputThread extends Thread {
 			
 			// selected device
 			Device selectedDevice = selectedDevices.get(selectedDeviceIndex);
+			System.out.println("selected device: " + selectedDevice.toPrettyString());
 			
 			// operation
 			// ---------
