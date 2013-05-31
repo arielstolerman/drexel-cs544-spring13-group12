@@ -56,7 +56,7 @@ public class ServerComm implements Runnable {
 							outMsg.write(bw);
 						}
 						if (shutdown) {
-							socket.close();
+							shutdown();
 							return;
 						}
 					}
@@ -67,11 +67,8 @@ public class ServerComm implements Runnable {
 				
 				// check for shutdown
 				if (outMsg.opcode() == Message.OP_SHUTDOWN) {
-					this.shutdown = true;
-					connectionListener.remove(this);
-					socket.close();
-					System.out.println(Util.dateTime() + " -- Connection with C"
-							+ id + " terminated");
+					shutdown = true;
+					shutdown();
 					return;
 				}
 				
@@ -84,8 +81,11 @@ public class ServerComm implements Runnable {
 		}
 	}
 	
-	public void shutdown() {
-		this.shutdown = true;
+	public void shutdown() throws Exception {
+		connectionListener.remove(this);
+		socket.close();
+		System.out.println(Util.dateTime() + " -- Connection with C"
+				+ id + " terminated");
 	}
 
 	public void appendToSendQueue(Message msg) {
