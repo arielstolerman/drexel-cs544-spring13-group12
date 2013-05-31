@@ -1,7 +1,5 @@
 package server;
 
-import common.Util;
-
 import devices.House;
 import devices.RandomHouseFactory;
 
