@@ -9,13 +9,17 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: Client.java
  * 
  * Purpose:
- * 
+ * Main class for starting a client. Provides the main method to initialize a
+ * connection to the server, either with a client CLI or in test mode (allows
+ * sending raw messages to the server).
+ * Behavior is controlled with command line arguments; please run with no
+ * arguments to receive description of expected arguments.
  * 
  * Relevant requirements (details in the file):
- * - 
+ * - CLIENT
  * 
  * =============================================================================
  */
@@ -25,15 +29,53 @@ package client;
 public class Client {
 	
 	// client configuration
+	/**
+	 * default timeout for client socket listener
+	 */
 	public static final int LISTEN_TIMEOUT_MS = 1000;
+	/**
+	 * default client protocol version
+	 */
 	public static final String VERSION = "RSHC 0001";
+	/**
+	 * default host to connect to
+	 */
 	private static final String DEFAULT_HOST = "127.0.0.1";
+	/**
+	 * default port to connect to
+	 */
 	private static final int DEFAULT_PORT = 7070;
 	
+	/**
+	 * Main method to startup a client connection to the server. Arguments:
+	 * <ul>
+	 * 	<li>
+	 * 	<code>[-host &lt;host&gt;]</code>: optional; specify the host to connect to.
+	 * 	default value: 127.0.0.1
+	 * 	</li>
+	 * 	<li>
+	 * 	<code>[-port &lt;port&gt;]</code>: optional; specify the port to connect to.
+	 * 	default value: 7070
+	 * 	</li>
+	 * 	<li>
+	 * 	<code>-login &lt;user&gt;:&lt;password&gt;</code>: specify client username
+	 * 	and password. MUST be specified if not in test mode.
+	 * 	</li>
+	 * 	<li>
+	 * 	<code>-test</code>: run in a client in test mode, which allows sending the
+	 * 	server raw messages for testing purposes. If given, does not have to specify
+	 *  username and password.
+	 * 	</li>
+	 * </ul>
+	 * @param args client command line arguments.
+	 */
 	public static void main(String args[]) {
 		ClientComm cc = null;
 		
+		// -------------
 		// configuration
+		// -------------
+		
 		// host
 		String host = DEFAULT_HOST;
 		for (int i = 0; i < args.length - 1; i++) {
@@ -79,12 +121,17 @@ public class Client {
 		if (!test && (user == null || pass == null))
 			printUsageAndExit("user and password not given");
 		
-		// start test mode
+		
+		// ------------
+		// start client
+		// ------------
+		
+		// start in test mode
 		if (test) {
 			System.out.println(">>> TEST MODE");
 			cc = new ClientCommTester(host, port);
 		}
-		// start standard mode
+		// start in standard mode
 		else {
 			cc = new ClientCommCLI(host, port, user, pass);
 		}
@@ -92,6 +139,11 @@ public class Client {
 		T.start();
 	}
 	
+	/**
+	 * Prints the given error message along with client run usage, and exits the
+	 * program.
+	 * @param message error message.
+	 */
 	private static void printUsageAndExit(String message) {
 		System.out.println(message);
 		System.out.println("Expected arguments:");
