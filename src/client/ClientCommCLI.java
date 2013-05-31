@@ -195,7 +195,7 @@ public class ClientCommCLI implements ClientComm {
 				// read message from server
 				line = br.readLine();
 				if (line == null) {
-					//server closed connection
+					// server closed connection
 					socket.close();
 					return null;
 				}

@@ -9,13 +9,16 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: ClientCommTester.java
  * 
  * Purpose:
- * 
+ * Implementation for ClientComm that allows sending raw messages to the server.
+ * Designed for testing protocol robustness to random streams, illegal messages
+ * etc.
  * 
  * Relevant requirements (details in the file):
- * - 
+ * - CLIENT
+ * - UI
  * 
  * =============================================================================
  */
@@ -33,8 +36,17 @@ public class ClientCommTester implements ClientComm {
 	
 	// fields
 	
+	/**
+	 * Host to connect to
+	 */
 	private String host;
+	/**
+	 * Port to connect to
+	 */
 	private int port;
+	/**
+	 * Buffered reader for reading user input
+	 */
 	private BufferedReader userInputReader;
 	
 	// constructors
@@ -53,11 +65,19 @@ public class ClientCommTester implements ClientComm {
 	
 	// methods
 	
+	/*
+	 * CLIENT
+	 * main thread to handle client connection to the server and user input
+	 */
+	
 	@Override
 	public void run() {
+		// flag to mark whether to continue connecting to the server for more
+		// tests
 		boolean connect = true;
 		while (connect) {
 			try {
+				// initialize socket
 				Socket socket = new Socket(host, port);
 				socket.setSoTimeout(Client.LISTEN_TIMEOUT_MS);
 
@@ -72,7 +92,10 @@ public class ClientCommTester implements ClientComm {
 
 				// collect user input, send to server and process response
 				while (true) {
-					// read message from user and send to server
+					/*
+					 * UI
+					 * read message from user and send to server
+					 */
 					m = getUserInputMessage();
 
 					// send message to server
@@ -92,10 +115,14 @@ public class ClientCommTester implements ClientComm {
 					m = Message.fromHexString(line);
 					m.prettyPrint("S");
 					
+					// break connection if received a shudown or error message
+					// from the server
 					if (m.opcode() == Message.OP_SHUTDOWN ||
 							m.opcode() == Message.OP_ERROR) {
 						break;
 					}
+					// generate valid challenge-response in case received a
+					// challenge message from the server
 					if (m.opcode() == Message.OP_CHALLENGE) {
 						System.out.println(">>> valid response message would be:");
 						System.out.println(Util.toHexString(
@@ -111,6 +138,9 @@ public class ClientCommTester implements ClientComm {
 				socket.close();
 				System.out.println(Util.dateTime() + " -- TEST CLIENT DISCONNECTED");
 				
+				// if last shutdown was initiated by the server, attempt to
+				// reconnect
+				// otherwise, when initiated by user, terminate
 				if (connect) {
 					System.out.println();
 					System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
@@ -133,14 +163,22 @@ public class ClientCommTester implements ClientComm {
 	 * to be sent to the server.
 	 */
 	private Message getUserInputMessage() throws Exception {
+		/*
+		 * UI
+		 * read message from user and send to server
+		 */
+		
 		String input;
 		byte[] b;
 		Message m = null;
 		while (m == null) {
-			System.out.println("Enter message in hex bytes to send the server, e.g: '01 A6 8B'");
+			// read user input
+			System.out.println("Enter message in hex bytes to send the server," +
+					" e.g: '01 A6 8B'");
 			input = userInputReader.readLine();
 			input = input.replaceAll("\\s+"," ").trim();
 			try {
+				// parse input into message byte stream
 				b = Util.toByteStream(input);
 			} catch (NumberFormatException e) {
 				System.out.println("invalid input, try again");
@@ -158,12 +196,15 @@ public class ClientCommTester implements ClientComm {
 		String line = null;
 		while (line == null) {
 			try {
+				// read message from server
 				line = br.readLine();
 				if (line == null) {
+					// server closed connection
 					socket.close();
 					return null;
 				}
 			} catch (SocketException e) {
+				// connection exception, close connection
 				System.err.println("socket exception thrown:");
 				e.printStackTrace();
 				return null;
@@ -190,7 +231,7 @@ public class ClientCommTester implements ClientComm {
 		return port;
 	}
 		
-	// overriding
+	// overriding -- stub methods, never used
 	
 	@Override
 	public void postAction(Message actionMessage) {}

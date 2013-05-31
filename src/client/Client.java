@@ -128,6 +128,7 @@ public class Client {
 		
 		/*
 		 * CLIENT
+		 * initialize client communication thread
 		 */
 		
 		// start in test mode
