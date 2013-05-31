@@ -9,13 +9,20 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: ClientCommCLI.java
  * 
  * Purpose:
- * 
+ * Provides an implementation of ClientComm (see ClientComm.java), which handles
+ * client communication to the server. This class collects user input, handles
+ * message parsing and generation.
+ * Optional commands are displayed conveniently to the user, and the raw message
+ * input and output are also displayed for "inner" look at the protocol (however
+ * the user does not have to know anything about the protocol; all user I/O is
+ * handled with user-friendly messages).
  * 
  * Relevant requirements (details in the file):
- * - 
+ * - CLIENT
+ * - UI
  * 
  * =============================================================================
  */
@@ -37,13 +44,38 @@ public class ClientCommCLI implements ClientComm {
 	
 	// fields
 	
+	/**
+	 * Host to connect to
+	 */
 	private String host;
+	/**
+	 * Port to connect to
+	 */
 	private int port;
+	/**
+	 * Username
+	 */
 	private String user;
+	/**
+	 * Password
+	 */
 	private String pass;
+	/**
+	 * DFA to be used to track protocol states and process messages
+	 */
 	private DFA dfa;
+	/**
+	 * Flag for shutting down the client
+	 */
 	private volatile boolean shutdown = false;
+	/**
+	 * Thread that handles user I/O
+	 */
 	private ClientInputThread clientInputThread;
+	/**
+	 * Holds messages posted by the user I/O thread, whenever an input is
+	 * received from the user
+	 */
 	private volatile Message postedAction;
 	
 	// constructors
