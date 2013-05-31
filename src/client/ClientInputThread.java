@@ -3,6 +3,8 @@ package client;
 import java.io.*;
 import java.util.*;
 
+import protocol.Message;
+
 import devices.*;
 
 public class ClientInputThread extends Thread {
@@ -32,13 +34,17 @@ public class ClientInputThread extends Thread {
 			legalMax = types[types.length - 1].type();
 			DeviceType selectedType = null;
 			// set message for user
-			msg = "Select device type:\n";
+			msg = "Select device type or press S to shutdown:\n";
 			for (DeviceType type: types)
 				msg += "[" + type.type() + "] " + type + "  ";
 			// read until legal
 			while (!legalInput) {
 				System.out.println(msg);
 				input = br.readLine();
+				if (input.trim().equalsIgnoreCase("s")) {
+					clientComm.postAction(Message.SHUTDOWN);
+					return;
+				}
 				try {
 					byte code = Byte.parseByte(input);
 					if (code < legalMin || code > legalMax)
@@ -53,7 +59,7 @@ public class ClientInputThread extends Thread {
 				}
 				// mark input is legal
 				legalInput = true;
-				if (killInput) continue;
+				if (killInput) return;
 			}
 			// reset
 			input = null;
@@ -67,7 +73,7 @@ public class ClientInputThread extends Thread {
 			// -----------------
 			byte selectedDeviceIndex = -1;
 			// set message for user
-			msg = "Select device:";
+			msg = "Select device or press S to shutdown:";
 			for (Device d: selectedDevices)
 				msg += "\n[" + d.deviceNumber() + "] " + d.name().trim();
 			// read user input until legal
@@ -75,6 +81,10 @@ public class ClientInputThread extends Thread {
 				System.out.println(msg);
 				try {
 					input = br.readLine();
+					if (input.trim().equalsIgnoreCase("s")) {
+						clientComm.postAction(Message.SHUTDOWN);
+						return;
+					}
 					selectedDeviceIndex = Byte.parseByte(input);
 					if (selectedDeviceIndex < 0
 							|| selectedDeviceIndex >= selectedDevices.size()) {
@@ -87,7 +97,7 @@ public class ClientInputThread extends Thread {
 				}
 				// mark input is legal
 				legalInput = true;
-				if (killInput) continue;
+				if (killInput) return;
 			}
 			// reset
 			input = null;
@@ -100,7 +110,7 @@ public class ClientInputThread extends Thread {
 			// ---------
 			byte selectedOpcode = -1;
 			// set message for user
-			msg = "Select operation:";
+			msg = "Select operation or press S to shutdown:";
 			Map<Byte,String> opCodesMap = selectedDevice.opCodesMap();
 			for (byte key: opCodesMap.keySet())
 				msg += "\n[" + key + "] " + opCodesMap.get(key);
@@ -109,6 +119,10 @@ public class ClientInputThread extends Thread {
 				System.out.println(msg);
 				try {
 					input = br.readLine();
+					if (input.trim().equalsIgnoreCase("s")) {
+						clientComm.postAction(Message.SHUTDOWN);
+						return;
+					}
 					selectedOpcode = Byte.parseByte(input);
 					if (selectedOpcode < 0 || selectedOpcode >= opCodesMap.size()) {
 						throw new Exception("selected opcode not in range");
@@ -120,7 +134,7 @@ public class ClientInputThread extends Thread {
 				}
 				// mark input is legal
 				legalInput = true;
-				if (killInput) continue;
+				if (killInput) return;
 			}
 			// reset
 			input = null;
@@ -142,12 +156,17 @@ public class ClientInputThread extends Thread {
 				// set message for user
 				msg = "Input " +
 						Arrays.toString(paramNames).replace("[", "").replace("]", "") +
-						(params.length > 1 ? " (separated by commas):" : ":");
+						(params.length > 1 ? " (separated by commas)" : "") +
+						" or press S to shutdown:";
 				// read user input until legal
 				while (!legalInput) {
 					System.out.println(msg);
 					try {
 						inputArr = br.readLine().split(",");
+						if (inputArr[0].trim().equalsIgnoreCase("s")) {
+							clientComm.postAction(Message.SHUTDOWN);
+							return;
+						}
 						// check number of parameters
 						if (inputArr.length != paramNames.length)
 							throw new Exception(
@@ -163,7 +182,7 @@ public class ClientInputThread extends Thread {
 					}
 					// mark input is legal
 					legalInput = true;
-					if (killInput) continue;
+					if (killInput) return;
 				}
 			}
 			

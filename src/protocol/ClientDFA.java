@@ -142,6 +142,7 @@ public class ClientDFA extends DFA {
 			else {
 				System.out.println("::: Action " + b[1] + " denied :::");
 			}
+			state = ProtocolState.S_AWAITS_ACTION;
 			return Message.AWAITING_CLIENT_INPUT;
 		}
 		// process server update

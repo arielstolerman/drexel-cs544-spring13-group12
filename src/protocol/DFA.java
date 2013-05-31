@@ -26,6 +26,7 @@ public abstract class DFA {
 	 * to the input message.
 	 */
 	public Message process(Message m) {
+		if (m == Message.SHUTDOWN) return m;
 		switch (state) {
 		case IDLE:					return processIdle(m);
 		case C_AWAITS_VERSION:		return processClientAwaitsVersion(m);
