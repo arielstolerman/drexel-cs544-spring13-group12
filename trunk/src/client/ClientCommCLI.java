@@ -94,6 +94,7 @@ public class ClientCommCLI implements ClientComm {
 				// send message to server
 				else {
 					write(outMsg, bw);
+					if (outMsg == Message.SHUTDOWN) break;
 				}					
 			}
 				
