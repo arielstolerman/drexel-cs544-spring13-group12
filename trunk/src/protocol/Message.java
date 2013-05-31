@@ -62,7 +62,7 @@ public class Message {
 	
 	
 	// GENERAL CONFIG
-	private static final int WRAP_SIZE = 96;
+	private static final int WRAP_SIZE = 70;
 	
 	// FIELDS
 	
