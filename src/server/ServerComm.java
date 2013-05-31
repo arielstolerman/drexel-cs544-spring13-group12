@@ -74,6 +74,14 @@ public class ServerComm implements Runnable {
 				
 				outMsg.prettyPrint("S ");
 				outMsg.write(bw);
+				
+				// check if last sent message was error
+				// if so - shutdown
+				if (outMsg.opcode() == Message.OP_ERROR) {
+					shutdown = true;
+					shutdown();
+					return;
+				}
 			}
 		} catch (Exception e) {
 			connectionListener.remove(this);
