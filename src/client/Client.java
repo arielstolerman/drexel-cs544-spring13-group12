@@ -126,6 +126,10 @@ public class Client {
 		// start client
 		// ------------
 		
+		/*
+		 * CLIENT
+		 */
+		
 		// start in test mode
 		if (test) {
 			System.out.println(">>> TEST MODE");
