@@ -9,13 +9,15 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: Alarm.java
  * 
  * Purpose:
+ * Class for representation of an alarm device, that can be part of a house
+ * controlled by the protocol.
  * 
- * 
- * Relevant requirements (details in the file):
- * - 
+ * Relevant requirements:
+ * - SERVICE - device representation, state maintenance and functionality to
+ *   apply actions on it are part of the protocol service.
  * 
  * =============================================================================
  */
@@ -54,24 +56,37 @@ public class Alarm extends Device {
 	
 	// constructors
 	
+	/**
+	 * Default constructor for Alarm.
+	 */
 	Alarm() {}
 	
+	/**
+	 * Constructs Alarm with the given name and device number.
+	 */
 	public Alarm(String name, byte deviceNumber) {
 		super(name, deviceNumber);
 	}
 	
+	/**
+	 * Constructs Alarm with the given name, device number and initial state.
+	 */
 	public Alarm(String name, byte deviceNumber, AlarmState state) {
 		super(name, deviceNumber);
 		this.state = state;
 	}
 	
-	// methods
-	
-	public Alarm(String name, byte deviceNumber, AlarmState state, byte[] parms) {
-		super(name, deviceNumber);
-		this.state = state;
+	/**
+	 * Constructs AirCon with the given name, device number, initial state and
+	 * parameters (should be empty).
+	 */
+	public Alarm(String name, byte deviceNumber, AlarmState state, byte[] params) {
+		this(name, deviceNumber, state);
 	}
 
+	// overriding methods
+	
+	@Override
 	public byte deviceType() {
 		return DeviceType.ALARM.type();
 	}
@@ -101,6 +116,35 @@ public class Alarm extends Device {
 		else {
 			throw new Exception("Illegal opcode for Alarm: " + opcode);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return Util.bufferLeft(' ', 16, name) + state.ordinal();
+	}
+	
+	@Override
+	public byte[] getBytes() {
+		return Util.cat(
+				Util.bufferLeft(' ', 16, name).getBytes(),	// name
+				(byte)state.ordinal(),						// state
+				new byte[]{});								// params
+	}
+	
+	@Override
+	public String toPrettyString() {
+		return String.format("#%03d %-16s %-10s",
+				deviceNumber, name, state);
+	}
+	
+	@Override
+	public Map<Byte,String> opCodesMap() {
+		return opcodeMap;
+	}
+	
+	@Override
+	public Map<Byte,String[]> opCodesParamMap() {
+		return opcodeParamMap;
 	}
 	
 	// local setters
@@ -137,30 +181,6 @@ public class Alarm extends Device {
 					deviceNumber + " (" + name + ") when already armed");
 		state = AlarmState.ARMED;
 	}
-	
-	public String toString() {
-		return Util.bufferLeft(' ', 16, name) + state.ordinal();
-	}
-	
-	public byte[] getBytes() {
-		return Util.cat(
-				Util.bufferLeft(' ', 16, name).getBytes(),	// name
-				(byte)state.ordinal(),						// state
-				new byte[]{});								// params
-	}
-	
-	public String toPrettyString() {
-		return String.format("#%03d %-16s %-10s",
-				deviceNumber, name, state);
-	}
-	
-	public Map<Byte,String> opCodesMap() {
-		return opcodeMap;
-	}
-	
-	public Map<Byte,String[]> opCodesParamMap() {
-		return opcodeParamMap;
-	}			
 }
 
 /**

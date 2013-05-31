@@ -9,13 +9,14 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: DeviceType.java
  * 
  * Purpose:
- * 
+ * Enumerator for supported device types.
  * 
  * Relevant requirements (details in the file):
- * - 
+ * - SERVICE - device representation, state maintenance and functionality to
+ *   apply actions on it are part of the protocol service.
  * 
  * =============================================================================
  */
@@ -92,18 +93,4 @@ public enum DeviceType {
 			return LIGHT;
 		}
 	}
-
-
-//	public int parmCount(byte opcode) {
-//		return this.device.parmCount(opcode);
-//	}
-//		
-//	public void printOpCode() {
-//		this.device.printOpCodes();
-//	}
-//	
-//	public void printParms(byte opcode) {
-//		this.device.printParms(opcode);
-//	}
-//
 }

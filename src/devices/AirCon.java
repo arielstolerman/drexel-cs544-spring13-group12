@@ -9,13 +9,15 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: AirCon.java
  * 
  * Purpose:
+ * Class for representation of an air-conditioning device, that can be part of
+ * a house controlled by the protocol.
  * 
- * 
- * Relevant requirements (details in the file):
- * - 
+ * Relevant requirements:
+ * - SERVICE - device representation, state maintenance and functionality to
+ *   apply actions on it are part of the protocol service.
  * 
  * =============================================================================
  */
@@ -55,54 +57,34 @@ public class AirCon extends Device {
 	
 	// constructors
 	
+	/**
+	 * Default constructor for AirCon.
+	 */
 	AirCon() {}
 	
+	/**
+	 * Constructs AirCon with the given name and device number.
+	 */
 	public AirCon(String name, byte deviceNumber) {
 		super(name, deviceNumber);
 	}
 	
+	/**
+	 * Constructs AirCon with the given name, device number and initial state.
+	 */
 	public AirCon(String name, byte deviceNumber, AirConState state) {
 		super(name, deviceNumber);
 		this.state = state;
 	}
 	
-	// methods
-	
-	public AirCon(String name, byte deviceNumber, AirConState state, byte[] parms) {
+	/**
+	 * Constructs AirCon with the given name, device number, initial state and
+	 * parameters (should contain only temperature).
+	 */
+	public AirCon(String name, byte deviceNumber, AirConState state, byte[] params) {
 		super(name, deviceNumber);
 		this.state = state;
-		this.temp = parms[0];
-	}
-
-	public byte deviceType() {
-		return DeviceType.AIRCON.type();
-	}
-
-	@Override
-	public void doAction(Action action) throws Exception {
-		byte opcode = action.opcode();
-		// turn on
-		if (opcode == TURN_ON) {
-			if (action.numParams() != 0) throw new Exception("Turn on AirCon " +
-					"expected 0 parameters, given: " + action.numParams());
-			turnOn();
-		}
-		// turn off
-		else if (opcode == TURN_OFF) {
-			if (action.numParams() != 0) throw new Exception("Turn off AirCon " +
-					"expected 0 parameters, given: " + action.numParams());
-			turnOff();
-		}
-		// set temp
-		else if (opcode == SET_TEMP) {
-			if (action.numParams() != 1) throw new Exception("Set AirCon temp " +
-					"expected 1 parameters, given: " + action.numParams());
-			setTemp(action.getParam(0));
-		}
-		// error
-		else {
-			throw new Exception("Illegal opcode for AirCon: " + opcode);
-		}
+		this.temp = params[0];
 	}
 	
 	// local setters
@@ -141,10 +123,46 @@ public class AirCon extends Device {
 		this.temp = temp;
 	}
 	
+	// overriding methods
+	
+	@Override
+	public byte deviceType() {
+		return DeviceType.AIRCON.type();
+	}
+
+	@Override
+	public void doAction(Action action) throws Exception {
+		byte opcode = action.opcode();
+		// turn on
+		if (opcode == TURN_ON) {
+			if (action.numParams() != 0) throw new Exception("Turn on AirCon " +
+					"expected 0 parameters, given: " + action.numParams());
+			turnOn();
+		}
+		// turn off
+		else if (opcode == TURN_OFF) {
+			if (action.numParams() != 0) throw new Exception("Turn off AirCon " +
+					"expected 0 parameters, given: " + action.numParams());
+			turnOff();
+		}
+		// set temp
+		else if (opcode == SET_TEMP) {
+			if (action.numParams() != 1) throw new Exception("Set AirCon temp " +
+					"expected 1 parameters, given: " + action.numParams());
+			setTemp(action.getParam(0));
+		}
+		// error
+		else {
+			throw new Exception("Illegal opcode for AirCon: " + opcode);
+		}
+	}
+	
+	@Override
 	public String toString() {
 		return Util.bufferLeft(' ', 16, name) + state.ordinal();
 	}
 	
+	@Override
 	public byte[] getBytes() {
 		return Util.cat(
 				Util.bufferLeft(' ', 16, name).getBytes(),	// name
@@ -152,32 +170,38 @@ public class AirCon extends Device {
 				new byte[]{temp});							// params
 	}
 	
-	// getters
-	
-	public byte temp() {
-		return temp;
-	}
-	
+	@Override
 	public String toPrettyString() {
 		return String.format("#%03d %-16s %-10s temp: %d",
 				deviceNumber, name, state, temp);
 	}
 	
+	@Override
 	public Map<Byte,String> opCodesMap() {
 		return opcodeMap;
 	}
 	
+	@Override
 	public Map<Byte,String[]> opCodesParamMap() {
 		return opcodeParamMap;
 	}
+	
+	// getters
+	
+	/**
+	 * @return the temperature set for this AirCon.
+	 */
+	public byte temp() {
+		return temp;
+	}	
 }
 
 /**
  * Enumeration of AirCon states.
  */
 enum AirConState {
-	OFF((byte)0),
-	ON((byte)1);
+	OFF	((byte) 0),
+	ON	((byte) 1);
 	
 	private AirConState(byte type) {
 		this.type = type;
