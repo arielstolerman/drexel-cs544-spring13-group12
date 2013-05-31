@@ -28,6 +28,5 @@ public class Server {
 		// initialize server
 		Thread connectionListener = new Thread(new ConnectionListener(house));
 		connectionListener.start();
-		System.out.println(Util.dateTime() + " -- Server started\n");
 	}
 }
