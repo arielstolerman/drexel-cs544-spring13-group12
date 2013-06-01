@@ -27,6 +27,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import common.Util;
 
@@ -44,9 +45,10 @@ public class ConnectionListener implements Runnable {
 	 */
 	private static int ID_COUNTER = 0;
 	/**
-	 * List of active connections
+	 * Set of active connections
 	 */
-	private List<ServerComm> sList = new ArrayList<ServerComm>();
+	private ConcurrentSkipListSet<ServerComm> sList =
+			new ConcurrentSkipListSet<ServerComm>();
 	/**
 	 * Flag to mark shutdown
 	 */
@@ -66,23 +68,41 @@ public class ConnectionListener implements Runnable {
 		this.house = house;
 	}
 	
+	@Override
 	public void run() {
 		try {
-			ServerSocket servSocket = new ServerSocket(Server.PORT);
+			// initialize listen socket
+			ServerSocket servSocket = new ServerSocket(Server.DEFAULT_PORT);
 			servSocket.setSoTimeout(Server.LISTEN_TIMEOUT_MS);
 			System.out.println(Util.dateTime() + " -- Server started\n");
+			
+			// loop and listen to incoming connections
+			
+			/*
+			 * CONCURRENT
+			 * the following loop listens to incoming connections, and when it
+			 * receives one it launches a server communication handler for it
+			 * and continues listening, to handle multiple clients in parallel.
+			 */
+			
 			while (true) {
 				Socket commSocket = null;
 				while (commSocket == null) {
 					try {
 						commSocket = servSocket.accept();
 					} catch (SocketTimeoutException e) {
+						// process shutdown
 						if (shutdown) {
 							servSocket.close();
+							// close all open connections
+							for (ServerComm sc: sList)
+								sc.shutdown();
 							return;
 						}
 					}
 				}
+				// initialize server communication handler from accepted
+				// connection and launch it
 				ServerComm serverComm = new ServerComm(
 						ID_COUNTER++,
 						this,
