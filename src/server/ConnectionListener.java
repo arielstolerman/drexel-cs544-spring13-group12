@@ -17,6 +17,7 @@
  * 
  * Relevant requirements (details in the file):
  * - CONCURRENT
+ * - UI
  * 
  * =============================================================================
  */
@@ -78,6 +79,7 @@ public class ConnectionListener implements Runnable {
 			
 			/*
 			 * CONCURRENT
+			 * UI
 			 * start shutdown listener thread
 			 */
 			startShutdownListener();
@@ -162,8 +164,10 @@ public class ConnectionListener implements Runnable {
 	private void startShutdownListener() {
 		/*
 		 * CONCURRENT
+		 * UI
 		 * handles server shutdown concurrently with listening to new client
 		 * connections
+		 * presents the server user an interface for shutting down the server
 		 */
 		
 		new Thread(new Runnable() {
