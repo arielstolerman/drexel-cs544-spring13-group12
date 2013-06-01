@@ -9,13 +9,18 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: Message.java
  * 
  * Purpose:
+ * Definitions of all protocol messages, types, opcodes etc. All messages passed
+ * from one end to another are encapsulated in a Message object.
  * 
- * 
- * Relevant requirements (details in the file):
- * - 
+ * Relevant requirements:
+ * - STATEFUL - the Message objects are the arrows in the DFA, i.e. the operations
+ *   by which state transitions in the protocol DFA are applied.
+ * - SERVICE - the messages are an important part in the protocol service
+ *   definition: initiating a connection, initializing house state at the client
+ *   side, action / confirm / update commands etc.
  * 
  * =============================================================================
  */
@@ -40,6 +45,7 @@ public class Message {
 	
 	// message types
 	public static final byte OP_INTERNAL =	-2;
+	public static final byte OP_AWAITING_CLIENT_INPUT = -1;
 	public static final byte OP_POKE =		0;
 	public static final byte OP_VERSION =	1;
 	public static final byte OP_ERROR =		2;
@@ -63,12 +69,12 @@ public class Message {
 	public static final Message CLIENT_VERSION =
 			new Message((Client.VERSION).getBytes(), OP_VERSION);
 	// shutdown
-		public static final Message SHUTDOWN = new Message(OP_SHUTDOWN);
+	public static final Message SHUTDOWN = new Message(OP_SHUTDOWN);
+	// internal client message to signal client is awaiting user input
+	public static final Message AWAITING_CLIENT_INPUT = new Message(
+			OP_AWAITING_CLIENT_INPUT);	
 		
-	public static final Message AWAITING_CLIENT_INPUT = new Message((byte)-1);
-	
-		
-	// ERROR MESSAGES
+	// Error messages
 	// General catch-all error
 	public static final Message ERROR_GENERAL =
 			createError("General error");
@@ -83,10 +89,10 @@ public class Message {
 			createError("Failed authentication");
 	
 	
-	// GENERAL CONFIG
+	// general configuration
 	private static final int WRAP_SIZE = 60;
 	
-	// FIELDS
+	// fields
 	
 	/**
 	 * Message opcode.
@@ -98,7 +104,7 @@ public class Message {
 	private final byte[] bytes;
 	
 	
-	// CONSTRUCTORS
+	// constructors
 	
 	/**
 	 * Constructs a new message from the given stream of bytes, which should
@@ -133,7 +139,7 @@ public class Message {
 		bytes = new byte[]{opcode};
 	}
 	
-	// METHODS
+	// methods
 	
 	/**
 	 * @param seqNum sequence number to confirm.
@@ -186,7 +192,7 @@ public class Message {
 		return new Message(updateStream);
 	}
 	
-	// GETTERS
+	// getters
 	
 	/**
 	 * @return number of bytes in the message stream.
@@ -274,8 +280,11 @@ public class Message {
 				"byte: ", bytecode, WRAP_SIZE));
 	}
 	
-	// UTILITY METHODS
-		
+	// utility methods
+	
+	/**
+	 * @return a string constructed of spaces in the length of the given string.
+	 */
 	private static String indent(String s) {
 		String res = "";
 		int size = s.length();
@@ -284,6 +293,10 @@ public class Message {
 		return res;
 	}
 	
+	/**
+	 * @return an indented wrapped version of the input string, with the given
+	 * prefix at the beginning of the first line of the string.
+	 */
 	private static String indentedWrapped(String prefix, String s, int wrap) {
 		String res = prefix;
 		String ind = indent(prefix);
