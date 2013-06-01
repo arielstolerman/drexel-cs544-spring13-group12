@@ -121,7 +121,12 @@ public class ConnectionListener implements Runnable {
 				Thread thread = new Thread(serverComm);
 				thread.start();
 			}
-		} catch (Exception e) {
+		}
+		catch (BindException e) {
+			System.out.println("Port " + Server.DEFAULT_PORT + " already bound");
+			System.out.println("Cannot start RSHC server");
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
