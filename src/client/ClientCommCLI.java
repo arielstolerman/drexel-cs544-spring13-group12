@@ -30,6 +30,7 @@
 package client;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
@@ -175,7 +176,12 @@ public class ClientCommCLI implements ClientComm {
 			System.out.println(Util.dateTime() + " -- Client " + user + " disconnected");
 			if (!userShutDown) System.out.println("Press any key to exit");
 			
-		} catch (Exception e) {
+		}
+		catch (ConnectException ce) {
+			System.out.println("Unable to connect to " + host + ":" + port);
+			System.out.println("Make sure RSHC server is running and try again");
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

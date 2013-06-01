@@ -152,7 +152,14 @@ public class ClientCommTester implements ClientComm {
 					System.out.println();
 				}
 
-			} catch (Exception e) {
+			}
+			catch (ConnectException ce) {
+				connect = false;
+				System.out.println("Unable to connect to " + host + ":" + port);
+				System.out.println("Make sure RSHC server is running and try again");
+			}
+			catch (Exception e) {
+				connect = false;
 				e.printStackTrace();
 			}
 		}
