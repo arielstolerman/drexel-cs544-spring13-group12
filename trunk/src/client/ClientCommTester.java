@@ -127,8 +127,8 @@ public class ClientCommTester implements ClientComm {
 						System.out.println(">>> valid response message would be:");
 						System.out.println(Util.toHexString(
 								new Message(DESAuth.genUserSemiResponse(
-										"ariel",
-										"ariel123",
+										"john",
+										"smith123",
 										m.contentBytes()),
 										Message.OP_RESPONSE).bytes()));
 					}
