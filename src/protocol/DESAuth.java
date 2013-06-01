@@ -9,13 +9,17 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: DESAuth.java
  * 
  * Purpose:
- * 
+ * Provides cryptographic utility methods for DES encryption for the client
+ * authentication phase of the protocol.
+ * Provides utilities for initializing a sample approved user/password pairs, to
+ * be used as reference by the server when authenticating clients.
  * 
  * Relevant requirements (details in the file):
- * - 
+ * - SERVICE - the entire file is related to the authentication scheme supported
+ *   by the protocol, therefore it is considered part of the service.
  * 
  * =============================================================================
  */
@@ -98,10 +102,11 @@ public class DESAuth {
 	/**
 	 * Generates a response from the given challenge and password - DES
 	 * encryption of the input challenge using the given password.
-	 * Returns the response.
+	 * @return the generated response.
 	 */
 	private static byte[] genResponse(byte[] challenge, String password) {
 		try {
+			// initialize key
 			SecretKey secret = new SecretKeySpec(
 					Arrays.copyOf(password.getBytes(), 8), "DES");	
 			// encrypt
@@ -161,8 +166,6 @@ public class DESAuth {
 		// calculate expected response
 		byte[] expectedResponse = genResponse(challenge,
 				DES_STORE.get(username));
-//		System.out.println(">>> given:    " + new String(response));
-//		System.out.println(">>> expected: " + new String(expectedResponse));
 		return Arrays.equals(response, expectedResponse);
 	}
 	
@@ -176,10 +179,11 @@ public class DESAuth {
 	private static void populateDESStroe() throws Exception {
 		// generate user-password pairs
 		String[][] userPassPairs = new String[][]{
-			new String[]{"amber","heilman"},
-			new String[]{"mike","mersic"},
-			new String[]{"ryan","corcoran"},
-			new String[]{"ariel","stolerman"}
+				new String[]{"john","smith123"},
+				new String[]{"amber","amber123"},
+				new String[]{"mike","mike1234"},
+				new String[]{"ryan","ryan1234"},
+				new String[]{"ariel","ariel123"}
 		};
 		// populate DES storage
 		PrintWriter pw = new PrintWriter(DES_STORE_PATH);
@@ -191,6 +195,11 @@ public class DESAuth {
 		pw.close();
 	}
 	
+	/**
+	 * Main for testing
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		//populateDESStroe();
 		byte[] c = genChallenge();
@@ -198,7 +207,7 @@ public class DESAuth {
 		System.out.println(Util.toHexString(c));
 		System.out.println();
 		
-		byte[] rGood = genUserSemiResponse("ariel", "stolerman", c);
+		byte[] rGood = genUserSemiResponse("ariel", "ariel123", c);
 		System.out.println("good response:");
 		System.out.println(Util.toHexString(rGood));
 		System.out.println();
