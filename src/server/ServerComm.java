@@ -34,7 +34,7 @@ import common.Util;
 import protocol.*;
 
 
-public class ServerComm implements Runnable {
+public class ServerComm implements Runnable, Comparable<ServerComm> {
 	
 	// fields
 	
@@ -136,20 +136,12 @@ public class ServerComm implements Runnable {
 				        inMsg.prettyPrint("C" + id);
 				Message outMsg = dfa.process(inMsg);
 				
-				// check for shutdown
-				if (outMsg.opcode() == Message.OP_SHUTDOWN) {
-					shutdown = true;
-					shutdown();
-					return;
-				}
-				
 				// send response to client
 				outMsg.prettyPrint("S ");
 				outMsg.write(bw);
 				
-				// check if last sent message was error
-				// if so - shutdown
-				if (outMsg.opcode() == Message.OP_ERROR) {
+				// check for shutdown / error
+				if (outMsg.opcode() == Message.OP_SHUTDOWN) {
 					shutdown = true;
 					shutdown();
 					return;
@@ -171,6 +163,13 @@ public class ServerComm implements Runnable {
 		System.out.println(Util.dateTime() + " -- Connection with C"
 				+ id + " terminated");
 	}
+	
+	/**
+	 * Marks the server communication handler to shutdown.
+	 */
+	public void markShutdown() {
+		shutdown = true;
+	}
 
 	/**
 	 * Adds the input update message to the queue of pending updates to be sent
@@ -180,5 +179,10 @@ public class ServerComm implements Runnable {
 	 */
 	public void appendToSendQueue(Message msg) {
 		sendQueue.add(msg);
+	}
+	
+	@Override
+	public int compareTo(ServerComm o) {
+		return id - o.id;
 	}
 }

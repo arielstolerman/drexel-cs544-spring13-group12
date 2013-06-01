@@ -138,6 +138,15 @@ public class ClientCommCLI implements ClientComm {
 				else {
 					inMsg = Message.fromHexString(line);
 					inMsg.prettyPrint("S");
+					
+					// TODO fix this part
+					// handle shutdown
+					if (inMsg.opcode() == Message.OP_SHUTDOWN ||
+							inMsg.opcode() == Message.OP_ERROR) {
+						clientInputThread.killInput();
+						shutdown = true;
+						break;
+					}
 				}
 				
 				// process output message

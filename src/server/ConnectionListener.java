@@ -23,6 +23,9 @@
 
 package server;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -49,7 +52,7 @@ public class ConnectionListener implements Runnable {
 	/**
 	 * Flag to mark shutdown
 	 */
-	private boolean shutdown = false;
+	private volatile boolean shutdown = false;
 	/**
 	 * House maintained by the server
 	 */
@@ -73,6 +76,9 @@ public class ConnectionListener implements Runnable {
 			servSocket.setSoTimeout(Server.LISTEN_TIMEOUT_MS);
 			System.out.println(Util.dateTime() + " -- Server started\n");
 			
+			// start shutdown listener thread
+			startShutdownListener();
+			
 			// loop and listen to incoming connections
 			
 			/*
@@ -93,7 +99,8 @@ public class ConnectionListener implements Runnable {
 							servSocket.close();
 							// close all open connections
 							for (ServerComm sc: sList)
-								sc.shutdown();
+								sc.markShutdown();
+							while (!sList.isEmpty()) {}
 							return;
 						}
 					}
@@ -143,5 +150,34 @@ public class ConnectionListener implements Runnable {
 			if (s == serverComm) continue;
 			s.appendToSendQueue(updateMsg);
 		}
+	}
+	
+	private void startShutdownListener() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				BufferedReader br = new BufferedReader(new InputStreamReader(
+						System.in));
+				boolean shut = false;
+				String line;
+				while (!shut) {
+					System.out.println(">>> Press S at anytime to shutdown server");
+					try {
+						line = br.readLine();
+						if (line.trim().equalsIgnoreCase("s")) {
+							shut = true;
+						}
+						else
+						{
+							System.out.println(">>> Unrecognized command: " +
+									line);
+						}
+					} catch (IOException e) {
+						System.out.println("unable to read input, retrying");
+					}
+				}
+				shutdown();
+			}
+		}).start();
 	}
 }
