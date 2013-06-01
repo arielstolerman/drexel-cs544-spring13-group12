@@ -9,23 +9,23 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: Light.java
  * 
  * Purpose:
+ * Class for representation of a light device, that can be part of a house
+ * controlled by the protocol.
  * 
- * 
- * Relevant requirements (details in the file):
- * - 
+ * Relevant requirements:
+ * - SERVICE - device representation, state maintenance and functionality to
+ *   apply actions on it are part of the protocol service.
  * 
  * =============================================================================
  */
 
 package devices;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import protocol.Message;
 import common.Util;
 
 public class Light extends Device {
@@ -56,26 +56,39 @@ public class Light extends Device {
 	
 	// constructors
 	
+	/**
+	 * Default constructor for Light.
+	 */
 	Light() {}
 	
+	/**
+	 * Constructs Light with the given name and device number.
+	 */
 	public Light(String name, byte deviceNumber) {
 		super(name, deviceNumber);
 	}
 	
+	/**
+	 * Constructs Light with the given name, device number and initial state.
+	 */
 	public Light(String name, byte deviceNumber, LightState state) {
 		super(name, deviceNumber);
 		this.state = state;
 	}
 
-	public Light(String name, byte deviceNumber, LightState state, byte[] parms) {
+	/**
+	 * Constructs Light with the given name, device number, initial state and
+	 * parameters (should contain only dim level).
+	 */
+	public Light(String name, byte deviceNumber, LightState state, byte[] params) {
 		super(name, deviceNumber);
 		this.state = state;
-		this.dimLevel = parms[0];
+		this.dimLevel = params[0];
 	}
 
+	// overriding methods
 	
-	// methods
-	
+	@Override
 	public byte deviceType() {
 		return DeviceType.LIGHT.type();
 	}
@@ -105,6 +118,35 @@ public class Light extends Device {
 		else {
 			throw new Exception("Illegal opcode for Light: " + opcode);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return Util.bufferLeft(' ', 16, name) + state.ordinal();
+	}
+	
+	@Override
+	public byte[] getBytes() {
+		return Util.cat(
+				Util.bufferLeft(' ', 16, name).getBytes(),	// name
+				(byte)state.ordinal(),						// state
+				new byte[]{dimLevel});						// params
+	}
+	
+	@Override
+	public String toPrettyString() {
+		return String.format("#%03d %-16s %-10s dim-level: %d",
+				deviceNumber, name, state, dimLevel);
+	}
+	
+	@Override
+	public Map<Byte,String> opCodesMap() {
+		return opcodeMap;
+	}
+	
+	@Override
+	public Map<Byte,String[]> opCodesParamMap() {
+		return opcodeParamMap;
 	}
 	
 	// local setters
@@ -143,17 +185,6 @@ public class Light extends Device {
 		this.dimLevel = dimLevel;
 	}
 	
-	public String toString() {
-		return Util.bufferLeft(' ', 16, name) + state.ordinal();
-	}
-	
-	public byte[] getBytes() {
-		return Util.cat(
-				Util.bufferLeft(' ', 16, name).getBytes(),	// name
-				(byte)state.ordinal(),						// state
-				new byte[]{dimLevel});						// params
-	}
-	
 	// getters
 	
 	public LightState state() {
@@ -162,24 +193,6 @@ public class Light extends Device {
 	
 	public byte dimLevel() {
 		return dimLevel;
-	}
-	
-	public String toPrettyString() {
-		return String.format("#%03d %-16s %-10s dim-level: %d",
-				deviceNumber, name, state, dimLevel);
-	}
-	
-	public Message getActionMessage(byte sequenceNumber, byte opcode, byte[] parameters) {
-		Action action = new Action(sequenceNumber, this.deviceType(), (byte) this.deviceNumber, opcode, parameters);
-		return action.toMessage();
-	}
-	
-	public Map<Byte,String> opCodesMap() {
-		return opcodeMap;
-	}
-	
-	public Map<Byte,String[]> opCodesParamMap() {
-		return opcodeParamMap;
 	}
 }
 

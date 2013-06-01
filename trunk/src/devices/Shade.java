@@ -9,13 +9,15 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: Shade.java
  * 
  * Purpose:
+ * Class for representation of a shade device, that can be part of a house
+ * controlled by the protocol.
  * 
- * 
- * Relevant requirements (details in the file):
- * - 
+ * Relevant requirements:
+ * - SERVICE - device representation, state maintenance and functionality to
+ *   apply actions on it are part of the protocol service.
  * 
  * =============================================================================
  */
@@ -55,25 +57,38 @@ public class Shade extends Device {
 	
 	// constructors
 	
+	/**
+	 * Default constructor for Shade.
+	 */
 	Shade() {}
 	
+	/**
+	 * Constructs Shade with the given name and device number.
+	 */
 	public Shade(String name, byte deviceNumber) {
 		super(name, deviceNumber);
 	}
-	
+
+	/**
+	 * Constructs Shade with the given name, device number and initial state.
+	 */
 	public Shade(String name, byte deviceNumber, ShadeState state) {
 		super(name, deviceNumber);
 		this.state = state;
 	}
 	
-	// methods
-	
+	/**
+	 * Constructs Shade with the given name, device number, initial state and
+	 * parameters (should contain only dim level).
+	 */
 	public Shade(String desc, byte deviceNum, ShadeState state, byte[] parms) {
-		super(desc, deviceNum);
-		this.state = state;
+		this(desc, deviceNum, state);
 		this.dimLevel = parms[0];
 	}
 
+	// overriding methods
+	
+	@Override
 	public byte deviceType() {
 		return DeviceType.SHADE.type();
 	}
@@ -103,6 +118,35 @@ public class Shade extends Device {
 		else {
 			throw new Exception("Illegal opcode for Shade: " + opcode);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return Util.bufferLeft(' ', 16, name) + state.ordinal();
+	}
+	
+	@Override
+	public byte[] getBytes() {
+		return Util.cat(
+				Util.bufferLeft(' ', 16, name).getBytes(),	// name
+				(byte)state.ordinal(),						// state
+				new byte[]{dimLevel});						// params
+	}
+	
+	@Override
+	public String toPrettyString() {
+		return String.format("#%03d %-16s %-10s dim-level: %d",
+				deviceNumber, name, state, dimLevel);
+	}
+	
+	@Override
+	public Map<Byte,String> opCodesMap() {
+		return opcodeMap;
+	}
+	
+	@Override
+	public Map<Byte,String[]> opCodesParamMap() {
+		return opcodeParamMap;
 	}
 	
 	// local setters
@@ -141,34 +185,10 @@ public class Shade extends Device {
 		this.dimLevel = dimLevel;
 	}
 	
-	public String toString() {
-		return Util.bufferLeft(' ', 16, name) + state.ordinal();
-	}
-	
-	public byte[] getBytes() {
-		return Util.cat(
-				Util.bufferLeft(' ', 16, name).getBytes(),	// name
-				(byte)state.ordinal(),						// state
-				new byte[]{dimLevel});						// params
-	}
-	
 	// getters
 	
 	public byte dimLevel() {
 		return dimLevel;
-	}
-	
-	public String toPrettyString() {
-		return String.format("#%03d %-16s %-10s dim-level: %d",
-				deviceNumber, name, state, dimLevel);
-	}
-	
-	public Map<Byte,String> opCodesMap() {
-		return opcodeMap;
-	}
-	
-	public Map<Byte,String[]> opCodesParamMap() {
-		return opcodeParamMap;
 	}	
 }
 

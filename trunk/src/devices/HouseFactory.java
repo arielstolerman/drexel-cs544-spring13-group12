@@ -30,5 +30,3 @@ public interface HouseFactory {
 	 */
 	public House createHouse();
 }
-
-
