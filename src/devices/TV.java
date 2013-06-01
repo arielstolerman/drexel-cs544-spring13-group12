@@ -9,13 +9,15 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: TV.java
  * 
  * Purpose:
+ * Class for representation of a TV device, that can be part of a house
+ * controlled by the protocol.
  * 
- * 
- * Relevant requirements (details in the file):
- * - 
+ * Relevant requirements:
+ * - SERVICE - device representation, state maintenance and functionality to
+ *   apply actions on it are part of the protocol service.
  * 
  * =============================================================================
  */
@@ -59,19 +61,30 @@ public class TV extends Device {
 	
 	// constructors
 	
+	/**
+	 * Default constructor for TV.
+	 */
 	TV() {}
 	
+	/**
+	 * Constructs TV with the given name and device number.
+	 */
 	public TV(String name, byte deviceNumber) {
 		super(name, deviceNumber);
 	}
 	
+	/**
+	 * Constructs TV with the given name, device number and initial state.
+	 */
 	public TV(String name, byte deviceNumber, TVState state) {
 		super(name, deviceNumber);
 		this.state = state;
 	}
 	
-	// methods
-	
+	/**
+	 * Constructs TV with the given name, device number, initial state and
+	 * parameters (should contain only dim level).
+	 */
 	public TV(String name, byte deviceNumber, TVState state, byte[] params) {
 		super(name, deviceNumber);
 		this.state = state;
@@ -79,6 +92,9 @@ public class TV extends Device {
 		this.volume = params[1];
 	}
 
+	// overriding methods
+	
+	@Override
 	public byte deviceType() {
 		return DeviceType.TV.type();
 	}
@@ -114,6 +130,35 @@ public class TV extends Device {
 		else {
 			throw new Exception("Illegal opcode for TV: " + opcode);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return Util.bufferLeft(' ', 16, name) + state.ordinal();
+	}
+	
+	@Override
+	public byte[] getBytes() {
+		return Util.cat(
+				Util.bufferLeft(' ', 16, name).getBytes(),	// name
+				(byte)state.ordinal(),						// state
+				new byte[]{channel, volume});				// params
+	}
+	
+	@Override
+	public String toPrettyString() {
+		return String.format("#%03d %-16s %-10s channel: %-4d volume: %d",
+				deviceNumber, name, state, channel, volume);
+	}
+	
+	@Override
+	public Map<Byte,String> opCodesMap() {
+		return opcodeMap;
+	}
+	
+	@Override
+	public Map<Byte,String[]> opCodesParamMap() {
+		return opcodeParamMap;
 	}
 	
 	// local setters
@@ -164,17 +209,6 @@ public class TV extends Device {
 		this.volume = volume;
 	}
 	
-	public String toString() {
-		return Util.bufferLeft(' ', 16, name) + state.ordinal();
-	}
-	
-	public byte[] getBytes() {
-		return Util.cat(
-				Util.bufferLeft(' ', 16, name).getBytes(),	// name
-				(byte)state.ordinal(),						// state
-				new byte[]{channel, volume});				// params
-	}
-	
 	// getters
 	
 	public byte channel() {
@@ -183,19 +217,6 @@ public class TV extends Device {
 	
 	public byte volume() {
 		return volume;
-	}
-	
-	public String toPrettyString() {
-		return String.format("#%03d %-16s %-10s channel: %-4d volume: %d",
-				deviceNumber, name, state, channel, volume);
-	}
-	
-	public Map<Byte,String> opCodesMap() {
-		return opcodeMap;
-	}
-	
-	public Map<Byte,String[]> opCodesParamMap() {
-		return opcodeParamMap;
 	}	
 }
 
