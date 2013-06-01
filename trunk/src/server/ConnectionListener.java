@@ -76,7 +76,10 @@ public class ConnectionListener implements Runnable {
 			servSocket.setSoTimeout(Server.LISTEN_TIMEOUT_MS);
 			System.out.println(Util.dateTime() + " -- Server started\n");
 			
-			// start shutdown listener thread
+			/*
+			 * CONCURRENT
+			 * start shutdown listener thread
+			 */
 			startShutdownListener();
 			
 			// loop and listen to incoming connections
@@ -152,23 +155,36 @@ public class ConnectionListener implements Runnable {
 		}
 	}
 	
+	/**
+	 * Initiate server shutdown command listener. Listens to standard input for
+	 * server user shutdown command.
+	 */
 	private void startShutdownListener() {
+		/*
+		 * CONCURRENT
+		 * handles server shutdown concurrently with listening to new client
+		 * connections
+		 */
+		
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				// initialize reader
 				BufferedReader br = new BufferedReader(new InputStreamReader(
 						System.in));
 				boolean shut = false;
 				String line;
+				// read until received shutdown command
 				while (!shut) {
 					System.out.println(">>> Press S at anytime to shutdown server");
 					try {
 						line = br.readLine();
+						// received shutdown
 						if (line.trim().equalsIgnoreCase("s")) {
 							shut = true;
 						}
-						else
-						{
+						// retry
+						else {
 							System.out.println(">>> Unrecognized command: " +
 									line);
 						}
@@ -176,6 +192,7 @@ public class ConnectionListener implements Runnable {
 						System.out.println("unable to read input, retrying");
 					}
 				}
+				// finally shutdown
 				shutdown();
 			}
 		}).start();
