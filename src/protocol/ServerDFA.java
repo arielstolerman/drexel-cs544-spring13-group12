@@ -40,11 +40,6 @@ public class ServerDFA extends DFA {
 		this.connectionListener = cl;
 	}
 	
-	public ServerDFA(House house, ConnectionListener cl, String version) {
-		this(house, cl);
-		this.version = version;
-	}
-	
 	// setters
 	
 	public void setServerComm(ServerComm serverComm) {
