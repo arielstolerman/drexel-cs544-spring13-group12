@@ -78,7 +78,7 @@ public class House {
 	 * Applies the given action on the respective device.
 	 * @param action
 	 */
-	public void doAction(Action action) throws Exception {
+	public synchronized void doAction(Action action) throws Exception {
 		devices.get(action.deviceType()).get(action.deviceNumber())
 				.doAction(action);
 	}

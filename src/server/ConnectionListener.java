@@ -9,13 +9,14 @@
  * - Ariel Stolerman
  * 
  * -----------------------------------------------------------------------------
- * File name: 
+ * File name: ConnectionListener.java
  * 
  * Purpose:
- * 
+ * Handles multiple connections to clients, by maintaining a list of ServerComm
+ * and listening to incoming connections from clients.
  * 
  * Relevant requirements (details in the file):
- * - 
+ * - CONCURRENT
  * 
  * =============================================================================
  */
@@ -37,11 +38,30 @@ import devices.House;
 public class ConnectionListener implements Runnable {
 	
 	// fields
+	
+	/**
+	 * Counter to assign unique numeric identifiers to incoming connections
+	 */
 	private static int ID_COUNTER = 0;
+	/**
+	 * List of active connections
+	 */
 	private List<ServerComm> sList = new ArrayList<ServerComm>();
+	/**
+	 * Flag to mark shutdown
+	 */
 	private boolean shutdown = false;
+	/**
+	 * House maintained by the server
+	 */
 	private House house;
 	
+	// constructors
+	
+	/**
+	 * Constructs a new connection listener with the given attached house.
+	 * @param house
+	 */
 	public ConnectionListener(House house) {
 		this.house = house;
 	}
