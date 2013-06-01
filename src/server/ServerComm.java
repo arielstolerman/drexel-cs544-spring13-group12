@@ -117,7 +117,7 @@ public class ServerComm implements Runnable, Comparable<ServerComm> {
 							return;
 						}
 					} catch (SocketTimeoutException e) {
-						// on timeout, before attemptin to read user input again,
+						// on timeout, before attempting to read user input again,
 						// send any pending update messages to the client
 						while (!sendQueue.isEmpty()) {
 							Message outMsg = sendQueue.remove();
@@ -126,6 +126,7 @@ public class ServerComm implements Runnable, Comparable<ServerComm> {
 						}
 						// handle shutdown
 						if (shutdown) {
+							Message.SHUTDOWN.write(bw);
 							shutdown();
 							return;
 						}
@@ -133,7 +134,7 @@ public class ServerComm implements Runnable, Comparable<ServerComm> {
 				}
 				// process client message and generate response
 				Message inMsg = Message.fromHexString(inBuff);
-				        inMsg.prettyPrint("C" + id);
+				inMsg.prettyPrint("C" + id);
 				Message outMsg = dfa.process(inMsg);
 				
 				// send response to client
@@ -141,7 +142,8 @@ public class ServerComm implements Runnable, Comparable<ServerComm> {
 				outMsg.write(bw);
 				
 				// check for shutdown / error
-				if (outMsg.opcode() == Message.OP_SHUTDOWN) {
+				if (outMsg.opcode() == Message.OP_SHUTDOWN ||
+						outMsg.opcode() == Message.OP_ERROR) {
 					shutdown = true;
 					shutdown();
 					return;

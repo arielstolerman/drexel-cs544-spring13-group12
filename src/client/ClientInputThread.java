@@ -114,6 +114,7 @@ public class ClientInputThread extends Thread {
 					if (house.devices().get(selectedType.type()).isEmpty())
 						throw new Exception("no devices of selected type");
 				} catch (Exception e) {
+					if (killInput) return;
 					System.out.println("Illegal selection, try again: " +
 							e.getMessage());
 					continue;
@@ -154,6 +155,7 @@ public class ClientInputThread extends Thread {
 						throw new Exception("selected device number not in range");
 					}
 				} catch (Exception e) {
+					if (killInput) return;
 					System.out.println("Illegal selection, try again: " +
 							e.getMessage());
 					continue;
@@ -194,6 +196,7 @@ public class ClientInputThread extends Thread {
 						throw new Exception("selected opcode not in range");
 					}
 				} catch (Exception e) {
+					if (killInput) return;
 					System.out.println("Illegal selection, try again: " +
 							e.getMessage());
 					continue;
@@ -246,6 +249,7 @@ public class ClientInputThread extends Thread {
 							params[i] = Byte.parseByte(inputArr[i].trim());
 						}
 					} catch (Exception e) {
+						if (killInput) return;
 						System.out.println("Illegal selection, try again: "
 								+ e.getMessage());
 						continue;
@@ -275,6 +279,6 @@ public class ClientInputThread extends Thread {
 	 * whenever a message is received by the server during user input collection. 
 	 */
 	public void killInput() {
-		this.killInput = true;		
+		this.killInput = true;
 	}
 }

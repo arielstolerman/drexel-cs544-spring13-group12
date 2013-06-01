@@ -65,10 +65,6 @@ public class ClientCommCLI implements ClientComm {
 	 */
 	private DFA dfa;
 	/**
-	 * Flag for shutting down the client
-	 */
-	private volatile boolean shutdown = false;
-	/**
 	 * Thread that handles user I/O
 	 */
 	private ClientInputThread clientInputThread;
@@ -105,6 +101,7 @@ public class ClientCommCLI implements ClientComm {
 	
 	@Override
 	public void run() {
+		boolean userShutDown = false;
 		try {
 			// initialize socket
 			Socket socket = new Socket(host, port);
@@ -139,12 +136,10 @@ public class ClientCommCLI implements ClientComm {
 					inMsg = Message.fromHexString(line);
 					inMsg.prettyPrint("S");
 					
-					// TODO fix this part
 					// handle shutdown
 					if (inMsg.opcode() == Message.OP_SHUTDOWN ||
 							inMsg.opcode() == Message.OP_ERROR) {
 						clientInputThread.killInput();
-						shutdown = true;
 						break;
 					}
 				}
@@ -167,14 +162,18 @@ public class ClientCommCLI implements ClientComm {
 				// send message to server
 				else {
 					write(outMsg, bw);
-					if (outMsg == Message.SHUTDOWN) break;
+					// shutdown if user selected to shutdown
+					if (outMsg == Message.SHUTDOWN) {
+						userShutDown = true;
+						break;
+					}
 				}					
 			}
 			
 			// shutdown
 			socket.close();
-			System.out.println(Util.dateTime() + " -- Client " + user
-					+ " disconnected\n");
+			System.out.println(Util.dateTime() + " -- Client " + user + " disconnected");
+			if (!userShutDown) System.out.println("Press any key to exit");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -209,11 +208,6 @@ public class ClientCommCLI implements ClientComm {
 					return null;
 				}
 			} catch (SocketTimeoutException ste) {
-				// shutdown if signaled
-				if (shutdown) {
-					socket.close();
-					return null;
-				}
 				// if user generated a posted message, flag to parse that message
 				if (this.postedAction != null) {
 					return POSTED_MESSAGE;
